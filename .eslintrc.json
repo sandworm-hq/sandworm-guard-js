@@ -1,0 +1,62 @@
+{
+  "extends": [
+    "airbnb",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "plugins": [
+    "prettier",
+    "jest"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-nested-ternary": "off"
+  },
+  "globals": {
+    "__non_webpack_require__": "readonly",
+    "eval": "readonly",
+    "window": "readonly",
+    "self": "readonly",
+    "document": "readonly",
+    "navigator": "readonly",
+    "Storage": "readonly",
+    "BackgroundFetchManager": "readonly",
+    "Bluetooth": "readonly",
+    "Clipboard": "readonly",
+    "CredentialsContainer": "readonly",
+    "ContentIndex": "readonly",
+    "CookieStore": "readonly",
+    "FileReader": "readonly",
+    "FileReaderSync": "readonly",
+    "Geolocation": "readonly",
+    "HID": "readonly",
+    "History": "readonly",
+    "ImageCapture": "readonly",
+    "IDBFactory": "readonly",
+    "MediaDevices": "readonly",
+    "MediaStream": "readonly",
+    "Notification": "readonly",
+    "PeriodicSyncManager": "readonly",
+    "Permissions": "readonly",
+    "PresentationRequest": "readonly",
+    "Scheduler": "readonly",
+    "Selection": "readonly",
+    "ServiceWorkerRegistration": "readonly",
+    "webkitSpeechRecognition": "readonly",
+    "SharedWorker": "readonly",
+    "SpeechRecognition": "readonly",
+    "StorageManager": "readonly",
+    "SubtleCrypto": "readonly",
+    "PushManager": "readonly",
+    "USB": "readonly",
+    "WakeLock": "readonly",
+    "WebSocket": "readonly",
+    "Worker": "readonly",
+    "XMLHttpRequest": "readonly"
+  },
+  "env": {
+    "jest": true
+  }
+}
