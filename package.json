@@ -1,15 +1,19 @@
 {
   "name": "sandworm",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sandworm-hq/sandworm-js.git"
+  },
   "scripts": {
     "dev": "webpack --watch --progress",
     "build": "webpack",
     "test": "jest"
   },
-  "author": "Gabi Dobocan <gabi@telepat.io>",
-  "license": "ISC",
+  "author": "Gabi Dobocan <gabi@sandworm.dev>",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.18.6",
     "@babel/preset-env": "^7.18.6",
