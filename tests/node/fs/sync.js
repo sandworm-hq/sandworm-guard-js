@@ -15,7 +15,7 @@ const withTestFile = (operation) => {
   fs.closeSync(fd);
 };
 
-export default () =>
+module.exports = () =>
   describe('fsSync', () => {
     beforeAll(async () => Sandworm.init({devMode: true}));
     afterEach(() => Sandworm.clearHistory());

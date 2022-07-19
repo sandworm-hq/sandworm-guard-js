@@ -10,7 +10,7 @@ const testFileStats = standardFs.statSync(testFilePath);
 const newTestFilePath = path.join(__dirname, 'new-test.txt');
 const newTestDirPath = path.join(__dirname, 'new-test-dir');
 
-export default () =>
+module.exports = () =>
   describe('fsPromises', () => {
     beforeAll(async () => Sandworm.init({devMode: true}));
     afterEach(() => Sandworm.clearHistory());

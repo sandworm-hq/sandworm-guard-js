@@ -19,7 +19,7 @@ const withTestFile = (operation, done) => {
   });
 };
 
-export default () =>
+module.exports = () =>
   describe('fsAsync', () => {
     beforeAll(async () => Sandworm.init({devMode: true}));
     afterEach(() => Sandworm.clearHistory());
