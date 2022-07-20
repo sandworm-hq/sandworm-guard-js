@@ -328,13 +328,17 @@ module.exports = () =>
     test('opendir', (done) => {
       if (fs.opendir) {
         fs.opendir(testDirPath, (err, dir) => {
+          if (err) {
+            done(err);
+            return;
+          }
           expectCallToMatch({
             family: 'fs',
             method: 'opendir',
             firstArg: testDirPath,
           });
           dir.closeSync();
-          done(err);
+          done();
         });
       } else {
         done();
@@ -362,6 +366,10 @@ module.exports = () =>
 
     test('readdir', (done) => {
       fs.readdir(testDirPath, (err, files) => {
+        if (err) {
+          done(err);
+          return;
+        }
         expect(Array.isArray(files)).toBeTruthy();
         expectCallToMatch({
           family: 'fs',
