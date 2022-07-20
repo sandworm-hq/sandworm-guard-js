@@ -41,7 +41,7 @@ module.exports = () =>
         firstArg: newTestFilePath,
         fromRoot: true,
       });
-      await fs.rm(newTestFilePath);
+      standardFs.unlinkSync(newTestFilePath);
     });
 
     test('chmod', async () => {
@@ -76,20 +76,22 @@ module.exports = () =>
         secondArg: newTestFilePath,
         fromRoot: true,
       });
-      await fs.rm(newTestFilePath);
+      standardFs.unlinkSync(newTestFilePath);
     });
 
     test('cp', async () => {
-      await fs.cp(testFilePath, newTestFilePath);
-      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
-      expectCallToMatch({
-        family: 'fs/promises',
-        method: 'cp',
-        firstArg: testFilePath,
-        secondArg: newTestFilePath,
-        fromRoot: true,
-      });
-      await fs.rm(newTestFilePath);
+      if (fs.cp) {
+        await fs.cp(testFilePath, newTestFilePath);
+        expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
+        expectCallToMatch({
+          family: 'fs/promises',
+          method: 'cp',
+          firstArg: testFilePath,
+          secondArg: newTestFilePath,
+          fromRoot: true,
+        });
+        standardFs.unlinkSync(newTestFilePath);
+      }
     });
 
     test('lchown', async () => {
@@ -114,14 +116,16 @@ module.exports = () =>
     });
 
     test('lutimes', async () => {
-      await fs.lutimes(testFilePath, testFileStats.atime, testFileStats.mtime);
-      expectCallToMatch({
-        family: 'fs/promises',
-        method: 'lutimes',
-        firstArg: testFilePath,
-        secondArg: testFileStats.atime,
-        fromRoot: true,
-      });
+      if (fs.lutimes) {
+        await fs.lutimes(testFilePath, testFileStats.atime, testFileStats.mtime);
+        expectCallToMatch({
+          family: 'fs/promises',
+          method: 'lutimes',
+          firstArg: testFilePath,
+          secondArg: testFileStats.atime,
+          fromRoot: true,
+        });
+      }
     });
 
     test('link', async () => {
@@ -134,7 +138,7 @@ module.exports = () =>
         secondArg: newTestFilePath,
         fromRoot: true,
       });
-      await fs.rm(newTestFilePath);
+      standardFs.unlinkSync(newTestFilePath);
     });
 
     test('mkdir', async () => {
@@ -146,7 +150,7 @@ module.exports = () =>
         firstArg: newTestDirPath,
         fromRoot: true,
       });
-      await fs.rmdir(newTestDirPath);
+      standardFs.rmdirSync(newTestDirPath);
     });
 
     test('mkdtemp', async () => {
@@ -230,15 +234,17 @@ module.exports = () =>
     });
 
     test('rm', async () => {
-      await fs.cp(testFilePath, newTestFilePath);
-      await fs.rm(newTestFilePath);
-      expectCallToMatch({
-        index: 7,
-        family: 'fs/promises',
-        method: 'rm',
-        firstArg: newTestFilePath,
-        fromRoot: true,
-      });
+      if (fs.rm) {
+        standardFs.copyFileSync(testFilePath, newTestFilePath);
+        await fs.rm(newTestFilePath);
+        expectCallToMatch({
+          index: 1,
+          family: 'fs/promises',
+          method: 'rm',
+          firstArg: newTestFilePath,
+          fromRoot: true,
+        });
+      }
     });
 
     test('stat', async () => {
@@ -261,7 +267,7 @@ module.exports = () =>
         fromRoot: true,
       });
 
-      await fs.rm(newTestFilePath);
+      standardFs.unlinkSync(newTestFilePath);
     });
 
     test('truncate', async () => {
@@ -275,10 +281,10 @@ module.exports = () =>
     });
 
     test('unlink', async () => {
-      await fs.cp(testFilePath, newTestFilePath);
+      standardFs.copyFileSync(testFilePath, newTestFilePath);
       await fs.unlink(newTestFilePath);
       expectCallToMatch({
-        index: 7,
+        index: 1,
         family: 'fs/promises',
         method: 'unlink',
         firstArg: newTestFilePath,
@@ -297,13 +303,15 @@ module.exports = () =>
     });
 
     test('watch', async () => {
-      await fs.watch(testFilePath);
-      expectCallToMatch({
-        family: 'fs/promises',
-        method: 'watch',
-        firstArg: testFilePath,
-        fromRoot: true,
-      });
+      if (fs.watch) {
+        await fs.watch(testFilePath);
+        expectCallToMatch({
+          family: 'fs/promises',
+          method: 'watch',
+          firstArg: testFilePath,
+          fromRoot: true,
+        });
+      }
     });
 
     test('writeFile', async () => {

@@ -63,8 +63,10 @@ describe('timers', () => {
       });
 
       test('setInterval', async () => {
-        await timersPromises.setInterval();
-        expectCallToMatch({family: 'timers/promises', method: 'setInterval', fromRoot: true});
+        if (timersPromises.setInterval) {
+          await timersPromises.setInterval();
+          expectCallToMatch({family: 'timers/promises', method: 'setInterval', fromRoot: true});
+        }
       });
 
       test('setTimeout', async () => {

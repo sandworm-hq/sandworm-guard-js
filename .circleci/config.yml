@@ -2,38 +2,85 @@ version: 2.1
 orbs: 
   node: circleci/node@5.0.2
 jobs:
-  test-node:
+  setup:
     executor:
       name: node/default
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "yarn.lock" }}
+            - deps-
       - node/install-packages:
           pkg-manager: yarn
-      - node/test:
-          pkg-manager: yarn
-          matrix:
-            parameters:
-              version:
-                - 10.13.0
-                - 10.24.1
-                - 11.0.0
-                - 11.15.0
-                - 12.0.0
-                - 12.22.12
-                - 13.0.0
-                - 13.14.0
-                - 14.0.0
-                - 14.20.0
-                - 15.0.0
-                - 15.14.0
-                - 16.0.0
-                - 16.16.0
-                - 17.0.0
-                - 17.9.1
-                - 18.0.0
-                - 18.6.0
-          test-results-for: jest
+      - save_cache:
+          key: deps-{{ checksum "yarn.lock" }}
+          paths: 
+            - node_modules
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '*'
+  build:
+    executor:
+      name: node/default
+    steps:
+      - attach_workspace:
+            at: .
+      - run:
+          name: Build lib
+          command: yarn build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - 'dist'
+  test-node:
+    executor: node/default
+    parameters:
+      version:
+        type: string
+    steps:
+      - attach_workspace:
+            at: .
+      - node/install:
+          install-yarn: true
+          node-version: << parameters.version >>
+      - run:
+          name: Validate Node version
+          command: echo Testing on node $(node --version)
+      - run:
+          name: Run tests
+          command: yarn test
+        
 workflows:
   test:
     jobs:
-      - test-node
+      - setup
+      - build:
+          requires:
+            - setup
+      - test-node:
+          requires:
+            - build
+          matrix:
+            parameters:
+              version:
+                - "10.14"
+                - "10.24"
+                - "11.15"
+                - "12.0"
+                - "12.13"
+                - "12.22"
+                - "13.14"
+                - "14.0"
+                - "14.15"
+                - "14.19"
+                - "15.0"
+                - "15.14"
+                - "16.0"
+                - "16.13"
+                - "16.16"
+                - "17.0"
+                - "17.9"
+                # - "18.0"
+                # - "18.4"
