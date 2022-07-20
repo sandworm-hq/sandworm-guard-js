@@ -18,13 +18,17 @@ describe('v8', () => {
   });
 
   test('stopCoverage', () => {
-    v8.stopCoverage();
-    expectCallToMatch({family: 'v8', method: 'stopCoverage'});
+    if (v8.stopCoverage) {
+      v8.stopCoverage();
+      expectCallToMatch({family: 'v8', method: 'stopCoverage'});
+    }
   });
 
   test('takeCoverage', () => {
-    v8.takeCoverage();
-    expectCallToMatch({family: 'v8', method: 'takeCoverage'});
+    if (v8.takeCoverage) {
+      v8.takeCoverage();
+      expectCallToMatch({family: 'v8', method: 'takeCoverage'});
+    }
   });
 
   test('serialize', () => {

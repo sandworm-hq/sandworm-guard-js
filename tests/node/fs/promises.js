@@ -1,4 +1,11 @@
-const fs = require('fs/promises');
+let fs;
+
+try {
+  // eslint-disable-next-line global-require
+  fs = require('fs/promises');
+  // eslint-disable-next-line no-empty
+} catch (error) {}
+
 const standardFs = require('fs');
 const path = require('path');
 const Sandworm = require('../../../dist/index');
@@ -11,6 +18,7 @@ const newTestFilePath = path.join(__dirname, 'new-test.txt');
 const newTestDirPath = path.join(__dirname, 'new-test-dir');
 
 module.exports = () =>
+  fs &&
   describe('fsPromises', () => {
     beforeAll(async () => Sandworm.init({devMode: true}));
     afterEach(() => Sandworm.clearHistory());

@@ -117,8 +117,10 @@ describe('os', () => {
   });
 
   test('resourceUsage', () => {
-    process.resourceUsage();
-    expectCallToMatch({family: 'process', method: 'resourceUsage'});
+    if (process.resourceUsage) {
+      process.resourceUsage();
+      expectCallToMatch({family: 'process', method: 'resourceUsage'});
+    }
   });
 
   test('send', () => {
@@ -161,8 +163,10 @@ describe('os', () => {
   });
 
   test('setSourceMapsEnabled', () => {
-    process.setSourceMapsEnabled(true);
-    expectCallToMatch({family: 'process', method: 'setSourceMapsEnabled'});
+    if (process.setSourceMapsEnabled) {
+      process.setSourceMapsEnabled(true);
+      expectCallToMatch({family: 'process', method: 'setSourceMapsEnabled'});
+    }
   });
 
   test('setUncaughtExceptionCaptureCallback', () => {

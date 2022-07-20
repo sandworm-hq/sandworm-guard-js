@@ -43,8 +43,10 @@ describe('vm', () => {
   });
 
   test('measureMemory', () => {
-    vm.measureMemory();
-    expectCallToMatch({family: 'vm', method: 'measureMemory'});
+    if (vm.measureMemory) {
+      vm.measureMemory();
+      expectCallToMatch({family: 'vm', method: 'measureMemory'});
+    }
   });
 
   test('runInContext', () => {

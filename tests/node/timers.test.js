@@ -1,5 +1,13 @@
 const timers = require('timers');
-const timersPromises = require('timers/promises');
+
+let timersPromises;
+
+try {
+  // eslint-disable-next-line global-require
+  timersPromises = require('timers/promises');
+  // eslint-disable-next-line no-empty
+} catch (error) {}
+
 const Sandworm = require('../../dist/index');
 const {expectCallToMatch} = require('../utils');
 
@@ -44,23 +52,25 @@ describe('timers', () => {
     });
   });
 
-  describe('timersPromises', () => {
-    beforeAll(async () => Sandworm.init({devMode: true}));
-    afterEach(() => Sandworm.clearHistory());
+  if (timersPromises) {
+    describe('timersPromises', () => {
+      beforeAll(async () => Sandworm.init({devMode: true}));
+      afterEach(() => Sandworm.clearHistory());
 
-    test('setImmediate', async () => {
-      await timersPromises.setImmediate('');
-      expectCallToMatch({family: 'timers/promises', method: 'setImmediate', fromRoot: true});
-    });
+      test('setImmediate', async () => {
+        await timersPromises.setImmediate('');
+        expectCallToMatch({family: 'timers/promises', method: 'setImmediate', fromRoot: true});
+      });
 
-    test('setInterval', async () => {
-      await timersPromises.setInterval();
-      expectCallToMatch({family: 'timers/promises', method: 'setInterval', fromRoot: true});
-    });
+      test('setInterval', async () => {
+        await timersPromises.setInterval();
+        expectCallToMatch({family: 'timers/promises', method: 'setInterval', fromRoot: true});
+      });
 
-    test('setTimeout', async () => {
-      await timersPromises.setTimeout();
-      expectCallToMatch({family: 'timers/promises', method: 'setTimeout', fromRoot: true});
+      test('setTimeout', async () => {
+        await timersPromises.setTimeout();
+        expectCallToMatch({family: 'timers/promises', method: 'setTimeout', fromRoot: true});
+      });
     });
-  });
+  }
 });

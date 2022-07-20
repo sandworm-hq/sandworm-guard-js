@@ -31,7 +31,7 @@ module.exports = () =>
 
     test('appendFile', (done) => {
       fs.appendFile(newTestFilePath, 'test', () => {
-        fs.rm(newTestFilePath, () => {
+        fs.unlink(newTestFilePath, () => {
           expectCallToMatch({family: 'fs', method: 'appendFile', firstArg: newTestFilePath});
           done();
         });
@@ -71,7 +71,7 @@ module.exports = () =>
     });
 
     test('close', (done) => {
-      fs.open(testFilePath, (err, fd) => {
+      fs.open(testFilePath, 'r', (err, fd) => {
         if (err) {
           done(err);
           return;
@@ -101,25 +101,29 @@ module.exports = () =>
           firstArg: testFilePath,
           secondArg: newTestFilePath,
         });
-        fs.rm(newTestFilePath, done);
+        fs.unlink(newTestFilePath, done);
       });
     });
 
     test('cp', (done) => {
-      fs.cp(testFilePath, newTestFilePath, (err) => {
-        if (err) {
-          done(err);
-          return;
-        }
-        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
-        expectCallToMatch({
-          family: 'fs',
-          method: 'cp',
-          firstArg: testFilePath,
-          secondArg: newTestFilePath,
+      if (fs.cp) {
+        fs.cp(testFilePath, newTestFilePath, (err) => {
+          if (err) {
+            done(err);
+            return;
+          }
+          expect(fs.existsSync(newTestFilePath)).toBeTruthy();
+          expectCallToMatch({
+            family: 'fs',
+            method: 'cp',
+            firstArg: testFilePath,
+            secondArg: newTestFilePath,
+          });
+          fs.unlink(newTestFilePath, done);
         });
-        fs.rm(newTestFilePath, done);
-      });
+      } else {
+        done();
+      }
     });
 
     test('createReadStream', () => {
@@ -141,7 +145,7 @@ module.exports = () =>
       });
       ws.close();
       ws.on('close', () => {
-        fs.rm(newTestFilePath, done);
+        fs.unlink(newTestFilePath, done);
       });
     });
 
@@ -270,7 +274,7 @@ module.exports = () =>
           firstArg: testFilePath,
           secondArg: newTestFilePath,
         });
-        fs.rm(newTestFilePath, done);
+        fs.unlink(newTestFilePath, done);
       });
     });
 
@@ -307,7 +311,7 @@ module.exports = () =>
     });
 
     test('open', (done) => {
-      fs.open(testFilePath, (err, fd) => {
+      fs.open(testFilePath, 'r', (err, fd) => {
         if (err) {
           done(err);
           return;
@@ -322,20 +326,24 @@ module.exports = () =>
     });
 
     test('opendir', (done) => {
-      fs.opendir(testDirPath, (err, dir) => {
-        expectCallToMatch({
-          family: 'fs',
-          method: 'opendir',
-          firstArg: testDirPath,
+      if (fs.opendir) {
+        fs.opendir(testDirPath, (err, dir) => {
+          expectCallToMatch({
+            family: 'fs',
+            method: 'opendir',
+            firstArg: testDirPath,
+          });
+          dir.closeSync();
+          done(err);
         });
-        dir.closeSync();
-        done(err);
-      });
+      } else {
+        done();
+      }
     });
 
     test('read', (done) => {
       withTestFile((fd, testDone) => {
-        fs.read(fd, (err, bytes, buffer) => {
+        fs.read(fd, Buffer.alloc(16), 0, 16, null, (err, bytes, buffer) => {
           if (err) {
             testDone(err);
             return;
@@ -402,22 +410,25 @@ module.exports = () =>
     });
 
     test('rm', (done) => {
-      fs.cp(testFilePath, newTestFilePath, (err) => {
-        if (err) {
-          done(err);
-          return;
-        }
-        fs.rm(newTestFilePath, (rmErr) => {
-          expectCallToMatch({
-            index: 6,
-            family: 'fs',
-            method: 'rm',
-            firstArg: newTestFilePath,
-            fromRoot: true,
+      if (fs.rm) {
+        fs.copyFile(testFilePath, newTestFilePath, (err) => {
+          if (err) {
+            done(err);
+            return;
+          }
+          fs.rm(newTestFilePath, (rmErr) => {
+            expectCallToMatch({
+              family: 'fs',
+              method: 'rm',
+              firstArg: newTestFilePath,
+              fromRoot: true,
+            });
+            done(rmErr);
           });
-          done(rmErr);
         });
-      });
+      } else {
+        done();
+      }
     });
 
     test('stat', (done) => {
@@ -449,7 +460,7 @@ module.exports = () =>
           firstArg: testFilePath,
         });
 
-        fs.rm(newTestFilePath, done);
+        fs.unlink(newTestFilePath, done);
       });
     });
 
@@ -465,14 +476,13 @@ module.exports = () =>
     });
 
     test('unlink', (done) => {
-      fs.cp(testFilePath, newTestFilePath, (err) => {
+      fs.copyFile(testFilePath, newTestFilePath, (err) => {
         if (err) {
           done(err);
           return;
         }
         fs.unlink(newTestFilePath, (rmErr) => {
           expectCallToMatch({
-            index: 6,
             family: 'fs',
             method: 'unlink',
             firstArg: newTestFilePath,

@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 const net = require('net');
 const Sandworm = require('../../dist/index');
 const {expectCallToMatch} = require('../utils');
@@ -20,16 +21,18 @@ describe('net', () => {
 
   test('connect', () => {
     try {
-      net.connect();
+      net.connect().on('error', () => {});
     } catch (error) {
+    } finally {
       expectCallToMatch({family: 'net', method: 'connect'});
     }
   });
 
   test('createConnection', () => {
     try {
-      net.createConnection();
+      net.createConnection().on('error', () => {});
     } catch (error) {
+    } finally {
       expectCallToMatch({family: 'net', method: 'createConnection'});
     }
   });

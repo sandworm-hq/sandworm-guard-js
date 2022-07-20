@@ -92,7 +92,9 @@ describe('os', () => {
   });
 
   test('version', () => {
-    os.version();
-    expectCallToMatch({family: 'os', method: 'version'});
+    if (os.version) {
+      os.version();
+      expectCallToMatch({family: 'os', method: 'version'});
+    }
   });
 });

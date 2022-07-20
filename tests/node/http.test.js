@@ -19,17 +19,17 @@ describe('http', () => {
     expectCallToMatch({family: 'http', method: 'createServer'});
   });
 
-  test('get', (done) => {
+  test('get', () => {
     const req = http.get('http://google.com', () => {});
     expect(req).toBeInstanceOf(http.ClientRequest);
     expectCallToMatch({family: 'http', method: 'get'});
-    req.end(done);
+    req.end();
   });
 
-  test('request', (done) => {
+  test('request', () => {
     const req = http.request('http://google.com', () => {});
     expect(req).toBeInstanceOf(http.ClientRequest);
     expectCallToMatch({family: 'http', method: 'request'});
-    req.end(done);
+    req.end();
   });
 });

@@ -62,8 +62,10 @@ describe('dns', () => {
   });
 
   test('resolveCaa', () => {
-    dns.resolveCaa('localhost', () => {});
-    expectCallToMatch({family: 'dns', method: 'resolveCaa', firstArg: 'localhost'});
+    if (dns.resolveCaa) {
+      dns.resolveCaa('localhost', () => {});
+      expectCallToMatch({family: 'dns', method: 'resolveCaa', firstArg: 'localhost'});
+    }
   });
 
   test('resolveCname', () => {

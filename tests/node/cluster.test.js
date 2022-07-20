@@ -20,8 +20,10 @@ describe('cluster', () => {
   });
 
   test('setupPrimary', () => {
-    cluster.setupPrimary();
-    expectCallToMatch({family: 'cluster', method: 'setupPrimary'});
+    if (cluster.setupPrimary) {
+      cluster.setupPrimary();
+      expectCallToMatch({family: 'cluster', method: 'setupPrimary'});
+    }
   });
 
   test('setupMaster', () => {
