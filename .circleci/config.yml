@@ -51,6 +51,8 @@ jobs:
       - run:
           name: Run tests
           command: yarn test
+      - store_test_results:
+          path: ./
         
 workflows:
   test:
