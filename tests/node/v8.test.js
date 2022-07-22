@@ -1,4 +1,3 @@
-/* eslint-disable no-empty */
 const v8 = require('v8');
 const Sandworm = require('../../dist/index');
 const {expectCallToMatch} = require('../utils');

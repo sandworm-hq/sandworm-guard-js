@@ -1,4 +1,3 @@
-/* eslint-disable no-empty */
 const process = require('process');
 const Sandworm = require('../../dist/index');
 const {expectCallToMatch} = require('../utils');

@@ -14,7 +14,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 coverage
 
 # Test results
-junit.xml
+junit*.xml
 
 # Runtime data
 pids

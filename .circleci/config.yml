@@ -26,7 +26,7 @@ jobs:
       name: node/default
     steps:
       - attach_workspace:
-            at: .
+          at: .
       - run:
           name: Build lib
           command: yarn build
@@ -34,6 +34,22 @@ jobs:
           root: .
           paths:
             - 'dist'
+  test-web:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.24.0-focal
+    environment:
+      NODE_ENV: development
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install browsers
+          command: npx playwright install
+      - run:
+          name: Run tests
+          command: yarn test-web
+      - store_test_results:
+          path: ./
   test-node:
     executor: node/default
     parameters:
@@ -41,7 +57,7 @@ jobs:
         type: string
     steps:
       - attach_workspace:
-            at: .
+          at: .
       - node/install:
           install-yarn: true
           node-version: << parameters.version >>
@@ -50,7 +66,7 @@ jobs:
           command: echo Testing on node $(node --version)
       - run:
           name: Run tests
-          command: yarn test
+          command: yarn test-node
       - store_test_results:
           path: ./
         
@@ -61,6 +77,9 @@ workflows:
       - build:
           requires:
             - setup
+      - test-web:
+          requires:
+            - build
       - test-node:
           requires:
             - build

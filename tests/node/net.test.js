@@ -1,4 +1,3 @@
-/* eslint-disable no-empty */
 const net = require('net');
 const Sandworm = require('../../dist/index');
 const {expectCallToMatch} = require('../utils');

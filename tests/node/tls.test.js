@@ -1,4 +1,3 @@
-/* eslint-disable no-empty */
 const tls = require('tls');
 const Sandworm = require('../../dist/index');
 const {expectCallToMatch} = require('../utils');

@@ -1,4 +1,3 @@
-/* eslint-disable no-empty */
 const trace = require('trace_events');
 const Sandworm = require('../../dist/index');
 const {expectCallToMatch} = require('../utils');

@@ -3,8 +3,9 @@ import {web as builder} from './builder';
 export default () => [
   ...builder({name: 'AudioContext', globalConstructor: true}),
   ...builder({
+    // swReg.backgroundFetch
     name: 'BackgroundFetchManager',
-    methods: [{name: 'fetch'}, {name: 'get'}, {name: 'getIDs'}],
+    methods: [{name: 'fetch'}, {name: 'get'}, {name: 'getIds'}],
   }),
   ...builder({
     name: 'BackgroundTasks',
@@ -15,14 +16,17 @@ export default () => [
     navigatorMethods: [{name: 'sendBeacon'}],
   }),
   ...builder({
+    // navigator.bluetooth
     name: 'Bluetooth',
     methods: [{name: 'getAvailability'}, {name: 'getDevices'}, {name: 'requestDevice'}],
   }),
   ...builder({
+    // navigator.clipboard
     name: 'Clipboard',
     methods: [{name: 'read'}, {name: 'readText'}, {name: 'write'}, {name: 'writeText'}],
   }),
   ...builder({
+    // navigator.contacts
     name: 'ContactsManager',
     methods: [{name: 'select'}, {name: 'getProperties'}],
   }),
@@ -31,10 +35,12 @@ export default () => [
     methods: [{name: 'add'}, {name: 'delete'}, {name: 'getAll'}],
   }),
   ...builder({
+    // self.cookieStore
     name: 'CookieStore',
     methods: [{name: 'delete'}, {name: 'get'}, {name: 'getAll'}, {name: 'set'}],
   }),
   ...builder({
+    // navigator.credentials
     name: 'CredentialsContainer',
     methods: [{name: 'create'}, {name: 'get'}, {name: 'preventSilentAccess'}, {name: 'store'}],
   }),
@@ -43,13 +49,14 @@ export default () => [
     globalConstructor: true,
   }),
   ...builder({
+    // self.fetch
     name: 'Fetch',
     globalMethods: [{name: 'fetch'}],
   }),
   ...builder({
     name: 'FileReader',
+    globalConstructor: true,
     methods: [
-      {name: 'delete'},
       {name: 'abort'},
       {name: 'readAsArrayBuffer'},
       {name: 'readAsBinaryString'},
@@ -59,6 +66,7 @@ export default () => [
   }),
   ...builder({
     name: 'FileReaderSync',
+    globalConstructor: true,
     methods: [
       {name: 'readAsArrayBuffer'},
       {name: 'readAsBinaryString'},
@@ -79,18 +87,22 @@ export default () => [
     navigatorMethods: [{name: 'getGamepads'}],
   }),
   ...builder({
+    // navigator.geolocation
     name: 'Geolocation',
     methods: [{name: 'clearWatch'}, {name: 'getCurrentPosition'}, {name: 'watchPosition'}],
   }),
   ...builder({
+    // navigator.getBattery()
     name: 'Battery',
     navigatorMethods: [{name: 'getBattery'}],
   }),
   ...builder({
+    // navigator.hid
     name: 'HID',
     methods: [{name: 'getDevices'}, {name: 'requestDevice'}],
   }),
   ...builder({
+    // window.history
     name: 'History',
     methods: [
       {name: 'back'},
@@ -101,11 +113,13 @@ export default () => [
     ],
   }),
   ...builder({
+    // window.indexedDB
     name: 'IDBFactory',
     methods: [{name: 'cmp'}, {name: 'databases'}, {name: 'deleteDatabase'}, {name: 'open'}],
   }),
   ...builder({
     name: 'ImageCapture',
+    globalConstructor: true,
     methods: [
       {name: 'getPhotoCapabilities'},
       {name: 'getPhotoSettings'},
@@ -114,6 +128,7 @@ export default () => [
     ],
   }),
   ...builder({
+    // navigator.mediaDevices
     name: 'MediaDevices',
     methods: [
       {name: 'enumerateDevices'},
@@ -137,6 +152,7 @@ export default () => [
     globalMethods: [{name: 'postMessage'}],
   }),
   ...builder({
+    // navigator.requestMIDIAccess()
     name: 'MIDI',
     navigatorMethods: [{name: 'requestMIDIAccess'}],
   }),
@@ -155,18 +171,22 @@ export default () => [
     globalConstructor: true,
   }),
   ...builder({
+    // swReg.periodicSync
     name: 'PeriodicSyncManager',
     methods: [{name: 'register'}, {name: 'unregister'}, {name: 'getTags'}],
   }),
   ...builder({
+    // navigator.permissions
     name: 'Permissions',
     methods: [{name: 'query'}, {name: 'revoke'}],
   }),
   ...builder({
     name: 'PresentationRequest',
+    globalConstructor: true,
     methods: [{name: 'start'}, {name: 'reconnect'}, {name: 'getAvailability'}],
   }),
   ...builder({
+    // swReg.pushManager
     name: 'PushManager',
     methods: [
       {name: 'getSubscription'},
@@ -190,22 +210,6 @@ export default () => [
     name: 'Selection',
     globalMethods: [{name: 'getSelection'}],
     documentMethods: [{name: 'getSelection'}],
-    methods: [
-      {name: 'addRange'},
-      {name: 'collapse'},
-      {name: 'collapseToEnd'},
-      {name: 'collapseToStart'},
-      {name: 'containsNode'},
-      {name: 'deleteFromDocument'},
-      {name: 'extend'},
-      {name: 'getRangeAt'},
-      {name: 'modify'},
-      {name: 'removeAllRanges'},
-      {name: 'removeRange'},
-      {name: 'selectAllChildren'},
-      {name: 'setBaseAndExtend'},
-      {name: 'toString'},
-    ],
   }),
   ...builder({
     name: 'Sensor',
@@ -217,11 +221,11 @@ export default () => [
       {name: 'Gyroscope'},
       {name: 'LinearAccelerationSensor'},
       {name: 'Magnetometer'},
-      {name: 'OrientationSensor'},
       {name: 'RelativeOrientationSensor'},
     ],
   }),
   ...builder({
+    // navigator.share()
     name: 'Share',
     navigatorMethods: [{name: 'share'}, {name: 'canShare'}],
   }),
@@ -231,6 +235,7 @@ export default () => [
     methods: [{name: 'abort'}, {name: 'start'}, {name: 'stop'}],
   }),
   ...builder({
+    // self.speechSynthesis
     name: 'SpeechSynthesis',
     globalPropertyMethods: [
       {name: 'cancel'},
@@ -242,6 +247,7 @@ export default () => [
     globalProperty: 'speechSynthesis',
   }),
   ...builder({
+    // self.localStorage
     name: 'Storage',
     methods: [
       {name: 'getItem'},
@@ -253,13 +259,15 @@ export default () => [
   }),
   ...builder({
     name: 'StorageAccess',
-    globalMethods: [{name: 'requestStorageAccess'}, {name: 'hasStorageAccess'}],
+    documentMethods: [{name: 'requestStorageAccess'}, {name: 'hasStorageAccess'}],
   }),
   ...builder({
+    // navigator.storage
     name: 'StorageManager',
     methods: [{name: 'estimate'}, {name: 'persist'}, {name: 'persisted'}],
   }),
   ...builder({
+    // self.crypto.subtle
     name: 'SubtleCrypto',
     methods: [
       {name: 'decrypt'},
@@ -277,6 +285,7 @@ export default () => [
     ],
   }),
   ...builder({
+    // navigator.usb
     name: 'USB',
     methods: [{name: 'getDevices'}, {name: 'requestDevice'}],
   }),
@@ -285,6 +294,7 @@ export default () => [
     navigatorMethods: [{name: 'vibrate'}],
   }),
   ...builder({
+    // navigator.wakeLock
     name: 'WakeLock',
     methods: [{name: 'request'}],
   }),
