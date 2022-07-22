@@ -16,31 +16,48 @@
   },
   "globals": {
     "__non_webpack_require__": "readonly",
+    "Sandworm": "readonly",
     "eval": "readonly",
     "window": "readonly",
     "self": "readonly",
     "document": "readonly",
     "navigator": "readonly",
     "Storage": "readonly",
+    "AbsoluteOrientationSensor": "readonly",
+    "Accelerometer": "readonly",
+    "AmbientLightSensor": "readonly",
+    "AudioContext": "readonly",
     "BackgroundFetchManager": "readonly",
+    "Blob": "readonly",
     "Bluetooth": "readonly",
     "Clipboard": "readonly",
     "CredentialsContainer": "readonly",
     "ContentIndex": "readonly",
     "CookieStore": "readonly",
+    "EventSource": "readonly",
     "FileReader": "readonly",
     "FileReaderSync": "readonly",
     "Geolocation": "readonly",
+    "Gyroscope": "readonly",
+    "GravitySensor": "readonly",
     "HID": "readonly",
     "History": "readonly",
     "ImageCapture": "readonly",
     "IDBFactory": "readonly",
+    "LinearAccelerationSensor": "readonly",
+    "Magnetometer": "readonly",
     "MediaDevices": "readonly",
     "MediaStream": "readonly",
+    "MediaRecorder": "readonly",
     "Notification": "readonly",
+    "OrientationSensor": "readonly",
+    "PaymentRequest": "readonly",
+    "PerformanceObserver": "readonly",
     "PeriodicSyncManager": "readonly",
     "Permissions": "readonly",
     "PresentationRequest": "readonly",
+    "RelativeOrientationSensor": "readonly",
+    "ReportingObserver": "readonly",
     "Scheduler": "readonly",
     "Selection": "readonly",
     "ServiceWorkerRegistration": "readonly",
@@ -56,6 +73,22 @@
     "Worker": "readonly",
     "XMLHttpRequest": "readonly"
   },
+  "overrides": [
+    {
+      "files": [
+        "tests/**/*.js"
+      ],
+      "rules": {
+        // Allow using "self" in tests
+        "no-restricted-globals": "off",
+        "no-empty": "off",
+        "no-new": "off",
+        "global-require": "off",
+        "no-console": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ],
   "env": {
     "jest": true
   }

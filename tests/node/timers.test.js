@@ -3,9 +3,7 @@ const timers = require('timers');
 let timersPromises;
 
 try {
-  // eslint-disable-next-line global-require
   timersPromises = require('timers/promises');
-  // eslint-disable-next-line no-empty
 } catch (error) {}
 
 const Sandworm = require('../../dist/index');
