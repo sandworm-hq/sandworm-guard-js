@@ -8,7 +8,6 @@ try {
 
 const standardFs = require('fs');
 const path = require('path');
-const Sandworm = require('../../../dist/index');
 const {expectCallToMatch} = require('../../utils');
 
 const testDirPath = path.join(__dirname, 'test-dir');
@@ -20,9 +19,6 @@ const newTestDirPath = path.join(__dirname, 'new-test-dir');
 module.exports = () =>
   fs &&
   describe('fsPromises', () => {
-    beforeAll(async () => Sandworm.init({devMode: true}));
-    afterEach(() => Sandworm.clearHistory());
-
     test('access', async () => {
       await fs.access(testFilePath, standardFs.constants.F_OK);
       expectCallToMatch({

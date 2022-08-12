@@ -1,14 +1,12 @@
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
 describe('fetch', () => {
-  beforeAll(async () => Sandworm.init({devMode: true}));
+  beforeAll(loadSandworm);
   afterEach(() => Sandworm.clearHistory());
 
-  test('fetch', async () => {
-    if (typeof fetch !== 'undefined') {
-      await fetch('https://google.com');
-      expectCallToMatch({family: 'fetch', method: 'fetch', firstArg: 'https://google.com'});
-    }
+  testif(typeof fetch !== 'undefined')('fetch', async () => {
+    await fetch('https://google.com');
+    expectCallToMatch({family: 'fetch', method: 'fetch', firstArg: 'https://google.com'});
   });
 });

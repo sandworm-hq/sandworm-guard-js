@@ -48,7 +48,7 @@ export const getSource = (location) => {
   }
 };
 
-export const getSourceMap = async (location) => {
+export const getSourceMapFromSource = async (location) => {
   try {
     logger.debug(`loading source from ${location}`);
     const source = await getSource(location);
@@ -82,6 +82,24 @@ export const getSourceMap = async (location) => {
         logger.debug('loaded sourcemap');
         return sourceMapConsumer;
       }
+    }
+
+    logger.debug('sourcemap not available');
+    return null;
+  } catch (error) {
+    logger.error(error);
+    return null;
+  }
+};
+
+export const getSourceMap = async (location) => {
+  try {
+    logger.debug(`loading sourcemap from ${location}`);
+    const sourceMap = await getSource(location);
+
+    if (sourceMap) {
+      const sourceMapConsumer = await new SourceMapConsumer(sourceMap);
+      return sourceMapConsumer;
     }
 
     logger.debug('sourcemap not available');

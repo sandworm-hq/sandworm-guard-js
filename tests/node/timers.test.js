@@ -7,13 +7,13 @@ try {
 } catch (error) {}
 
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm} = require('../utils');
 
 describe('timers', () => {
-  describe('timersAsync', () => {
-    beforeAll(async () => Sandworm.init({devMode: true}));
-    afterEach(() => Sandworm.clearHistory());
+  beforeAll(loadSandworm);
+  afterEach(() => Sandworm.clearHistory());
 
+  describe('timersAsync', () => {
     test('setImmediate', () => {
       timers.setImmediate(() => {});
       expectCallToMatch({family: 'timers', method: 'setImmediate'});
@@ -52,9 +52,6 @@ describe('timers', () => {
 
   if (timersPromises) {
     describe('timersPromises', () => {
-      beforeAll(async () => Sandworm.init({devMode: true}));
-      afterEach(() => Sandworm.clearHistory());
-
       test('setImmediate', async () => {
         await timersPromises.setImmediate('');
         expectCallToMatch({family: 'timers/promises', method: 'setImmediate', fromRoot: true});

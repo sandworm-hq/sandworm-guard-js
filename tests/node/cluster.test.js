@@ -1,9 +1,9 @@
 const cluster = require('cluster');
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm} = require('../utils');
 
 describe('cluster', () => {
-  beforeAll(async () => Sandworm.init({devMode: true}));
+  beforeAll(loadSandworm);
   afterEach(() => Sandworm.clearHistory());
 
   test('fork', () => {

@@ -6,6 +6,8 @@ const safeDocument = typeof document !== 'undefined' ? document : {};
 export const web = ({
   name,
   globalConstructor,
+  constructorDescription,
+  constructorUrl,
   globalConstructors,
   methods,
   className,
@@ -53,32 +55,38 @@ export const web = ({
       originalRoot: () => ServiceWorkerRegistration.prototype,
       available: typeof ServiceWorkerRegistration !== 'undefined',
     },
-    ...(globalConstructor ? [{name: className || name}] : globalConstructors || []).map(
-      (constructor) => ({
-        name,
-        methods: [
-          {
-            name: constructor.name,
-            isConstructor: true,
-          },
-        ],
-        originalRoot: () => safeGlobal,
-        available: typeof safeGlobal[constructor.name] !== 'undefined',
-      }),
-    ),
+    ...(globalConstructor
+      ? [{name: className || name, description: constructorDescription, url: constructorUrl}]
+      : globalConstructors || []
+    ).map((constructor) => ({
+      name,
+      methods: [
+        {
+          ...constructor,
+          isConstructor: true,
+        },
+      ],
+      originalRoot: () => safeGlobal,
+      available: typeof safeGlobal[constructor.name] !== 'undefined',
+    })),
   ].filter((a) => !!a);
 
-export const node = ({name, methods}) => {
+export const node = ({name, methods, globalMethod}) => {
   let module;
-  try {
-    module = __non_webpack_require__(name);
-    // eslint-disable-next-line no-empty
-  } catch (error) {}
+  if (!globalMethod) {
+    try {
+      // eslint-disable-next-line no-undef
+      module = __non_webpack_require__(name);
+      // eslint-disable-next-line no-empty
+    } catch (error) {}
+  }
 
   return {
     name,
     methods,
-    originalRoot: () => module,
-    available: typeof module !== 'undefined',
+    originalRoot: () => (globalMethod ? global : module),
+    available: globalMethod
+      ? typeof global !== 'undefined' && typeof global[methods[0]] !== 'undefined'
+      : typeof module !== 'undefined',
   };
 };

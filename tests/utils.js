@@ -9,7 +9,7 @@ if (process.env.JEST_WORKER_ID) {
 }
 
 const callExpects = ({call, family, method, firstArg, secondArg}) => {
-  expect(call).not.toBeUndefined();
+  expect(call).toBeDefined();
   expect(typeof call).toBe('object');
   if (family) {
     expect(call.family).toEqual(family);
@@ -56,12 +56,16 @@ const expectWebWorkerCallToMatch = async ({
   callExpects({call, family, method, firstArg, secondArg});
 };
 
+const loadSandworm = async () => Sandworm.init({devMode: true, skipTracking: true});
+
 const loadSandwormOnWeb = async (page) => {
   await page.goto('http://localhost:7070/', {
     waitUntil: 'load',
   });
   await page.addScriptTag({path: path.join(__dirname, '..', 'dist', 'index.js')});
-  await page.evaluate('Sandworm.init({devMode:true})');
+  await page.evaluate(() =>
+    Sandworm.init({devMode: true, loadSourceMap: false, skipTracking: true}),
+  );
 };
 
 const serviceWorkersAvailable = async (page) => {
@@ -127,10 +131,13 @@ const webWorkerHasFeature = async (feature, page) => {
   return worker.evaluate((feat) => feat in self, feature);
 };
 
+const testif = (condition) => (condition ? test : test.skip);
+
 module.exports = {
   expectCallToMatch,
   expectWebCallToMatch,
   expectWebWorkerCallToMatch,
+  loadSandworm,
   loadSandwormOnWeb,
   serviceWorkersAvailable,
   webWorkersAvailable,
@@ -140,4 +147,5 @@ module.exports = {
   hasGlobalFeature,
   hasNavigatorFeature,
   hasDocumentFeature,
+  testif,
 };

@@ -1,9 +1,9 @@
 const dns = require('dns');
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
 describe('dns', () => {
-  beforeAll(async () => Sandworm.init({devMode: true}));
+  beforeAll(loadSandworm);
   afterEach(() => Sandworm.clearHistory());
 
   test('Resolver', () => {
@@ -61,11 +61,9 @@ describe('dns', () => {
     expectCallToMatch({family: 'dns', method: 'resolveAny', firstArg: 'localhost'});
   });
 
-  test('resolveCaa', () => {
-    if (dns.resolveCaa) {
-      dns.resolveCaa('localhost', () => {});
-      expectCallToMatch({family: 'dns', method: 'resolveCaa', firstArg: 'localhost'});
-    }
+  testif(dns.resolveCaa)('resolveCaa', () => {
+    dns.resolveCaa('localhost', () => {});
+    expectCallToMatch({family: 'dns', method: 'resolveCaa', firstArg: 'localhost'});
   });
 
   test('resolveCname', () => {

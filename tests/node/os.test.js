@@ -1,9 +1,9 @@
 const os = require('os');
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
 describe('os', () => {
-  beforeAll(async () => Sandworm.init({devMode: true}));
+  beforeAll(loadSandworm);
   afterEach(() => Sandworm.clearHistory());
 
   test('arch', () => {
@@ -91,10 +91,8 @@ describe('os', () => {
     expectCallToMatch({family: 'os', method: 'userInfo'});
   });
 
-  test('version', () => {
-    if (os.version) {
-      os.version();
-      expectCallToMatch({family: 'os', method: 'version'});
-    }
+  testif(os.version)('version', () => {
+    os.version();
+    expectCallToMatch({family: 'os', method: 'version'});
   });
 });

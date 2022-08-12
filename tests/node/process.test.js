@@ -1,9 +1,9 @@
 const process = require('process');
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
 describe('os', () => {
-  beforeAll(async () => Sandworm.init({devMode: true}));
+  beforeAll(loadSandworm);
   afterEach(() => Sandworm.clearHistory());
 
   // test('abort', () => {
@@ -50,11 +50,9 @@ describe('os', () => {
   //   expectCallToMatch({family: 'process', method: 'exit'});
   // });
 
-  test('getActiveResourcesInfo', () => {
-    if (process.getActiveResourcesInfo) {
-      process.getActiveResourcesInfo();
-      expectCallToMatch({family: 'process', method: 'getActiveResourcesInfo'});
-    }
+  testif(process.getActiveResourcesInfo)('getActiveResourcesInfo', () => {
+    process.getActiveResourcesInfo();
+    expectCallToMatch({family: 'process', method: 'getActiveResourcesInfo'});
   });
 
   test('getegid', () => {
@@ -115,11 +113,9 @@ describe('os', () => {
     expectCallToMatch({family: 'process', method: 'memoryUsage'});
   });
 
-  test('resourceUsage', () => {
-    if (process.resourceUsage) {
-      process.resourceUsage();
-      expectCallToMatch({family: 'process', method: 'resourceUsage'});
-    }
+  testif(process.resourceUsage)('resourceUsage', () => {
+    process.resourceUsage();
+    expectCallToMatch({family: 'process', method: 'resourceUsage'});
   });
 
   test('send', () => {
@@ -161,11 +157,9 @@ describe('os', () => {
     expectCallToMatch({family: 'process', method: 'setuid', index: 1});
   });
 
-  test('setSourceMapsEnabled', () => {
-    if (process.setSourceMapsEnabled) {
-      process.setSourceMapsEnabled(true);
-      expectCallToMatch({family: 'process', method: 'setSourceMapsEnabled'});
-    }
+  testif(process.setSourceMapsEnabled)('setSourceMapsEnabled', () => {
+    process.setSourceMapsEnabled(true);
+    expectCallToMatch({family: 'process', method: 'setSourceMapsEnabled'});
   });
 
   test('setUncaughtExceptionCaptureCallback', () => {

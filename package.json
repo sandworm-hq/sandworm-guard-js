@@ -1,6 +1,6 @@
 {
   "name": "sandworm",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "repository": {
@@ -10,10 +10,11 @@
   "scripts": {
     "dev": "webpack --watch --progress",
     "build": "webpack",
-    "test-node": "jest",
+    "test-node": "jest --noStackTrace",
     "test-web": "npx playwright test"
   },
-  "author": "Gabi Dobocan <gabi@sandworm.dev>",
+  "bin": "cli/index.js",
+  "author": "Sandworm <dev@sandworm.dev>",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.18.6",

@@ -1,9 +1,9 @@
 const vm = require('vm');
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
 describe('vm', () => {
-  beforeAll(async () => Sandworm.init({devMode: true}));
+  beforeAll(loadSandworm);
   afterEach(() => Sandworm.clearHistory());
 
   test('Script', () => {
@@ -11,18 +11,14 @@ describe('vm', () => {
     expectCallToMatch({family: 'vm', method: 'Script'});
   });
 
-  test('SourceTextModule', () => {
-    if (vm.SourceTextModule) {
-      new vm.SourceTextModule();
-      expectCallToMatch({family: 'vm', method: 'SourceTextModule'});
-    }
+  testif(vm.SourceTextModule)('SourceTextModule', () => {
+    new vm.SourceTextModule();
+    expectCallToMatch({family: 'vm', method: 'SourceTextModule'});
   });
 
-  test('SyntheticModule', () => {
-    if (vm.SyntheticModule) {
-      new vm.SyntheticModule();
-      expectCallToMatch({family: 'vm', method: 'SyntheticModule'});
-    }
+  testif(vm.SyntheticModule)('SyntheticModule', () => {
+    new vm.SyntheticModule();
+    expectCallToMatch({family: 'vm', method: 'SyntheticModule'});
   });
 
   test('compileFunction', () => {
@@ -41,11 +37,9 @@ describe('vm', () => {
     expectCallToMatch({family: 'vm', method: 'isContext', index: 1});
   });
 
-  test('measureMemory', () => {
-    if (vm.measureMemory) {
-      vm.measureMemory();
-      expectCallToMatch({family: 'vm', method: 'measureMemory'});
-    }
+  testif(vm.measureMemory)('measureMemory', () => {
+    vm.measureMemory();
+    expectCallToMatch({family: 'vm', method: 'measureMemory'});
   });
 
   test('runInContext', () => {

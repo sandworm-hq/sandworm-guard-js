@@ -1,7 +1,7 @@
-const levels = ['debug', 'info', 'warn', 'error'];
+export const levels = ['debug', 'info', 'warn', 'error'];
 
 const logger = {
-  level: false,
+  level: 'warn',
 };
 
 levels.forEach((level) => {

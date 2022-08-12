@@ -1,7 +1,7 @@
-/* eslint-disable no-restricted-globals */
-
+// eslint-disable-next-line no-restricted-globals
 const isWeb = typeof window !== 'undefined' || typeof self !== 'undefined';
-const isNode = typeof process !== 'undefined' && process.versions && process.versions.node;
+const isNode =
+  typeof process === 'object' && typeof process.versions === 'object' && !!process.versions.node;
 
 export const PLATFORMS = {
   NODE: 'NODE',
@@ -10,12 +10,16 @@ export const PLATFORMS = {
 };
 
 export default () => {
-  if (isWeb) {
-    return PLATFORMS.WEB;
-  }
-  if (isNode) {
-    return PLATFORMS.NODE;
-  }
+  try {
+    if (isWeb) {
+      return PLATFORMS.WEB;
+    }
+    if (isNode) {
+      return PLATFORMS.NODE;
+    }
 
-  return PLATFORMS.UNKNOWN;
+    return PLATFORMS.UNKNOWN;
+  } catch (error) {
+    return PLATFORMS.UNKNOWN;
+  }
 };

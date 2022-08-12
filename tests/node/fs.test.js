@@ -5,27 +5,22 @@ const Sandworm = require('../../dist/index');
 const syncSuite = require('./fs/sync');
 const asyncSuite = require('./fs/async');
 const promisesSuite = require('./fs/promises');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
 describe('fs', () => {
+  beforeAll(loadSandworm);
+  afterEach(() => Sandworm.clearHistory());
   asyncSuite();
   syncSuite();
   promisesSuite();
   describe('v8', () => {
-    beforeAll(async () => Sandworm.init({devMode: true}));
-    afterEach(() => Sandworm.clearHistory());
-
-    test('getHeapCodeStatistics', () => {
-      if (v8.getHeapCodeStatistics) {
-        v8.getHeapCodeStatistics();
-        expectCallToMatch({family: 'v8', method: 'getHeapCodeStatistics'});
-      }
+    testif(v8.getHeapCodeStatistics)('getHeapCodeStatistics', () => {
+      v8.getHeapCodeStatistics();
+      expectCallToMatch({family: 'v8', method: 'getHeapCodeStatistics'});
     });
-    test('getHeapSnapshot', () => {
-      if (v8.getHeapSnapshot) {
-        v8.getHeapSnapshot();
-        expectCallToMatch({family: 'v8', method: 'getHeapSnapshot'});
-      }
+    testif(v8.getHeapSnapshot)('getHeapSnapshot', () => {
+      v8.getHeapSnapshot();
+      expectCallToMatch({family: 'v8', method: 'getHeapSnapshot'});
     });
     test('getHeapSpaceStatistics', () => {
       v8.getHeapSpaceStatistics();

@@ -1,9 +1,9 @@
 const v8 = require('v8');
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch} = require('../utils');
+const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
 describe('v8', () => {
-  beforeAll(async () => Sandworm.init({devMode: true}));
+  beforeAll(loadSandworm);
   afterEach(() => Sandworm.clearHistory());
 
   test('cachedDataVersionTag', () => {
@@ -16,18 +16,14 @@ describe('v8', () => {
     expectCallToMatch({family: 'v8', method: 'setFlagsFromString'});
   });
 
-  test('stopCoverage', () => {
-    if (v8.stopCoverage) {
-      v8.stopCoverage();
-      expectCallToMatch({family: 'v8', method: 'stopCoverage'});
-    }
+  testif(v8.stopCoverage)('stopCoverage', () => {
+    v8.stopCoverage();
+    expectCallToMatch({family: 'v8', method: 'stopCoverage'});
   });
 
-  test('takeCoverage', () => {
-    if (v8.takeCoverage) {
-      v8.takeCoverage();
-      expectCallToMatch({family: 'v8', method: 'takeCoverage'});
-    }
+  testif(v8.takeCoverage)('takeCoverage', () => {
+    v8.takeCoverage();
+    expectCallToMatch({family: 'v8', method: 'takeCoverage'});
   });
 
   test('serialize', () => {
