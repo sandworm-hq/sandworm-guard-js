@@ -25,7 +25,7 @@ module.exports = async () => {
         response.writeHead(200, {'Content-Type': 'text/javascript'});
         response.end(`
           ${sandwormCode}
-          Sandworm.init({devMode:true, loadSourceMap: false});
+          Sandworm.init({devMode:true, loadSourceMaps: false});
         `);
         break;
       case '/sandworm.js':

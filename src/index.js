@@ -83,7 +83,7 @@ const getCurrentModule = () => {
           url = new URL(mapping);
           // eslint-disable-next-line no-empty
         } catch (error) {}
-        if (url) {
+        if (url && url.protocol !== 'node:') {
           module = mapping;
         }
       }

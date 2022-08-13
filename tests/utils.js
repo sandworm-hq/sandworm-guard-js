@@ -51,7 +51,8 @@ const expectWebWorkerCallToMatch = async ({
   index = 0,
   worker,
 }) => {
-  const call = (await worker.evaluate('Sandworm.getHistory()'))[index];
+  const calls = await worker.evaluate('Sandworm.getHistory()');
+  const call = calls[index];
 
   callExpects({call, family, method, firstArg, secondArg});
 };
@@ -64,7 +65,7 @@ const loadSandwormOnWeb = async (page) => {
   });
   await page.addScriptTag({path: path.join(__dirname, '..', 'dist', 'index.js')});
   await page.evaluate(() =>
-    Sandworm.init({devMode: true, loadSourceMap: false, skipTracking: true}),
+    Sandworm.init({devMode: true, loadSourceMaps: false, skipTracking: true}),
   );
 };
 
