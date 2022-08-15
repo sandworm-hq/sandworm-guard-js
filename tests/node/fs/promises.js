@@ -8,7 +8,7 @@ try {
 
 const standardFs = require('fs');
 const path = require('path');
-const {expectCallToMatch} = require('../../utils');
+const {expectCallToMatch, testif} = require('../../utils');
 
 const testDirPath = path.join(__dirname, 'test-dir');
 const testFilePath = path.join(__dirname, 'test.txt');
@@ -75,19 +75,17 @@ module.exports = () =>
       standardFs.unlinkSync(newTestFilePath);
     });
 
-    test('cp', async () => {
-      if (fs.cp) {
-        await fs.cp(testFilePath, newTestFilePath);
-        expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
-        expectCallToMatch({
-          family: 'fs/promises',
-          method: 'cp',
-          firstArg: testFilePath,
-          secondArg: newTestFilePath,
-          fromRoot: true,
-        });
-        standardFs.unlinkSync(newTestFilePath);
-      }
+    testif(fs.cp)('cp', async () => {
+      await fs.cp(testFilePath, newTestFilePath);
+      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
+      expectCallToMatch({
+        family: 'fs/promises',
+        method: 'cp',
+        firstArg: testFilePath,
+        secondArg: newTestFilePath,
+        fromRoot: true,
+      });
+      standardFs.unlinkSync(newTestFilePath);
     });
 
     test('lchown', async () => {
@@ -111,17 +109,15 @@ module.exports = () =>
       });
     });
 
-    test('lutimes', async () => {
-      if (fs.lutimes) {
-        await fs.lutimes(testFilePath, testFileStats.atime, testFileStats.mtime);
-        expectCallToMatch({
-          family: 'fs/promises',
-          method: 'lutimes',
-          firstArg: testFilePath,
-          secondArg: testFileStats.atime,
-          fromRoot: true,
-        });
-      }
+    testif(fs.lutimes)('lutimes', async () => {
+      await fs.lutimes(testFilePath, testFileStats.atime, testFileStats.mtime);
+      expectCallToMatch({
+        family: 'fs/promises',
+        method: 'lutimes',
+        firstArg: testFilePath,
+        secondArg: testFileStats.atime,
+        fromRoot: true,
+      });
     });
 
     test('link', async () => {
@@ -229,18 +225,16 @@ module.exports = () =>
       await fs.rename(newTestFilePath, testFilePath);
     });
 
-    test('rm', async () => {
-      if (fs.rm) {
-        standardFs.copyFileSync(testFilePath, newTestFilePath);
-        await fs.rm(newTestFilePath);
-        expectCallToMatch({
-          index: 1,
-          family: 'fs/promises',
-          method: 'rm',
-          firstArg: newTestFilePath,
-          fromRoot: true,
-        });
-      }
+    testif(fs.rm)('rm', async () => {
+      standardFs.copyFileSync(testFilePath, newTestFilePath);
+      await fs.rm(newTestFilePath);
+      expectCallToMatch({
+        index: 1,
+        family: 'fs/promises',
+        method: 'rm',
+        firstArg: newTestFilePath,
+        fromRoot: true,
+      });
     });
 
     test('stat', async () => {
@@ -298,16 +292,14 @@ module.exports = () =>
       });
     });
 
-    test('watch', async () => {
-      if (fs.watch) {
-        await fs.watch(testFilePath);
-        expectCallToMatch({
-          family: 'fs/promises',
-          method: 'watch',
-          firstArg: testFilePath,
-          fromRoot: true,
-        });
-      }
+    testif(fs.watch)('watch', async () => {
+      await fs.watch(testFilePath);
+      expectCallToMatch({
+        family: 'fs/promises',
+        method: 'watch',
+        firstArg: testFilePath,
+        fromRoot: true,
+      });
     });
 
     test('writeFile', async () => {

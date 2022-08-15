@@ -37,6 +37,10 @@ const expectCallToMatch = ({family, method, firstArg, secondArg, index = 0, from
   callExpects({call, family, method, firstArg, secondArg});
 };
 
+const expectCallToThrow = (call) => {
+  expect(call).toThrow(Sandworm.Error);
+};
+
 const expectWebCallToMatch = async ({family, method, firstArg, secondArg, index = 0, page}) => {
   const call = (await page.evaluate('Sandworm.getHistory()'))[index];
 
@@ -58,6 +62,30 @@ const expectWebWorkerCallToMatch = async ({
 };
 
 const loadSandworm = async () => Sandworm.init({devMode: true, skipTracking: true});
+
+const loadSandwormInProductionMode = async () =>
+  Sandworm.init({
+    devMode: false,
+    skipTracking: true,
+    permissions: [
+      {module: 'jest-circus>expect', permissions: false},
+      {module: 'jest-circus', permissions: false},
+      {module: /jest/, permissions: true},
+      {module: /istanbul/, permissions: true},
+      {module: /babel/, permissions: true},
+      {module: 'react-is', permissions: true},
+      {module: 'write-file-atomic', permissions: true},
+      {module: 'stack-utils', permissions: true},
+      {module: 'terminal-link', permissions: true},
+      {module: 'pretty-format', permissions: true},
+      {module: '@bcoe/v8-coverage', permissions: true},
+      {module: 'source-map-support', permissions: true},
+      {module: 'mkdirp', permissions: true},
+      {module: 'make-dir', permissions: true},
+      {module: 'convert-source-map', permissions: true},
+      {module: 'glob', permissions: true},
+    ],
+  });
 
 const loadSandwormOnWeb = async (page) => {
   await page.goto('http://localhost:7070/', {
@@ -138,7 +166,9 @@ module.exports = {
   expectCallToMatch,
   expectWebCallToMatch,
   expectWebWorkerCallToMatch,
+  expectCallToThrow,
   loadSandworm,
+  loadSandwormInProductionMode,
   loadSandwormOnWeb,
   serviceWorkersAvailable,
   webWorkersAvailable,

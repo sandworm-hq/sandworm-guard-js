@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 const ConfigModal = ({onHide, permissions}) => {
   const [copyButtonText, setCopyButtonText] = useState('Copy');
@@ -46,7 +46,11 @@ const ConfigModal = ({onHide, permissions}) => {
           className="flex-grow overflow-scroll select-all mt-5 bg-zinc-900 p-5 shadow-inner selection:bg-lime-900"
           ref={modalContent}
         >
-          {JSON.stringify(permissions, null, 2)}
+          {JSON.stringify(
+            Object.keys(permissions).map((module) => ({module, permissions: permissions[module]})),
+            null,
+            2,
+          )}
         </pre>
       </div>
     </div>
