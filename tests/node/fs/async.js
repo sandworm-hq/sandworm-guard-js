@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const {expectCallToMatch} = require('../../utils');
+const {expectCallToMatch, testif} = require('../../utils');
 
 const testDirPath = path.join(__dirname, 'test-dir');
 const testFilePath = path.join(__dirname, 'test.txt');
@@ -321,24 +321,20 @@ module.exports = () =>
       });
     });
 
-    test('opendir', (done) => {
-      if (fs.opendir) {
-        fs.opendir(testDirPath, (err, dir) => {
-          if (err) {
-            done(err);
-            return;
-          }
-          expectCallToMatch({
-            family: 'fs',
-            method: 'opendir',
-            firstArg: testDirPath,
-          });
-          dir.closeSync();
-          done();
+    testif(fs.opendir)('opendir', (done) => {
+      fs.opendir(testDirPath, (err, dir) => {
+        if (err) {
+          done(err);
+          return;
+        }
+        expectCallToMatch({
+          family: 'fs',
+          method: 'opendir',
+          firstArg: testDirPath,
         });
-      } else {
+        dir.closeSync();
         done();
-      }
+      });
     });
 
     test('read', (done) => {
@@ -413,26 +409,22 @@ module.exports = () =>
       });
     });
 
-    test('rm', (done) => {
-      if (fs.rm) {
-        fs.copyFile(testFilePath, newTestFilePath, (err) => {
-          if (err) {
-            done(err);
-            return;
-          }
-          fs.rm(newTestFilePath, (rmErr) => {
-            expectCallToMatch({
-              family: 'fs',
-              method: 'rm',
-              firstArg: newTestFilePath,
-              fromRoot: true,
-            });
-            done(rmErr);
+    testif(fs.rm)('rm', (done) => {
+      fs.copyFile(testFilePath, newTestFilePath, (err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+        fs.rm(newTestFilePath, (rmErr) => {
+          expectCallToMatch({
+            family: 'fs',
+            method: 'rm',
+            firstArg: newTestFilePath,
+            fromRoot: true,
           });
+          done(rmErr);
         });
-      } else {
-        done();
-      }
+      });
     });
 
     test('stat', (done) => {

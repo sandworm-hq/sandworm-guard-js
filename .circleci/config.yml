@@ -66,7 +66,7 @@ jobs:
           command: echo Testing on node $(node --version)
       - run:
           name: Run tests
-          command: yarn test-node
+          command: yarn test-node-all
       - store_test_results:
           path: ./
         

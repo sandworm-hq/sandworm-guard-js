@@ -6,11 +6,19 @@ import nodeLibrary from './library/node';
 import logger from './logger';
 import track, {setTrackingServer} from './track';
 
+class SandwormError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'SandwormError';
+  }
+}
+
 let initialized = false;
 let ready = false;
 let trustedModules = ['sandworm', 'react-dom', 'scheduler'];
 const sourcemaps = {};
-let permissions = {root: true};
+let permissions = [{module: 'root', permissions: true}];
+const cachedPermissions = {};
 let history = [];
 let devMode = false;
 let skipTracking = false;
@@ -39,6 +47,50 @@ function create(constructor) {
   const Factory = constructor.bind.apply(constructor, arguments);
   return new Factory();
 }
+
+const getModulePermissions = (module) => {
+  if (devMode) {
+    return true;
+  }
+
+  if (Object.keys(cachedPermissions).includes(module)) {
+    return cachedPermissions[module];
+  }
+
+  const exactMatch = permissions.find(({module: mod}) => mod === module);
+  if (exactMatch) {
+    cachedPermissions[module] = exactMatch.permissions;
+    return exactMatch.permissions;
+  }
+
+  const regexMatch = permissions.find(
+    ({module: mod}) => mod instanceof RegExp && module.match(mod),
+  );
+  if (regexMatch) {
+    cachedPermissions[module] = regexMatch.permissions;
+    return regexMatch.permissions;
+  }
+
+  cachedPermissions[module] = false;
+  return false;
+};
+
+const isModuleAllowedToExecute = (module, family, method) => {
+  const modulePermissions = getModulePermissions(module);
+
+  if (typeof modulePermissions === 'boolean') {
+    return modulePermissions;
+  }
+
+  if (Array.isArray(modulePermissions)) {
+    return (
+      modulePermissions.includes(family.name) ||
+      modulePermissions.includes(`${family.name}:${method.name}`)
+    );
+  }
+
+  return false;
+};
 
 const getCurrentModule = () => {
   try {
@@ -129,7 +181,7 @@ const init = async ({
   trackingPort,
   ignoreChromeExtensions: ignoreChromeExtensionsOption = true,
   trustedModules: additionallyTrustedModules = [],
-  permissions: permissionsOption = {},
+  permissions: permissionsOption = [],
 } = {}) => {
   try {
     if (isInitialized()) {
@@ -165,10 +217,10 @@ const init = async ({
 
     ignoreChromeExtensions = !!ignoreChromeExtensionsOption;
 
-    if (!isObject(permissionsOption)) {
-      logger.warn('permissions option must be an object, defaulting to empty object');
+    if (!Array.isArray(permissionsOption)) {
+      logger.warn('permissions option must be an array, defaulting to empty array');
     } else {
-      permissions = {...permissions, ...permissionsOption};
+      permissions = [...permissions, ...permissionsOption];
     }
 
     let library = [];
@@ -193,11 +245,7 @@ const init = async ({
             function replacement(...args) {
               const {name: module, stack, error} = getCurrentModule();
               logger.debug(`${module} called ${family.name}.${method.name} with`, args);
-              const allowed =
-                devMode ||
-                permissions[module] === true ||
-                (permissions[module]?.includes?.(family.name) ?? false) ||
-                (permissions[module]?.includes?.(`${family.name}.${method.name}`) ?? false);
+              const allowed = isModuleAllowedToExecute(module, family, method);
               if (devMode) {
                 const event = {
                   module,
@@ -221,7 +269,15 @@ const init = async ({
                 }
                 return method.original.apply(this, args);
               }
-              return method.mock.apply(this, args);
+
+              logger.error(
+                `${module} was blocked from calling ${family.name}.${method.name} with`,
+                args,
+              );
+
+              throw new SandwormError(
+                `Sandworm: access denied (${module} called ${family.name}.${method.name})`,
+              );
             }
             replacement.prototype = method.original.prototype;
             // eslint-disable-next-line no-param-reassign
@@ -277,4 +333,4 @@ const clearHistory = () => {
   }
 };
 
-export default {init, getHistory, clearHistory};
+export default {init, getHistory, clearHistory, Error: SandwormError};

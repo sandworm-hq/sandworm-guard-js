@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const {expectCallToMatch} = require('../../utils');
+const {expectCallToMatch, testif} = require('../../utils');
 
 const testDirPath = path.join(__dirname, 'test-dir');
 const testFilePath = path.join(__dirname, 'test.txt');
@@ -58,32 +58,28 @@ module.exports = () =>
       });
     });
 
-    test('copyFileSync', () => {
-      if (fs.copyFileSync) {
-        fs.copyFileSync(testFilePath, newTestFilePath);
-        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
-        expectCallToMatch({
-          family: 'fs',
-          method: 'copyFileSync',
-          firstArg: testFilePath,
-          secondArg: newTestFilePath,
-        });
-        fs.unlinkSync(newTestFilePath);
-      }
+    testif(fs.copyFileSync)('copyFileSync', () => {
+      fs.copyFileSync(testFilePath, newTestFilePath);
+      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
+      expectCallToMatch({
+        family: 'fs',
+        method: 'copyFileSync',
+        firstArg: testFilePath,
+        secondArg: newTestFilePath,
+      });
+      fs.unlinkSync(newTestFilePath);
     });
 
-    test('cpSync', () => {
-      if (fs.cpSync) {
-        fs.cpSync(testFilePath, newTestFilePath);
-        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
-        expectCallToMatch({
-          family: 'fs',
-          method: 'cpSync',
-          firstArg: testFilePath,
-          secondArg: newTestFilePath,
-        });
-        fs.unlinkSync(newTestFilePath);
-      }
+    testif(fs.cpSync)('cpSync', () => {
+      fs.cpSync(testFilePath, newTestFilePath);
+      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
+      expectCallToMatch({
+        family: 'fs',
+        method: 'cpSync',
+        firstArg: testFilePath,
+        secondArg: newTestFilePath,
+      });
+      fs.unlinkSync(newTestFilePath);
     });
 
     test('existsSync', () => {
@@ -221,16 +217,14 @@ module.exports = () =>
       fs.closeSync(fd);
     });
 
-    test('opendirSync', () => {
-      if (fs.opendirSync) {
-        const dir = fs.opendirSync(testDirPath);
-        expectCallToMatch({
-          family: 'fs',
-          method: 'opendirSync',
-          firstArg: testDirPath,
-        });
-        dir.closeSync();
-      }
+    testif(fs.opendirSync)('opendirSync', () => {
+      const dir = fs.opendirSync(testDirPath);
+      expectCallToMatch({
+        family: 'fs',
+        method: 'opendirSync',
+        firstArg: testDirPath,
+      });
+      dir.closeSync();
     });
 
     test('readSync', () => {
@@ -285,21 +279,17 @@ module.exports = () =>
       fs.renameSync(newTestFilePath, testFilePath);
     });
 
-    test('rmSync', (done) => {
-      if (fs.rmSync) {
-        fs.copyFile(testFilePath, newTestFilePath, (err) => {
-          fs.rmSync(newTestFilePath);
-          expectCallToMatch({
-            fromRoot: true,
-            family: 'fs',
-            method: 'rmSync',
-            firstArg: newTestFilePath,
-          });
-          done(err);
+    testif(fs.rmSync)('rmSync', (done) => {
+      fs.copyFile(testFilePath, newTestFilePath, (err) => {
+        fs.rmSync(newTestFilePath);
+        expectCallToMatch({
+          fromRoot: true,
+          family: 'fs',
+          method: 'rmSync',
+          firstArg: newTestFilePath,
         });
-      } else {
-        done();
-      }
+        done(err);
+      });
     });
 
     test('statSync', () => {
