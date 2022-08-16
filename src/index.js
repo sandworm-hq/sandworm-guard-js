@@ -1,4 +1,4 @@
-import Stack from './stack';
+import {currentStack} from './stack';
 import {getSourceMap, getSourceMapFromSource} from './source';
 import platform, {PLATFORMS} from './platform';
 import webLibrary from './library/web';
@@ -94,63 +94,65 @@ const isModuleAllowedToExecute = (module, family, method) => {
 
 const getCurrentModule = () => {
   try {
-    const stack = (new Stack()?.items || []).reverse().map((item) => {
-      const originalFile = item?.file;
-      // Tap sourcemaps for original file src
-      let mapping = originalFile;
-      let mappingLine = item.line;
-      let mappingColumn = item.column;
-      if (originalFile && sourcemaps[originalFile]) {
-        const originalItem = sourcemaps[originalFile].originalPositionFor({
-          line: item.line,
-          column: item.column,
-        });
-        mapping = originalItem.source;
-        mappingLine = originalItem.line;
-        mappingColumn = originalItem.column;
-      }
+    const stack = currentStack()
+      .reverse()
+      .map((item) => {
+        const originalFile = item?.file;
+        // Tap sourcemaps for original file src
+        let mapping = originalFile;
+        let mappingLine = item.line;
+        let mappingColumn = item.column;
+        if (originalFile && sourcemaps[originalFile]) {
+          const originalItem = sourcemaps[originalFile].originalPositionFor({
+            line: item.line,
+            column: item.column,
+          });
+          mapping = originalItem.source;
+          mappingLine = originalItem.line;
+          mappingColumn = originalItem.column;
+        }
 
-      // Infer the module name
-      let module;
-      if (mapping && mapping.includes('node_modules')) {
-        const components = mapping.split('/');
-        const nodeModulesIndex = components.findIndex((v) => v === 'node_modules');
-        let moduleName = components[nodeModulesIndex + 1];
-        if (moduleName.startsWith('@')) {
-          const submodule = components[nodeModulesIndex + 2];
-          if (submodule) {
-            moduleName = `${moduleName}/${submodule}`;
+        // Infer the module name
+        let module;
+        if (mapping && mapping.includes('node_modules')) {
+          const components = mapping.split('/');
+          const nodeModulesIndex = components.findIndex((v) => v === 'node_modules');
+          let moduleName = components[nodeModulesIndex + 1];
+          if (moduleName.startsWith('@')) {
+            const submodule = components[nodeModulesIndex + 2];
+            if (submodule) {
+              moduleName = `${moduleName}/${submodule}`;
+            }
+          }
+          if (!trustedModules.includes(moduleName)) {
+            module = moduleName;
           }
         }
-        if (!trustedModules.includes(moduleName)) {
-          module = moduleName;
-        }
-      }
 
-      // Treat URLs as separate modules
-      // These are usually scripts loaded from external sources, like directly from a CDN
-      if (initialized) {
-        let url;
-        try {
-          url = new URL(mapping);
-          // eslint-disable-next-line no-empty
-        } catch (error) {}
-        if (url && url.protocol !== 'node:') {
-          module = mapping;
+        // Treat URLs as separate modules
+        // These are usually scripts loaded from external sources, like directly from a CDN
+        if (initialized) {
+          let url;
+          try {
+            url = new URL(mapping);
+            // eslint-disable-next-line no-empty
+          } catch (error) {}
+          if (url && url.protocol !== 'node:') {
+            module = mapping;
+          }
         }
-      }
 
-      return {
-        caller: item.caller,
-        file: item.file,
-        fileLine: item.line,
-        fileColumn: item.column,
-        mapping,
-        mappingLine,
-        mappingColumn,
-        module,
-      };
-    });
+        return {
+          caller: item.caller,
+          file: item.file,
+          fileLine: item.line,
+          fileColumn: item.column,
+          mapping,
+          mappingLine,
+          mappingColumn,
+          module,
+        };
+      });
 
     const modules = stack.map(({module}) => module).filter((v) => v !== undefined);
     let name = 'root';
@@ -292,8 +294,7 @@ const init = async ({
     if (loadSourceMaps) {
       if (loadSourceMaps === true) {
         // Grab source map for invoker file
-        const stack = new Stack();
-        const site = stack.items[1];
+        const site = currentStack()[1];
         const currentSourceUrl = site.file;
 
         sourcemaps[currentSourceUrl] = await getSourceMapFromSource(currentSourceUrl);
