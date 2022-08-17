@@ -253,7 +253,7 @@ const init = async ({
               const {name: module, stack, error} = getCurrentModule();
               logger.debug(`${module} called ${family.name}.${method.name} with`, args);
               const allowed = isModuleAllowedToExecute(module, family, method);
-              if (true || devMode) {
+              if (devMode) {
                 const event = {
                   module,
                   family: family.name,
@@ -326,7 +326,7 @@ const init = async ({
 };
 
 const getHistory = () => {
-  if (true || devMode) {
+  if (devMode) {
     return history;
   }
 

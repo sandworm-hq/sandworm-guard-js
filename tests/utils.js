@@ -30,14 +30,16 @@ const callExpects = ({call, family, method, firstArg, secondArg}) => {
 };
 
 const expectCallToMatch = ({family, method, firstArg, secondArg, index = 0, fromRoot = false}) => {
-  const call = Sandworm.getHistory().filter(
-    ({module}) => module === (fromRoot ? 'root' : 'jest-runner>jest-circus'),
+  // console.log(Sandworm.getHistory().map((call) => `${call.module}: ${call.family}.${call.method}`));
+  const call = Sandworm.getHistory().filter(({module}) =>
+    (fromRoot ? ['root'] : ['jest-runner>jest-circus', 'jest-circus']).includes(module),
   )[index];
 
   callExpects({call, family, method, firstArg, secondArg});
 };
 
 const expectCallToThrow = (call) => {
+  // console.log(Sandworm.getHistory().map((c) => `${c.module}: ${c.family}.${c.method}`));
   expect(call).toThrow(Sandworm.Error);
 };
 
@@ -70,8 +72,13 @@ const loadSandwormInProductionMode = async () =>
     skipTracking: true,
     allowInitFrom: /jest-circus/,
     permissions: [
+      // These are the Jest runner modules on node v12.0.0+
       {module: 'jest-runner>jest-circus>expect', permissions: false},
       {module: 'jest-runner>jest-circus', permissions: false},
+      // These are the Jest runner modules on node v12.0.0 and below
+      {module: 'jest-circus>expect', permissions: false},
+      {module: 'jest-circus', permissions: false},
+      // These are required by Jest
       {module: /jest/, permissions: true},
       {module: /istanbul/, permissions: true},
       {module: /babel/, permissions: true},
