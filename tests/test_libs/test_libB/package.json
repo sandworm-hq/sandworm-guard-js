@@ -1,0 +1,21 @@
+{
+  "name": "test-libB",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sandworm-hq/sandworm-js.git"
+  },
+  "scripts": {
+  },
+  "author": "Sandworm <dev@sandworm.dev>",
+  "license": "MIT",
+  "devDependencies": {
+
+  },
+  "dependencies": {
+    "test_libA": "file:../test_libA",
+    "axios": "^0.27.2"
+  }
+}
