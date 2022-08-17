@@ -54,17 +54,17 @@ describe('timers', () => {
     describe('timersPromises', () => {
       test('setImmediate', async () => {
         await timersPromises.setImmediate('');
-        expectCallToMatch({family: 'timers/promises', method: 'setImmediate', fromRoot: true});
+        expectCallToMatch({family: 'timers/promises', method: 'setImmediate'});
       });
 
       testif(timersPromises.setInterval)('setInterval', async () => {
         await timersPromises.setInterval();
-        expectCallToMatch({family: 'timers/promises', method: 'setInterval', fromRoot: true});
+        expectCallToMatch({family: 'timers/promises', method: 'setInterval'});
       });
 
       test('setTimeout', async () => {
         await timersPromises.setTimeout();
-        expectCallToMatch({family: 'timers/promises', method: 'setTimeout', fromRoot: true});
+        expectCallToMatch({family: 'timers/promises', method: 'setTimeout'});
       });
     });
   }

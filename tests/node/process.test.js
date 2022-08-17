@@ -2,7 +2,7 @@ const process = require('process');
 const Sandworm = require('../../dist/index');
 const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
-describe('os', () => {
+describe('process', () => {
   beforeAll(loadSandworm);
   afterEach(() => Sandworm.clearHistory());
 

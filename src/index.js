@@ -184,6 +184,7 @@ const init = async ({
   ignoreChromeExtensions: ignoreChromeExtensionsOption = true,
   trustedModules: additionallyTrustedModules = [],
   permissions: permissionsOption = [],
+  allowInitFrom = 'root',
 } = {}) => {
   try {
     if (isInitialized()) {
@@ -192,8 +193,12 @@ const init = async ({
     }
 
     const {name: callerModule} = getCurrentModule();
-    if (callerModule !== 'root') {
-      logger.warn('only root module may call init', callerModule);
+    if (
+      (allowInitFrom instanceof RegExp && !callerModule.match(allowInitFrom)) ||
+      (typeof allowInitFrom === 'string' && callerModule !== allowInitFrom) ||
+      (!(allowInitFrom instanceof RegExp) && typeof allowInitFrom !== 'string')
+    ) {
+      logger.warn(`only root or specified module may call init (called from ${callerModule})`);
       return;
     }
 
@@ -248,7 +253,7 @@ const init = async ({
               const {name: module, stack, error} = getCurrentModule();
               logger.debug(`${module} called ${family.name}.${method.name} with`, args);
               const allowed = isModuleAllowedToExecute(module, family, method);
-              if (devMode) {
+              if (true || devMode) {
                 const event = {
                   module,
                   family: family.name,
@@ -321,7 +326,7 @@ const init = async ({
 };
 
 const getHistory = () => {
-  if (devMode) {
+  if (true || devMode) {
     return history;
   }
 

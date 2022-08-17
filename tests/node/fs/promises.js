@@ -25,7 +25,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'access',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -35,7 +34,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'appendFile',
         firstArg: newTestFilePath,
-        fromRoot: true,
       });
       standardFs.unlinkSync(newTestFilePath);
     });
@@ -47,7 +45,6 @@ module.exports = () =>
         method: 'chmod',
         firstArg: testFilePath,
         secondArg: testFileStats.mode,
-        fromRoot: true,
       });
     });
 
@@ -58,7 +55,6 @@ module.exports = () =>
         method: 'chown',
         firstArg: testFilePath,
         secondArg: testFileStats.uid,
-        fromRoot: true,
       });
     });
 
@@ -70,7 +66,6 @@ module.exports = () =>
         method: 'copyFile',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
-        fromRoot: true,
       });
       standardFs.unlinkSync(newTestFilePath);
     });
@@ -83,7 +78,6 @@ module.exports = () =>
         method: 'cp',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
-        fromRoot: true,
       });
       standardFs.unlinkSync(newTestFilePath);
     });
@@ -94,7 +88,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'lchown',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -105,7 +98,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'lstat',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -116,7 +108,6 @@ module.exports = () =>
         method: 'lutimes',
         firstArg: testFilePath,
         secondArg: testFileStats.atime,
-        fromRoot: true,
       });
     });
 
@@ -128,7 +119,6 @@ module.exports = () =>
         method: 'link',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
-        fromRoot: true,
       });
       standardFs.unlinkSync(newTestFilePath);
     });
@@ -140,7 +130,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'mkdir',
         firstArg: newTestDirPath,
-        fromRoot: true,
       });
       standardFs.rmdirSync(newTestDirPath);
     });
@@ -152,7 +141,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'mkdtemp',
         firstArg: __dirname,
-        fromRoot: true,
       });
       await fs.rmdir(dirPath);
     });
@@ -163,7 +151,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'open',
         firstArg: testFilePath,
-        fromRoot: true,
       });
       await fd.close();
     });
@@ -174,7 +161,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'opendir',
         firstArg: testDirPath,
-        fromRoot: true,
       });
       await dir.close();
     });
@@ -186,7 +172,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'readdir',
         firstArg: testDirPath,
-        fromRoot: true,
       });
     });
 
@@ -197,7 +182,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'readFile',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -208,7 +192,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'realpath',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -220,7 +203,6 @@ module.exports = () =>
         method: 'rename',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
-        fromRoot: true,
       });
       await fs.rename(newTestFilePath, testFilePath);
     });
@@ -233,7 +215,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'rm',
         firstArg: newTestFilePath,
-        fromRoot: true,
       });
     });
 
@@ -244,7 +225,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'stat',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -254,7 +234,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'symlink',
         firstArg: testFilePath,
-        fromRoot: true,
       });
 
       standardFs.unlinkSync(newTestFilePath);
@@ -266,7 +245,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'truncate',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -278,7 +256,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'unlink',
         firstArg: newTestFilePath,
-        fromRoot: true,
       });
     });
 
@@ -288,7 +265,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'utimes',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -298,7 +274,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'watch',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
 
@@ -308,7 +283,6 @@ module.exports = () =>
         family: 'fs/promises',
         method: 'writeFile',
         firstArg: testFilePath,
-        fromRoot: true,
       });
     });
   });

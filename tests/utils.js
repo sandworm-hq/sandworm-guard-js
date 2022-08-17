@@ -31,7 +31,7 @@ const callExpects = ({call, family, method, firstArg, secondArg}) => {
 
 const expectCallToMatch = ({family, method, firstArg, secondArg, index = 0, fromRoot = false}) => {
   const call = Sandworm.getHistory().filter(
-    ({module}) => module === (fromRoot ? 'root' : 'jest-circus'),
+    ({module}) => module === (fromRoot ? 'root' : 'jest-runner>jest-circus'),
   )[index];
 
   callExpects({call, family, method, firstArg, secondArg});
@@ -61,15 +61,17 @@ const expectWebWorkerCallToMatch = async ({
   callExpects({call, family, method, firstArg, secondArg});
 };
 
-const loadSandworm = async () => Sandworm.init({devMode: true, skipTracking: true});
+const loadSandworm = async () =>
+  Sandworm.init({devMode: true, skipTracking: true, allowInitFrom: /jest-circus/});
 
 const loadSandwormInProductionMode = async () =>
   Sandworm.init({
     devMode: false,
     skipTracking: true,
+    allowInitFrom: /jest-circus/,
     permissions: [
-      {module: 'jest-circus>expect', permissions: false},
-      {module: 'jest-circus', permissions: false},
+      {module: 'jest-runner>jest-circus>expect', permissions: false},
+      {module: 'jest-runner>jest-circus', permissions: false},
       {module: /jest/, permissions: true},
       {module: /istanbul/, permissions: true},
       {module: /babel/, permissions: true},

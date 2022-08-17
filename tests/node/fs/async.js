@@ -28,7 +28,11 @@ module.exports = () =>
     test('appendFile', (done) => {
       fs.appendFile(newTestFilePath, 'test', () => {
         fs.unlink(newTestFilePath, () => {
-          expectCallToMatch({family: 'fs', method: 'appendFile', firstArg: newTestFilePath});
+          expectCallToMatch({
+            family: 'fs',
+            method: 'appendFile',
+            firstArg: newTestFilePath,
+          });
           done();
         });
       });
