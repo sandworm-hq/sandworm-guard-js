@@ -39,7 +39,10 @@ export const parseStackLine = (l) => {
 };
 
 export const currentStack = () => {
+  const currentStackLimit = Error.stackTraceLimit;
+  Error.stackTraceLimit = Infinity;
   const lines = (new Error().stack || '').split('\n');
+  Error.stackTraceLimit = currentStackLimit;
   const entries = lines.map((line) => line.trim()).map(parseStackLine);
   return entries.filter((x) => x !== undefined);
 };
