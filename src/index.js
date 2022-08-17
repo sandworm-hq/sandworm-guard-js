@@ -173,7 +173,7 @@ const getCurrentModule = () => {
   }
 };
 
-const init = async ({
+const init = ({
   loadSourceMaps = currentPlatform === PLATFORMS.WEB,
   devMode: devModeOption = false,
   verbose = false,
@@ -188,7 +188,7 @@ const init = async ({
   try {
     if (isInitialized()) {
       logger.warn('already initialized');
-      return;
+      return Promise.resolve();
     }
 
     const {name: callerModule} = getCurrentModule();
@@ -198,7 +198,7 @@ const init = async ({
       (!(allowInitFrom instanceof RegExp) && typeof allowInitFrom !== 'string')
     ) {
       logger.warn(`only root or specified module may call init (called from ${callerModule})`);
-      return;
+      return Promise.resolve();
     }
 
     if (typeof devModeOption !== 'boolean') {
@@ -301,32 +301,41 @@ const init = async ({
 
     setInitialized();
 
-    if (loadSourceMaps) {
-      if (loadSourceMaps === true) {
-        // Grab source map for invoker file
-        const site = currentStack()[1];
-        const currentSourceUrl = site.file;
+    return (async () => {
+      try {
+        if (loadSourceMaps) {
+          if (loadSourceMaps === true) {
+            // Grab source map for invoker file
+            const site = currentStack()[1];
+            const currentSourceUrl = site.file;
 
-        sourcemaps[currentSourceUrl] = await getSourceMapFromSource(currentSourceUrl);
-      } else if (isObject(loadSourceMaps)) {
-        (
-          await Promise.all(
-            Object.keys(loadSourceMaps).map(async (sourceUrl) => [
-              sourceUrl,
-              await getSourceMap(loadSourceMaps[sourceUrl]),
-            ]),
-          )
-        ).forEach(([sourceUrl, sourcemap]) => {
-          sourcemaps[sourceUrl] = sourcemap;
-        });
+            sourcemaps[currentSourceUrl] = await getSourceMapFromSource(currentSourceUrl);
+          } else if (isObject(loadSourceMaps)) {
+            (
+              await Promise.all(
+                Object.keys(loadSourceMaps).map(async (sourceUrl) => [
+                  sourceUrl,
+                  await getSourceMap(loadSourceMaps[sourceUrl]),
+                ]),
+              )
+            ).forEach(([sourceUrl, sourcemap]) => {
+              sourcemaps[sourceUrl] = sourcemap;
+            });
+          }
+          logger.debug('loaded source maps', sourcemaps);
+        }
+      } catch (error) {
+        logger.error(error);
+      } finally {
+        ready = true;
+        logger.debug('initialized');
       }
-      logger.debug('loaded source maps', sourcemaps);
-    }
+    })();
   } catch (error) {
     logger.error(error);
-  } finally {
     ready = true;
-    logger.debug('initialized');
+    logger.debug('initialized with errors');
+    return Promise.resolve();
   }
 };
 
