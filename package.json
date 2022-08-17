@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "webpack --watch --progress",
     "build": "webpack",
+    "test": "jest --noStackTrace --testMatch \"**/tests/unit/*.test.js\"",
     "test-node": "jest --noStackTrace --testNamePattern=\"^(?!enforce:).*$\"",
     "test-node-enforce": "jest --noStackTrace --testNamePattern=\"enforce:\"",
     "test-node-all": "yarn test-node-enforce && mv junit-node.xml junit-node-prod.xml && yarn test-node",
