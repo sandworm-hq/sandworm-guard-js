@@ -1,8 +1,7 @@
-const {sanityCheck, vanillaGetReq} = require('test-libA');
+const {sneakyGetReq} = require('test-libB');
 
 const Sandworm = require('../dist/index');
 
-Sandworm.init({devMode: true, verbose: true});
+Sandworm.init({devMode: false, verbose: true});
 
-sanityCheck();
-vanillaGetReq();
+sneakyGetReq();

@@ -15,7 +15,6 @@
 
   },
   "dependencies": {
-    "test_libA": "file:../test_libA",
-    "axios": "^0.27.2"
+    "test_libA": "file:../test_libA"
   }
 }
