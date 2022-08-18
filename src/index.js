@@ -251,7 +251,7 @@ const init = async ({
             // eslint-disable-next-line no-inner-declarations
             function replacement(...args) {
               const {name: module, stack, error} = getCurrentModule();
-              logger.debug(`${module} called ${family.name}.${method.name} with`, args);
+              logger.debug(`${module} called ${family.name}.${method.name}`);
               const allowed = isModuleAllowedToExecute(module, family, method);
               if (devMode) {
                 const event = {
