@@ -178,7 +178,7 @@ const init = async ({
   devMode: devModeOption = false,
   verbose = false,
   skipTracking: skipTrackingOption = false,
-  trackingHost,
+  trackingIP,
   trackingPort,
   ignoreChromeExtensions: ignoreChromeExtensionsOption = true,
   trustedModules: additionallyTrustedModules = [],
@@ -213,7 +213,7 @@ const init = async ({
     }
 
     skipTracking = !!skipTrackingOption;
-    setTrackingServer(trackingHost, trackingPort);
+    setTrackingServer(trackingIP, trackingPort);
 
     if (!Array.isArray(additionallyTrustedModules)) {
       logger.warn('trustedModules option must be an array, defaulting to empty array');

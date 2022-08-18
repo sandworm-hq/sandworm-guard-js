@@ -14,7 +14,7 @@ if (!http && !hasXMLHTTPRequest) {
 
 const originals = {};
 let batch = [];
-let host = 'localhost';
+let host = '127.0.0.1';
 let port = 7071;
 let currentTimer;
 

@@ -23,16 +23,4 @@ describe('enforce: net', () => {
   test('createServer', () => {
     expectCallToThrow(() => net.createServer());
   });
-
-  test('isIP', () => {
-    expectCallToThrow(() => net.isIP('127.0.0.1'));
-  });
-
-  test('isIPv4', () => {
-    expectCallToThrow(() => net.isIPv4('127.0.0.1'));
-  });
-
-  test('isIPv6', () => {
-    expectCallToThrow(() => net.isIPv6('2001:0db8:85a3:0000:0000:8a2e:0370:7334'));
-  });
 });
