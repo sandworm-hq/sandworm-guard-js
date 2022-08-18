@@ -47,19 +47,4 @@ describe('net', () => {
     expect(server).toBeInstanceOf(net.Server);
     expectCallToMatch({family: 'net', method: 'createServer'});
   });
-
-  test('isIP', () => {
-    expect(net.isIP('127.0.0.1')).toBeTruthy();
-    expectCallToMatch({family: 'net', method: 'isIP'});
-  });
-
-  test('isIPv4', () => {
-    expect(net.isIPv4('127.0.0.1')).toBeTruthy();
-    expectCallToMatch({family: 'net', method: 'isIPv4'});
-  });
-
-  test('isIPv6', () => {
-    expect(net.isIPv6('2001:0db8:85a3:0000:0000:8a2e:0370:7334')).toBeTruthy();
-    expectCallToMatch({family: 'net', method: 'isIPv6'});
-  });
 });

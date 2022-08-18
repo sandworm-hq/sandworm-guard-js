@@ -930,21 +930,6 @@ const library = () =>
           description: 'Create a new TCP server',
           url: 'https://nodejs.org/api/net.html#netcreateserveroptions-connectionlistener',
         },
-        {
-          name: 'isIP',
-          description: 'Test whether IP address is valid',
-          url: 'https://nodejs.org/api/net.html#netisipinput',
-        },
-        {
-          name: 'isIPv4',
-          description: 'Test whether IP address is IPv4',
-          url: 'https://nodejs.org/api/net.html#netisipv4input',
-        },
-        {
-          name: 'isIPv6',
-          description: 'Test whether IP address is IPv6',
-          url: 'https://nodejs.org/api/net.html#netisipv6input',
-        },
       ],
     },
     {
@@ -1139,11 +1124,6 @@ const library = () =>
           name: 'memoryUsage',
           description: 'Get memory usage information',
           url: 'https://nodejs.org/api/process.html#processmemoryusage',
-        },
-        {
-          name: 'nextTick',
-          description: 'Queue a function to run at a later time',
-          url: 'https://nodejs.org/api/process.html#processnexttickcallback-args',
         },
         {
           name: 'resourceUsage',
