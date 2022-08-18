@@ -912,7 +912,6 @@ const library = () =>
         },
         {
           name: 'Socket',
-          isConstructor: true,
           description: 'Create a new TCP socket',
           url: 'https://nodejs.org/api/net.html#class-netsocket',
         },

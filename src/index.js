@@ -285,6 +285,12 @@ const init = async ({
                 `Sandworm: access denied (${module} called ${family.name}.${method.name})`,
               );
             }
+            // eslint-disable-next-line no-restricted-syntax
+            for (const prop in method.original) {
+              if (Object.prototype.hasOwnProperty.call(method.original, prop)) {
+                replacement[prop] = method.original[prop];
+              }
+            }
             replacement.prototype = method.original.prototype;
             // eslint-disable-next-line no-param-reassign
             family.originalRoot()[method.name] = replacement;
