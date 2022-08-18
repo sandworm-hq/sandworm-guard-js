@@ -31,12 +31,9 @@ describe('tls', () => {
   });
 
   test('connect', () => {
-    try {
-      tls.connect();
-    } catch (error) {
-    } finally {
-      expectCallToMatch({family: 'tls', method: 'connect'});
-    }
+    const socket = tls.connect(443, 'google.com');
+    socket.on('error', () => {});
+    expectCallToMatch({family: 'tls', method: 'connect'});
   });
 
   test('createSecureContext', () => {

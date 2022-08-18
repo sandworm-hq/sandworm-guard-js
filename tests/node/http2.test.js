@@ -9,21 +9,21 @@ describe('http2', () => {
 
   test('createServer', () => {
     const server = http2.createServer();
+    server.close();
     expect(server).toBeInstanceOf(net.Server);
     expectCallToMatch({family: 'http2', method: 'createServer'});
   });
 
   test('createSecureServer', () => {
     const server = http2.createSecureServer();
+    server.close();
     expect(server).toBeInstanceOf(net.Server);
     expectCallToMatch({family: 'http2', method: 'createSecureServer'});
   });
 
   test('connect', () => {
-    try {
-      http2.connect('https://google.com');
-    } catch (err) {
-      expectCallToMatch({family: 'http2', method: 'connect'});
-    }
+    const session = http2.connect('https://google.com');
+    session.close();
+    expectCallToMatch({family: 'http2', method: 'connect'});
   });
 });

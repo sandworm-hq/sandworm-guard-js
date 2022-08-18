@@ -48,6 +48,7 @@ const getCircularReplacer = () => {
 
 const sendBatch = () => {
   try {
+    logger.debug('sending tracking...');
     if (platform() === PLATFORMS.NODE && http) {
       const req = originals.http.request(
         {
@@ -61,7 +62,7 @@ const sendBatch = () => {
       );
       req.on('error', (error) => logger.error('error tracking call to inspector:', error.message));
       if (batch.length) {
-        req.end(JSON.stringify(batch));
+        req.end(JSON.stringify(batch, getCircularReplacer()));
       }
       batch = [];
     } else if (hasXMLHTTPRequest) {
@@ -79,6 +80,7 @@ const sendBatch = () => {
     }
   } catch (error) {
     logger.error('error tracking call to inspector:', error.message);
+    logger.error('attempted to track:', batch);
   } finally {
     currentTimer = null;
   }

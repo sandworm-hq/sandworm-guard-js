@@ -18,6 +18,7 @@ describe('http', () => {
 
   test('createServer', () => {
     const server = http.createServer();
+    server.close();
     expect(server).toBeInstanceOf(http.Server);
     expectCallToMatch({family: 'http', method: 'createServer'});
   });

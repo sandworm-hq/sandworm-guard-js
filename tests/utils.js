@@ -32,14 +32,16 @@ const callExpects = ({call, family, method, firstArg, secondArg}) => {
 const expectCallToMatch = ({family, method, firstArg, secondArg, index = 0, fromRoot = false}) => {
   // console.log(Sandworm.getHistory().map((call) => `${call.module}: ${call.family}.${call.method}`));
   const call = Sandworm.getHistory().filter(({module}) =>
-    (fromRoot ? ['root'] : ['jest-runner>jest-circus', 'jest-circus']).includes(module),
+    (fromRoot
+      ? ['root']
+      : ['jest-cli>@jest/core>jest-runner>jest-circus', 'jest-runner>jest-circus', 'jest-circus']
+    ).includes(module),
   )[index];
 
   callExpects({call, family, method, firstArg, secondArg});
 };
 
 const expectCallToThrow = (call) => {
-  // console.log(Sandworm.getHistory().map((c) => `${c.module}: ${c.family}.${c.method}`));
   expect(call).toThrow(Sandworm.Error);
 };
 

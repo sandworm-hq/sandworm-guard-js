@@ -18,17 +18,18 @@ describe('https', () => {
 
   test('createServer', () => {
     const server = https.createServer();
+    server.close();
     expect(server).toBeInstanceOf(https.Server);
     expectCallToMatch({family: 'https', method: 'createServer'});
   });
 
   test('get', () => {
-    https.get('https://google.com', () => {});
+    https.get('https://google.com', () => {}).end();
     expectCallToMatch({family: 'https', method: 'get'});
   });
 
   test('request', () => {
-    https.request('https://google.com', () => {});
+    https.request('https://google.com', () => {}).end();
     expectCallToMatch({family: 'https', method: 'request'});
   });
 });
