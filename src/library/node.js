@@ -791,7 +791,6 @@ const library = () =>
       methods: [
         {
           name: 'Agent',
-          isConstructor: true,
           description: 'Manage HTTP connection persistence and reuse',
           url: 'https://nodejs.org/api/http.html#class-httpagent',
         },
@@ -852,7 +851,6 @@ const library = () =>
       methods: [
         {
           name: 'Agent',
-          isConstructor: true,
           description: 'Manage HTTPS connection persistence and reuse',
           url: 'https://nodejs.org/api/https.html#class-httpsagent',
         },
@@ -909,7 +907,6 @@ const library = () =>
       methods: [
         {
           name: 'Server',
-          isConstructor: true,
           description: 'Create a new TCP server',
           url: 'https://nodejs.org/api/net.html#class-netserver',
         },
@@ -1271,13 +1268,11 @@ const library = () =>
       methods: [
         {
           name: 'Server',
-          isConstructor: true,
           description: 'Create a new TLS server',
           url: 'https://nodejs.org/api/tls.html#class-tlsserver',
         },
         {
           name: 'TLSSocket',
-          isConstructor: true,
           description: 'Create a new TLS socket',
           url: 'https://nodejs.org/api/tls.html#class-tlstlssocket',
         },
@@ -1400,13 +1395,11 @@ const library = () =>
         },
         {
           name: 'SourceTextModule',
-          isConstructor: true,
           description: 'Create a module defined from ECMAScript source text',
           url: 'https://nodejs.org/api/vm.html#class-vmsourcetextmodule',
         },
         {
           name: 'SyntheticModule',
-          isConstructor: true,
           description: 'Create a WebIDL synthetic module',
           url: 'https://nodejs.org/api/vm.html#class-vmsyntheticmodule',
         },

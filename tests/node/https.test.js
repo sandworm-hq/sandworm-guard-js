@@ -11,6 +11,9 @@ describe('https', () => {
     expect(agent).toBeInstanceOf(https.Agent);
     expectCallToMatch({family: 'https', method: 'Agent'});
     agent.destroy();
+
+    const agent2 = https.Agent();
+    expect(agent2).toBeInstanceOf(https.Agent);
   });
 
   test('createServer', () => {
@@ -20,18 +23,12 @@ describe('https', () => {
   });
 
   test('get', () => {
-    try {
-      https.get('https://google.com', () => {});
-    } catch (error) {
-      expectCallToMatch({family: 'https', method: 'get'});
-    }
+    https.get('https://google.com', () => {});
+    expectCallToMatch({family: 'https', method: 'get'});
   });
 
   test('request', () => {
-    try {
-      https.request('https://google.com', () => {});
-    } catch (error) {
-      expectCallToMatch({family: 'https', method: 'request'});
-    }
+    https.request('https://google.com', () => {});
+    expectCallToMatch({family: 'https', method: 'request'});
   });
 });

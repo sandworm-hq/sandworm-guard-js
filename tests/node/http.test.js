@@ -11,6 +11,9 @@ describe('http', () => {
     expect(agent).toBeInstanceOf(http.Agent);
     expectCallToMatch({family: 'http', method: 'Agent'});
     agent.destroy();
+
+    const agent2 = http.Agent();
+    expect(agent2).toBeInstanceOf(http.Agent);
   });
 
   test('createServer', () => {

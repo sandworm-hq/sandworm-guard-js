@@ -42,9 +42,8 @@ const setInitialized = () => {
   }
 };
 
-function create(constructor) {
-  // eslint-disable-next-line prefer-spread,prefer-rest-params
-  const Factory = constructor.bind.apply(constructor, arguments);
+function create(constructor, ...args) {
+  const Factory = constructor.bind.apply(constructor, [constructor, ...args]);
   return new Factory();
 }
 

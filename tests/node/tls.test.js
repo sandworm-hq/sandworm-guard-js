@@ -10,16 +10,15 @@ describe('tls', () => {
     const server = new tls.Server();
     expect(server).toBeInstanceOf(tls.Server);
     expectCallToMatch({family: 'tls', method: 'Server'});
+
+    const server2 = tls.Server();
+    expect(server2).toBeInstanceOf(tls.Server);
   });
 
   test('TLSSocket', () => {
-    try {
-      const socket = new tls.TLSSocket();
-      socket.destroy();
-    } catch (error) {
-    } finally {
-      expectCallToMatch({family: 'tls', method: 'TLSSocket'});
-    }
+    const socket = new tls.TLSSocket();
+    socket.destroy();
+    expectCallToMatch({family: 'tls', method: 'TLSSocket'});
   });
 
   test('checkServerIdentity', () => {

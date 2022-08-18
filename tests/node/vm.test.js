@@ -12,13 +12,21 @@ describe('vm', () => {
   });
 
   testif(vm.SourceTextModule)('SourceTextModule', () => {
-    new vm.SourceTextModule();
+    const module = new vm.SourceTextModule();
+    expect(module).toBeInstanceOf(vm.SourceTextModule);
     expectCallToMatch({family: 'vm', method: 'SourceTextModule'});
+
+    const module2 = vm.SourceTextModule();
+    expect(module2).toBeInstanceOf(vm.SourceTextModule);
   });
 
   testif(vm.SyntheticModule)('SyntheticModule', () => {
-    new vm.SyntheticModule();
+    const module = new vm.SyntheticModule();
+    expect(module).toBeInstanceOf(vm.SyntheticModule);
     expectCallToMatch({family: 'vm', method: 'SyntheticModule'});
+
+    const module2 = new vm.SyntheticModule();
+    expect(module2).toBeInstanceOf(vm.SyntheticModule);
   });
 
   test('compileFunction', () => {

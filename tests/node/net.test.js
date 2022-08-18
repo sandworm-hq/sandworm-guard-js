@@ -10,12 +10,18 @@ describe('net', () => {
     const server = new net.Server();
     expect(server).toBeInstanceOf(net.Server);
     expectCallToMatch({family: 'net', method: 'Server'});
+
+    const server2 = net.Server();
+    expect(server2).toBeInstanceOf(net.Server);
   });
 
   test('Socket', () => {
     const socket = new net.Socket();
     expect(socket).toBeInstanceOf(net.Socket);
     expectCallToMatch({family: 'net', method: 'Socket'});
+
+    const socket2 = net.Socket();
+    expect(socket2).toBeInstanceOf(net.Socket);
   });
 
   test('connect', () => {
