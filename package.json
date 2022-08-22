@@ -10,11 +10,13 @@
   "scripts": {
     "dev": "webpack --watch --progress",
     "build": "webpack",
-    "test-unit": "jest --noStackTrace --testMatch \"**/tests/unit/*.test.js\"",
-    "test-node": "jest --noStackTrace --testNamePattern=\"^(?!enforce:).*$\"",
-    "test-node-enforce": "jest --noStackTrace --testNamePattern=\"enforce:\"",
-    "test-node-all": "yarn test-node-enforce && mv junit-node.xml junit-node-prod.xml && yarn test-node",
-    "test-web": "npx playwright test"
+    "test-node-unit": "jest --noStackTrace --config=tests/configs/jest.unit.config.js",
+    "test-node-capture": "jest --noStackTrace --config=tests/configs/jest.capture.config.js",
+    "test-node-enforce": "jest --noStackTrace --config=tests/configs/jest.enforce.config.js",
+    "test-web": "npx playwright test --config=tests/configs/playwright.config.js",
+    "test-node-ce": "yarn test-node-enforce && yarn test-node-capture",
+    "test-node-all": "yarn test-node-ce && yarn test-node-unit",
+    "test-all": "yarn test-node-all && yarn test-web"
   },
   "bin": "cli/index.js",
   "author": "Sandworm <dev@sandworm.dev>",

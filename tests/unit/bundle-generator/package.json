@@ -1,0 +1,20 @@
+{
+  "name": "playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "yarn build-nosources-cheap-source-map && yarn build-inline-nosources-cheap-source-map",
+    "build-nosources-cheap-source-map": "npx webpack --mode=development --devtool=nosources-cheap-source-map --output-path=../nosources-cheap-source-map",
+    "build-inline-nosources-cheap-source-map": "npx webpack --mode=development --devtool=inline-nosources-cheap-source-map --output-path=../inline-nosources-cheap-source-map",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Telepat <dev@telepat.io> (http://telepat.io/)",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}

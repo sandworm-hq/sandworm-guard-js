@@ -26,7 +26,7 @@ module.exports = {
   coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: ['/tests/'],
+  coveragePathIgnorePatterns: ['/tests/', '/node_modules/'],
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: 'v8',
@@ -104,7 +104,7 @@ module.exports = {
   // projects: undefined,
 
   // Use this configuration option to add custom reporters to Jest
-  reporters: ['default', ['jest-junit', {outputName: 'junit-node.xml'}]],
+  reporters: ['default', ['jest-junit', {outputName: 'junit-node-capture.xml'}]],
 
   // Automatically reset mock state before every test
   // resetMocks: false,
@@ -119,7 +119,7 @@ module.exports = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  // rootDir: undefined,
+  rootDir: '../../',
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [
@@ -151,7 +151,7 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/tests/node/*.test.js'],
+  testMatch: ['**/tests/node/*.capture.test.js'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [

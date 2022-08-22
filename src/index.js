@@ -4,25 +4,20 @@ import platform, {PLATFORMS} from './platform';
 import webLibrary from './library/web';
 import nodeLibrary from './library/node';
 import logger from './logger';
-import track, {setTrackingServer} from './track';
-
-class SandwormError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'SandwormError';
-  }
-}
+import track, {setSkipTracking, setTrackingServer} from './track';
+import {
+  addSourceMap,
+  addTrustedModules,
+  getCurrentModule,
+  setIgnoreExtensions,
+  setPermissions,
+} from './module';
+import patch, {SandwormError} from './patch';
 
 let initialized = false;
 let ready = false;
-let trustedModules = ['sandworm', 'react-dom', 'scheduler'];
-const sourcemaps = {};
-let permissions = [{module: 'root', permissions: true}];
-const cachedPermissions = {};
 let history = [];
 let devMode = false;
-let skipTracking = false;
-let ignoreChromeExtensions = true;
 const currentPlatform = platform();
 
 const isObject = (object) => Object.prototype.toString.call(object) === '[object Object]';
@@ -42,137 +37,6 @@ const setInitialized = () => {
   }
 };
 
-function create(constructor, ...args) {
-  const Factory = constructor.bind.apply(constructor, [constructor, ...args]);
-  return new Factory();
-}
-
-const getModulePermissions = (module) => {
-  if (devMode) {
-    return true;
-  }
-
-  if (Object.keys(cachedPermissions).includes(module)) {
-    return cachedPermissions[module];
-  }
-
-  const exactMatch = permissions.find(({module: mod}) => mod === module);
-  if (exactMatch) {
-    cachedPermissions[module] = exactMatch.permissions;
-    return exactMatch.permissions;
-  }
-
-  const regexMatch = permissions.find(
-    ({module: mod}) => mod instanceof RegExp && module.match(mod),
-  );
-  if (regexMatch) {
-    cachedPermissions[module] = regexMatch.permissions;
-    return regexMatch.permissions;
-  }
-
-  cachedPermissions[module] = false;
-  return false;
-};
-
-const isModuleAllowedToExecute = (module, family, method) => {
-  const modulePermissions = getModulePermissions(module);
-
-  if (typeof modulePermissions === 'boolean') {
-    return modulePermissions;
-  }
-
-  if (Array.isArray(modulePermissions)) {
-    return (
-      modulePermissions.includes(family.name) ||
-      modulePermissions.includes(`${family.name}:${method.name}`)
-    );
-  }
-
-  return false;
-};
-
-const getCurrentModule = () => {
-  try {
-    const stack = currentStack()
-      .reverse()
-      .map((item) => {
-        const originalFile = item?.file;
-        // Tap sourcemaps for original file src
-        let mapping = originalFile;
-        let mappingLine = item.line;
-        let mappingColumn = item.column;
-        if (originalFile && sourcemaps[originalFile]) {
-          const originalItem = sourcemaps[originalFile].originalPositionFor({
-            line: item.line,
-            column: item.column,
-          });
-          mapping = originalItem.source;
-          mappingLine = originalItem.line;
-          mappingColumn = originalItem.column;
-        }
-
-        // Infer the module name
-        let module;
-        if (mapping && mapping.includes('node_modules')) {
-          const components = mapping.split('/');
-          const nodeModulesIndex = components.findIndex((v) => v === 'node_modules');
-          let moduleName = components[nodeModulesIndex + 1];
-          if (moduleName.startsWith('@')) {
-            const submodule = components[nodeModulesIndex + 2];
-            if (submodule) {
-              moduleName = `${moduleName}/${submodule}`;
-            }
-          }
-          if (!trustedModules.includes(moduleName)) {
-            module = moduleName;
-          }
-        }
-
-        // Treat URLs as separate modules
-        // These are usually scripts loaded from external sources, like directly from a CDN
-        if (initialized) {
-          let url;
-          try {
-            url = new URL(mapping);
-            // eslint-disable-next-line no-empty
-          } catch (error) {}
-          if (url && url.protocol !== 'node:') {
-            module = mapping;
-          }
-        }
-
-        return {
-          caller: item.caller,
-          file: item.file,
-          fileLine: item.line,
-          fileColumn: item.column,
-          mapping,
-          mappingLine,
-          mappingColumn,
-          module,
-        };
-      });
-
-    const modules = stack.map(({module}) => module).filter((v) => v !== undefined);
-    let name = 'root';
-
-    if (modules.length) {
-      if (ignoreChromeExtensions && modules[0].startsWith('chrome-extension://')) {
-        name = 'root';
-      } else if (modules[0] === modules[modules.length - 1]) {
-        [name] = modules;
-      } else {
-        name = modules.filter((v, i, a) => a.indexOf(v) === i).join('>');
-      }
-    }
-
-    return {name, stack};
-  } catch (error) {
-    logger.error(error);
-    return {name: 'root', error: error.message};
-  }
-};
-
 const init = ({
   loadSourceMaps = currentPlatform === PLATFORMS.WEB,
   devMode: devModeOption = false,
@@ -180,8 +44,8 @@ const init = ({
   skipTracking: skipTrackingOption = false,
   trackingIP,
   trackingPort,
-  ignoreChromeExtensions: ignoreChromeExtensionsOption = true,
-  trustedModules: additionallyTrustedModules = [],
+  ignoreExtensions: ignoreExtensionsOption = true,
+  trustedModules: additionalTrustedModules = [],
   permissions: permissionsOption = [],
   allowInitFrom = 'root',
 } = {}) => {
@@ -191,7 +55,9 @@ const init = ({
       return Promise.resolve();
     }
 
-    const {name: callerModule} = getCurrentModule();
+    const {name: callerModule} = getCurrentModule({
+      allowURLs: false,
+    });
     if (
       (allowInitFrom instanceof RegExp && !callerModule.match(allowInitFrom)) ||
       (typeof allowInitFrom === 'string' && callerModule !== allowInitFrom) ||
@@ -212,21 +78,26 @@ const init = ({
       logger.level = 'debug';
     }
 
-    skipTracking = !!skipTrackingOption;
+    setSkipTracking(skipTrackingOption);
     setTrackingServer(trackingIP, trackingPort);
 
-    if (!Array.isArray(additionallyTrustedModules)) {
+    if (!Array.isArray(additionalTrustedModules)) {
       logger.warn('trustedModules option must be an array, defaulting to empty array');
     } else {
-      trustedModules = [...trustedModules, ...additionallyTrustedModules];
+      addTrustedModules(additionalTrustedModules);
     }
 
-    ignoreChromeExtensions = !!ignoreChromeExtensionsOption;
+    setIgnoreExtensions(ignoreExtensionsOption);
 
     if (!Array.isArray(permissionsOption)) {
       logger.warn('permissions option must be an array, defaulting to empty array');
+    } else if (devMode && permissionsOption.length > 0) {
+      logger.warn('permissions option is ignored in dev mode');
     } else {
-      permissions = [...permissions, ...permissionsOption];
+      setPermissions([{module: 'root', permissions: true}, ...permissionsOption]);
+    }
+    if (devMode) {
+      setPermissions([{module: /.*/, permissions: true}]);
     }
 
     let library = [];
@@ -241,62 +112,15 @@ const init = ({
 
     // Monkey patches
     library.forEach((family) => {
-      if (family.available) {
-        family.methods.forEach((method) => {
-          // eslint-disable-next-line no-param-reassign
-          method.original = family.originalRoot()[method.name];
-          if (method.original) {
-            logger.debug(`installing ${family.name}.${method.name}`);
-            // eslint-disable-next-line no-inner-declarations
-            function replacement(...args) {
-              const {name: module, stack, error} = getCurrentModule();
-              logger.debug(`${module} called ${family.name}.${method.name}`);
-              const allowed = isModuleAllowedToExecute(module, family, method);
-              if (devMode) {
-                const event = {
-                  module,
-                  family: family.name,
-                  method: method.name,
-                  args,
-                  allowed,
-                  stack,
-                  error,
-                };
-                if (ready) {
-                  history.push(event);
-                  if (!skipTracking) {
-                    track(event);
-                  }
-                }
-              }
-              if (allowed) {
-                if (method.isConstructor) {
-                  return create(method.original, ...args);
-                }
-                return method.original.apply(this, args);
-              }
-
-              logger.error(
-                `${module} was blocked from calling ${family.name}.${method.name} with`,
-                args,
-              );
-
-              throw new SandwormError(
-                `Sandworm: access denied (${module} called ${family.name}.${method.name})`,
-              );
-            }
-            // eslint-disable-next-line no-restricted-syntax
-            for (const prop in method.original) {
-              if (Object.prototype.hasOwnProperty.call(method.original, prop)) {
-                replacement[prop] = method.original[prop];
-              }
-            }
-            replacement.prototype = method.original.prototype;
-            // eslint-disable-next-line no-param-reassign
-            family.originalRoot()[method.name] = replacement;
+      patch({
+        family,
+        track: (event) => {
+          if (devMode && ready) {
+            history.push(event);
+            track(event);
           }
-        });
-      }
+        },
+      });
     });
 
     setInitialized();
@@ -309,7 +133,7 @@ const init = ({
             const site = currentStack()[1];
             const currentSourceUrl = site.file;
 
-            sourcemaps[currentSourceUrl] = await getSourceMapFromSource(currentSourceUrl);
+            addSourceMap(currentSourceUrl, await getSourceMapFromSource(currentSourceUrl));
           } else if (isObject(loadSourceMaps)) {
             (
               await Promise.all(
@@ -319,10 +143,10 @@ const init = ({
                 ]),
               )
             ).forEach(([sourceUrl, sourcemap]) => {
-              sourcemaps[sourceUrl] = sourcemap;
+              addSourceMap(sourceUrl, sourcemap);
             });
           }
-          logger.debug('loaded source maps', sourcemaps);
+          logger.debug('loaded source maps');
         }
       } catch (error) {
         logger.error(error);

@@ -66,7 +66,19 @@ jobs:
           command: echo Testing on node $(node --version)
       - run:
           name: Run tests
-          command: yarn test-node-all
+          command: yarn test-node-ce
+      - store_test_results:
+          path: ./
+  test-unit:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - node/install:
+          install-yarn: true
+      - run:
+          name: Run tests
+          command: yarn test-node-unit
       - store_test_results:
           path: ./
         
@@ -77,6 +89,9 @@ workflows:
       - build:
           requires:
             - setup
+      - test-unit:
+          requires:
+            - build
       - test-web:
           requires:
             - build
