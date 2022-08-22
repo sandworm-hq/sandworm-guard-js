@@ -17,6 +17,11 @@ let batch = [];
 let host = '127.0.0.1';
 let port = 7071;
 let currentTimer;
+let skipTracking = false;
+
+export const setSkipTracking = (skipTrackingOption) => {
+  skipTracking = !!skipTrackingOption;
+};
 
 // Grab the original methods before we monkey patch them
 if (http) {
@@ -33,7 +38,7 @@ if (hasXMLHTTPRequest) {
   };
 }
 
-const getCircularReplacer = () => {
+export const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (key, value) => {
     if (typeof value === 'object' && value !== null) {
@@ -46,8 +51,11 @@ const getCircularReplacer = () => {
   };
 };
 
-const sendBatch = () => {
+export const sendBatch = () => {
   try {
+    if (skipTracking || batch.length === 0) {
+      return;
+    }
     logger.debug('sending tracking...');
     if (platform() === PLATFORMS.NODE && http) {
       const req = originals.http.request(
@@ -61,9 +69,7 @@ const sendBatch = () => {
         () => {},
       );
       req.on('error', (error) => logger.error('error tracking call to inspector:', error.message));
-      if (batch.length) {
-        req.end(JSON.stringify(batch, getCircularReplacer()));
-      }
+      req.end(JSON.stringify(batch, getCircularReplacer()));
       batch = [];
     } else if (hasXMLHTTPRequest) {
       const request = new originals.xmlhttprequest.XMLHttpRequest();
@@ -73,9 +79,7 @@ const sendBatch = () => {
         'content-type',
         'application/json;charset=UTF-8',
       );
-      if (batch.length) {
-        originals.xmlhttprequest.send.call(request, JSON.stringify(batch, getCircularReplacer()));
-      }
+      originals.xmlhttprequest.send.call(request, JSON.stringify(batch, getCircularReplacer()));
       batch = [];
     }
   } catch (error) {

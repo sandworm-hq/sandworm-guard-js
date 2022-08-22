@@ -4,11 +4,12 @@ const {devices} = require('@playwright/test');
 const config = {
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  testMatch: '**/tests/web/*.test.js',
+  testDir: '../web/',
+  testMatch: '*.test.js',
   use: {
     trace: 'on-first-retry',
   },
-  globalSetup: require.resolve('./tests/web/setup'),
+  globalSetup: require.resolve('../web/setup'),
   projects: [
     {
       name: 'chromium',
@@ -23,7 +24,7 @@ const config = {
       use: {...devices['Desktop Safari']},
     },
   ],
-  reporter: [['list'], ['junit', {outputFile: 'junit-web.xml'}]],
+  reporter: [['list'], ['junit', {outputFile: 'junit-web-capture.xml'}]],
 };
 
 module.exports = config;

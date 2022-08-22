@@ -11,7 +11,7 @@ const SOURCEMAP_REGEX =
   /(?:\/\/[@#][ \t]+sourceMappingURL=([^\s'"]+?)[ \t]*$)|(?:\/\*[@#][ \t]+sourceMappingURL=([^*]+?)[ \t]*(?:\*\/)[ \t]*$)/;
 const logger = console;
 
-const getSourceFromUrl = async (url) => {
+export const getSourceFromUrl = async (url) => {
   try {
     const response = await fetch(url);
 
@@ -22,7 +22,7 @@ const getSourceFromUrl = async (url) => {
   }
 };
 
-const getSourceFromPath = async (path) => {
+export const getSourceFromPath = async (path) => {
   if (!fs) {
     return null;
   }
