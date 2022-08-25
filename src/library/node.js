@@ -195,6 +195,30 @@ const library = () =>
       globalMethod: true,
     },
     {
+      name: 'eval',
+      methods: [
+        {
+          name: 'eval',
+          description: 'Run arbitrary JS code from a string',
+          url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval',
+          needsExplicitPermission: true,
+        },
+      ],
+      globalMethod: true,
+    },
+    {
+      name: 'Function',
+      methods: [
+        {
+          name: 'Function',
+          description: 'Create a new function from an arbitrary string',
+          url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function',
+          needsExplicitPermission: true,
+        },
+      ],
+      globalMethod: true,
+    },
+    {
       name: 'fs',
       methods: [
         // Callback API
@@ -1371,6 +1395,7 @@ const library = () =>
           isConstructor: true,
           description: 'Precompile arbitrary code to execute later',
           url: 'https://nodejs.org/api/vm.html#class-vmscript',
+          needsExplicitPermission: true,
         },
         {
           name: 'SourceTextModule',
@@ -1406,16 +1431,19 @@ const library = () =>
           name: 'runInContext',
           description: 'Run arbitrary code in a context',
           url: 'https://nodejs.org/api/vm.html#vmrunincontextcode-contextifiedobject-options',
+          needsExplicitPermission: true,
         },
         {
           name: 'runInNewContext',
           description: 'Run arbitrary code in a new context',
           url: 'https://nodejs.org/api/vm.html#vmruninnewcontextcode-contextobject-options',
+          needsExplicitPermission: true,
         },
         {
           name: 'runInThisContext',
           description: 'Run arbitrary code in the current context',
           url: 'https://nodejs.org/api/vm.html#vmruninthiscontextcode-options',
+          needsExplicitPermission: true,
         },
       ],
     },
@@ -1427,6 +1455,7 @@ const library = () =>
           isConstructor: true,
           description: 'Give WebAssembly apps access to the underlying OS',
           url: 'https://nodejs.org/api/wasi.html#new-wasioptions',
+          needsExplicitPermission: true,
         },
       ],
     },

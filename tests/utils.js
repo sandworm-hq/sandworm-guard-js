@@ -81,7 +81,8 @@ const loadSandwormInProductionMode = async () =>
       {module: 'jest-circus>expect', permissions: false},
       {module: 'jest-circus', permissions: false},
       // These are required by Jest
-      {module: /jest/, permissions: true},
+      // Jest runner needs vm.runInContext, we explicitly allow vm below
+      {module: /jest/, permissions: ['vm', '*']},
       {module: /istanbul/, permissions: true},
       {module: /babel/, permissions: true},
       {module: 'react-is', permissions: true},

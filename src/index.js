@@ -9,6 +9,7 @@ import {
   addSourceMap,
   addTrustedModules,
   getCurrentModule,
+  setAllowsAll,
   setIgnoreExtensions,
   setPermissions,
 } from './module';
@@ -89,17 +90,6 @@ const init = ({
 
     setIgnoreExtensions(ignoreExtensionsOption);
 
-    if (!Array.isArray(permissionsOption)) {
-      logger.warn('permissions option must be an array, defaulting to empty array');
-    } else if (devMode && permissionsOption.length > 0) {
-      logger.warn('permissions option is ignored in dev mode');
-    } else {
-      setPermissions([{module: 'root', permissions: true}, ...permissionsOption]);
-    }
-    if (devMode) {
-      setPermissions([{module: /.*/, permissions: true}]);
-    }
-
     let library = [];
 
     if (currentPlatform === PLATFORMS.WEB) {
@@ -108,6 +98,17 @@ const init = ({
       library = nodeLibrary();
     } else {
       logger.debug('current platform is not supported');
+    }
+
+    if (devMode) {
+      // Explicitly allow all families for all modules in dev mode
+      setAllowsAll(library);
+    } else if (permissionsOption) {
+      if (!Array.isArray(permissionsOption)) {
+        logger.warn('permissions option must be an array, defaulting to empty array');
+      } else {
+        setPermissions(permissionsOption);
+      }
     }
 
     // Monkey patches

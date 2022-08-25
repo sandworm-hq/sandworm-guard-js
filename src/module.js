@@ -2,7 +2,8 @@ import logger from './logger';
 import {currentStack} from './stack';
 
 const cachedPermissions = {};
-let permissions = [{module: 'root', permissions: true}];
+const defaultPermissions = {module: 'root', permissions: true};
+let permissions = [defaultPermissions];
 let trustedModules = ['sandworm', 'react-dom', 'scheduler'];
 let ignoreExtensions = true;
 const sourcemaps = {};
@@ -19,8 +20,26 @@ export const setIgnoreExtensions = (ignoreExtensionsOption) => {
   ignoreExtensions = !!ignoreExtensionsOption;
 };
 
-export const setPermissions = (newPermissions) => {
-  permissions = newPermissions;
+export const setPermissions = (newPermissions = []) => {
+  if (!Array.isArray(newPermissions)) {
+    return;
+  }
+
+  if (newPermissions.findIndex(({module}) => module === 'root') !== -1) {
+    permissions = [...newPermissions];
+  } else {
+    // If no 'root' permissions specified, default to true
+    // This will still throw on things like `eval` or `vm.runInContext`
+    permissions = [defaultPermissions, ...newPermissions];
+  }
+};
+
+export const setAllowsAll = (library) => {
+  const allExplicitPermissions = library.map(({name}) => name);
+  permissions = [
+    {module: /.*/, permissions: allExplicitPermissions},
+    {module: 'root', permissions: allExplicitPermissions},
+  ];
 };
 
 export const mapStackItemToSource = (item) => {
@@ -146,14 +165,15 @@ export const getModulePermissions = (module) => {
 
 export const isModuleAllowedToExecute = ({module, family, method}) => {
   const modulePermissions = getModulePermissions(module, permissions);
-  if (typeof modulePermissions === 'boolean') {
+  if (typeof modulePermissions === 'boolean' && !method.needsExplicitPermission) {
     return modulePermissions;
   }
 
   if (Array.isArray(modulePermissions)) {
     return (
       modulePermissions.includes(family.name) ||
-      modulePermissions.includes(`${family.name}.${method.name}`)
+      modulePermissions.includes(`${family.name}.${method.name}`) ||
+      (!method.needsExplicitPermission && modulePermissions.includes('*'))
     );
   }
 

@@ -86,7 +86,7 @@ export const node = ({name, methods, globalMethod}) => {
     methods,
     originalRoot: () => (globalMethod ? global : module),
     available: globalMethod
-      ? typeof global !== 'undefined' && typeof global[methods[0]] !== 'undefined'
+      ? typeof global !== 'undefined' && typeof global[methods[0].name] !== 'undefined'
       : typeof module !== 'undefined',
   };
 };

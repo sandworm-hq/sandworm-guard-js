@@ -9,6 +9,7 @@ import {
   getModulePermissions,
   isModuleAllowedToExecute,
   mapStackItemToSource,
+  setAllowsAll,
   setIgnoreExtensions,
   setPermissions,
 } from '../../src/module';
@@ -89,6 +90,7 @@ describe('module', () => {
     setPermissions([
       {module: 'imate>one', permissions: true},
       {module: 'imate>two', permissions: ['other.method', 'family']},
+      {module: 'imate>three', permissions: ['imate.method', '*']},
       {module: /anything/, permissions: ['other.method']},
       {module: 'not-anything', permissions: false},
     ]);
@@ -100,6 +102,14 @@ describe('module', () => {
         method: {name: 'method'},
       }),
     ).toBeTruthy();
+
+    expect(
+      isModuleAllowedToExecute({
+        module: 'imate>one',
+        family: {name: 'imate'},
+        method: {name: 'method', needsExplicitPermission: true},
+      }),
+    ).toBeFalsy();
 
     expect(
       isModuleAllowedToExecute({
@@ -144,10 +154,44 @@ describe('module', () => {
     expect(
       isModuleAllowedToExecute({
         module: 'imate>three',
+        family: {name: 'imate'},
+        method: {name: 'method', needsExplicitPermission: true},
+      }),
+    ).toBeTruthy();
+
+    expect(
+      isModuleAllowedToExecute({
+        module: 'imate>three',
+        family: {name: 'imate'},
+        method: {name: 'random'},
+      }),
+    ).toBeTruthy();
+
+    expect(
+      isModuleAllowedToExecute({
+        module: 'imate>four',
         family: {name: 'other'},
         method: {name: 'method'},
       }),
     ).toBeFalsy();
+
+    setAllowsAll([{name: 'file'}]);
+
+    expect(
+      isModuleAllowedToExecute({
+        module: 'imate>five',
+        family: {name: 'file'},
+        method: {name: 'random'},
+      }),
+    ).toBeTruthy();
+
+    expect(
+      isModuleAllowedToExecute({
+        module: 'last-test',
+        family: {name: 'file'},
+        method: {name: 'delete', needsExplicitPermission: true},
+      }),
+    ).toBeTruthy();
   });
 
   test('getModuleNameFromLocation', () => {
