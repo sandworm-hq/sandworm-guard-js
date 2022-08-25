@@ -5170,6 +5170,11 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+node-addon-api@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-5.0.0.tgz#7d7e6f9ef89043befdb20c1989c905ebde18c501"
+  integrity sha512-CvkDw2OEnme7ybCykJpVcKH+uAOLV2qLqiyla128dN9TkEWfrYmxG6C2boDe5KcNQqZF3orkqzGgOMvZ/JNekA==
+
 node-int64@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
@@ -6106,6 +6111,11 @@ terser@^5.7.2:
     commander "^2.20.0"
     source-map-support "~0.5.20"
 
+"test-addon@file:tests/test_libs/test-addon":
+  version "1.0.0"
+  dependencies:
+    node-addon-api "^5.0.0"
+
 test-exclude@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/test-exclude/-/test-exclude-6.0.0.tgz#04a8698661d805ea6fa293b6cb9e63ac044ef15e"
@@ -6123,8 +6133,7 @@ text-extensions@^1.0.0:
 "test-libB@file:tests/test_libs/test_libB":
   version "1.0.0"
   dependencies:
-    axios "^0.27.2"
-    test_libA "file:../../../.cache/yarn/v6/npm-test-lib-1.0.0-7fac6444-b556-47cd-91a9-e9646674e11b-1660754505748/node_modules/test_libA"
+    test_libA "file:../../../Library/Caches/Yarn/v6/npm-test-lib-1.0.0-bd4ecb9f-1f36-4de7-a6c6-d2d4e724d440-1661361622337/node_modules/test_libA"
 
 "test_libA@file:tests/test_libs/test_libA":
   version "1.0.0"

@@ -4,19 +4,11 @@ const sanityCheck = () => {
   console.log('It werks!');
 };
 
-const vanillaGetReq = () => {
+const vanillaGetReq = async () => {
   // Make a request for a user with a given ID
-  axios.get('https://google.com').then((response) => {
-    // handle success
-    console.log(response);
-  });
-  // .catch((error) => {
-  //   // handle error
-  //   console.log(error);
-  // })
-  // .then(() => {
-  //   // always executed
-  // });
+  const gets = await axios.get('http://localhost:3000/');
+  console.log(gets);
+  return gets;
 };
 
 module.exports = {sanityCheck, vanillaGetReq};
