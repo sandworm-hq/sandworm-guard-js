@@ -1,4 +1,4 @@
-import {node as builder} from './builder';
+const {node: builder} = require('./builder');
 
 const library = () =>
   [
@@ -1497,4 +1497,4 @@ const library = () =>
     },
   ].map((lib) => builder(lib));
 
-export default library;
+module.exports = library;

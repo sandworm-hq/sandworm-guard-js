@@ -1,4 +1,4 @@
-import {web as builder} from './builder';
+const {web: builder} = require('./builder');
 
 const library = () =>
   [
@@ -1057,4 +1057,4 @@ const library = () =>
     },
   ].reduce((acc, cur) => [...acc, ...builder(cur)], []);
 
-export default library;
+module.exports = library;
