@@ -3,7 +3,7 @@ const safeGlobal = typeof self !== 'undefined' ? self : {};
 const safeNavigator = typeof navigator !== 'undefined' ? navigator : {};
 const safeDocument = typeof document !== 'undefined' ? document : {};
 
-export const web = ({
+const web = ({
   name,
   globalConstructor,
   constructorDescription,
@@ -71,7 +71,7 @@ export const web = ({
     })),
   ].filter((a) => !!a);
 
-export const node = ({name, methods, globalMethod}) => {
+const node = ({name, methods, globalMethod}) => {
   let module;
   if (!globalMethod) {
     try {
@@ -90,3 +90,5 @@ export const node = ({name, methods, globalMethod}) => {
       : typeof module !== 'undefined',
   };
 };
+
+module.exports = {web, node};
