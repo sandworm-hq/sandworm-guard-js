@@ -1,5 +1,5 @@
 import logger from './logger';
-import {getCurrentModule, isModuleAllowedToExecute} from './module';
+import {getCurrentModuleInfo, isModuleAllowedToExecute} from './module';
 
 export class SandwormError extends Error {
   constructor(message) {
@@ -25,8 +25,10 @@ export default ({family, track = () => {}}) => {
           const {
             name: module,
             stack,
+            directCaller,
+            lastModuleCaller,
             error,
-          } = getCurrentModule({
+          } = getCurrentModuleInfo({
             allowURLs: true,
           });
           logger.debug(`${module} called ${family.name}.${method.name}`);
@@ -34,6 +36,8 @@ export default ({family, track = () => {}}) => {
             module,
             family,
             method,
+            directCaller,
+            lastModuleCaller,
           });
           track({
             module,

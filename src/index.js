@@ -8,7 +8,7 @@ import track, {setSkipTracking, setTrackingServer} from './track';
 import {
   addSourceMap,
   addTrustedModules,
-  getCurrentModule,
+  getCurrentModuleInfo,
   setAllowsAll,
   setIgnoreExtensions,
   setPermissions,
@@ -56,7 +56,7 @@ const init = ({
       return Promise.resolve();
     }
 
-    const {name: callerModule} = getCurrentModule({
+    const {name: callerModule} = getCurrentModuleInfo({
       allowURLs: false,
     });
     if (

@@ -1,7 +1,7 @@
 const moduleLib = require('../../src/module');
 const {default: patch, SandwormError} = require('../../src/patch');
 
-const getCurrentModuleMock = jest.fn(() => ({name: 'root', stack: []}));
+const getCurrentModuleInfoMock = jest.fn(() => ({name: 'root', stack: []}));
 const isModuleAllowedToExecuteMock = (allowed = true) => jest.fn(() => allowed);
 
 const testClassSpy = jest.fn();
@@ -18,11 +18,11 @@ let mod = {
   TestClass,
 };
 
-const moduleOriginals = [moduleLib.getCurrentModule, moduleLib.isModuleAllowedToExecute];
+const moduleOriginals = [moduleLib.getCurrentModuleInfo, moduleLib.isModuleAllowedToExecute];
 
 describe('patch', () => {
   beforeEach(() => {
-    moduleLib.getCurrentModule = getCurrentModuleMock;
+    moduleLib.getCurrentModuleInfo = getCurrentModuleInfoMock;
     moduleLib.isModuleAllowedToExecute = isModuleAllowedToExecuteMock();
 
     patch({
@@ -36,7 +36,7 @@ describe('patch', () => {
   });
 
   afterEach(() => {
-    [moduleLib.getCurrentModule] = moduleOriginals;
+    [moduleLib.getCurrentModuleInfo] = moduleOriginals;
     [, moduleLib.isModuleAllowedToExecute] = moduleOriginals;
     mod = {
       test: original,
@@ -50,11 +50,11 @@ describe('patch', () => {
 
     mod.test();
 
-    expect(getCurrentModuleMock).toBeCalledTimes(1);
+    expect(getCurrentModuleInfoMock).toBeCalledTimes(1);
     expect(original).toBeCalledTimes(1);
 
     const testClass = new mod.TestClass();
-    expect(getCurrentModuleMock).toBeCalledTimes(2);
+    expect(getCurrentModuleInfoMock).toBeCalledTimes(2);
     expect(testClass.property).toBe('test');
     expect(testClassSpy).toBeCalledTimes(1);
     expect(testClass).toBeInstanceOf(TestClass);

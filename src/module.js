@@ -68,7 +68,17 @@ export const mapStackItemToSource = (item) => {
 
 export const getModuleNameFromLocation = (location, allowURLs) => {
   // Infer the module name
-  if (location && location.includes('node_modules')) {
+  if (!location || typeof location !== 'string') {
+    return undefined;
+  }
+
+  if (location.startsWith('node:')) {
+    // locations like node:internal/modules/cjs/loader should map to node:internal
+    // node:fs should map to node:fs
+    return location.split('/')[0];
+  }
+
+  if (location.includes('node_modules')) {
     const components = location.split('/');
     const nodeModulesIndex = components.findIndex((v) => v === 'node_modules');
     let moduleName = components[nodeModulesIndex + 1];
@@ -89,35 +99,49 @@ export const getModuleNameFromLocation = (location, allowURLs) => {
       url = new URL(location);
       // eslint-disable-next-line no-empty
     } catch (error) {}
-    if (url && url.protocol !== 'node:') {
+    if (url) {
       return location;
     }
   }
 
-  return undefined;
+  return 'root';
 };
 
-export const getCurrentModule = ({stack: stackInput, allowURLs = false} = {}) => {
+export const getCurrentModuleInfo = ({stack: stackInput, allowURLs = false} = {}) => {
   try {
     const stack = (stackInput || currentStack())
-      .reverse()
       .map((item) => mapStackItemToSource(item, sourcemaps))
       .map(({item, mapping, mappingLine, mappingColumn}) => {
         const module = getModuleNameFromLocation(mapping, allowURLs);
 
         return {
           caller: item.caller,
+          called: item.called,
+          name: item.name,
+          alias: item.alias,
           file: item.file,
           fileLine: item.line,
           fileColumn: item.column,
           mapping,
           mappingLine,
           mappingColumn,
-          module: trustedModules.includes(module) ? undefined : module,
+          module,
         };
       });
 
-    const modules = stack.map(({module}) => module).filter((v) => v !== undefined);
+    const directCaller = stack.find(({module}) => module !== 'sandworm');
+    const lastModuleCaller = stack.find(
+      ({module}) => module !== 'sandworm' && module !== undefined && !module.startsWith('node:'),
+    );
+
+    const modules = stack
+      .reverse()
+      .map(({module}) =>
+        module === 'root' || trustedModules.includes(module) || module?.startsWith('node:')
+          ? undefined
+          : module,
+      )
+      .filter((v) => v !== undefined);
     let name = 'root';
 
     if (modules.length) {
@@ -133,7 +157,7 @@ export const getCurrentModule = ({stack: stackInput, allowURLs = false} = {}) =>
       }
     }
 
-    return {name, stack};
+    return {name, stack, directCaller, lastModuleCaller};
   } catch (error) {
     logger.error(error);
     return {name: 'root', error: error.message};
@@ -163,7 +187,25 @@ export const getModulePermissions = (module) => {
   return false;
 };
 
-export const isModuleAllowedToExecute = ({module, family, method}) => {
+export const isModuleAllowedToExecute = ({
+  module,
+  family,
+  method,
+  directCaller,
+  lastModuleCaller,
+}) => {
+  if (directCaller?.module?.startsWith?.('node:')) {
+    logger.debug(
+      '-> call has been allowed',
+      lastModuleCaller
+        ? `as a consequence of \`${lastModuleCaller.module}\` calling \`${
+            lastModuleCaller.alias || lastModuleCaller.name
+          }.${lastModuleCaller.called}\``
+        : '',
+    );
+    return true;
+  }
+
   const modulePermissions = getModulePermissions(module, permissions);
   if (typeof modulePermissions === 'boolean' && !method.needsExplicitPermission) {
     return modulePermissions;

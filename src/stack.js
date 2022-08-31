@@ -10,6 +10,8 @@ export const parseStackLine = (l) => {
   }
 
   let fileLineColumn = [];
+  let name;
+  let alias;
   let match;
 
   if (
@@ -17,6 +19,7 @@ export const parseStackLine = (l) => {
     (match = line.match(/at (.+) \((.+)\)/)) ||
     (line.slice(0, 3) !== 'at ' && (match = line.match(/(.*)@(.*)/)))
   ) {
+    [, name] = match;
     fileLineColumn = (
       match[2].match(/(.*):(\d+):(\d+)/) ||
       match[2].match(/(.*):(\d+)/) ||
@@ -29,11 +32,17 @@ export const parseStackLine = (l) => {
     return undefined;
   }
 
+  if (name?.includes?.(' [as ')) {
+    [name, alias] = name.slice(0, -1).split(' [as ');
+  }
+
   lineParseCache[line] = {
     beforeParse: line,
     file: nixSlashes(fileLineColumn[0] || ''),
     line: parseInt(fileLineColumn[1] || '', 10) || undefined,
     column: parseInt(fileLineColumn[2] || '', 10) || undefined,
+    name,
+    alias,
   };
   return lineParseCache[line];
 };
@@ -43,6 +52,17 @@ export const currentStack = () => {
   Error.stackTraceLimit = Infinity;
   const lines = (new Error().stack || '').split('\n');
   Error.stackTraceLimit = currentStackLimit;
-  const entries = lines.map((line) => line.trim()).map(parseStackLine);
-  return entries.filter((x) => x !== undefined);
+  const entries = lines
+    .map(parseStackLine)
+    .filter((x) => x !== undefined)
+    .map((value, index, original) => {
+      const pre = original[index + 1];
+      const post = original[index - 1];
+      return {
+        ...value,
+        caller: pre ? pre.alias || pre.name : undefined,
+        called: post ? post.alias || post.name : undefined,
+      };
+    });
+  return entries;
 };
