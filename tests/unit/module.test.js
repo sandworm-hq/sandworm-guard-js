@@ -4,7 +4,7 @@ import {SourceMapConsumer} from 'source-map-js';
 import {
   addSourceMap,
   addTrustedModules,
-  getCurrentModule,
+  getCurrentModuleInfo,
   getModuleNameFromLocation,
   getModulePermissions,
   isModuleAllowedToExecute,
@@ -113,6 +113,15 @@ describe('module', () => {
 
     expect(
       isModuleAllowedToExecute({
+        module: 'imate>one',
+        family: {name: 'imate'},
+        method: {name: 'method', needsExplicitPermission: true},
+        directCaller: {module: 'node:internal'},
+      }),
+    ).toBeTruthy();
+
+    expect(
+      isModuleAllowedToExecute({
         module: 'imate>two',
         family: {name: 'imate'},
         method: {name: 'method'},
@@ -195,9 +204,11 @@ describe('module', () => {
   });
 
   test('getModuleNameFromLocation', () => {
+    expect(getModuleNameFromLocation()).toBeUndefined();
+
     expect(
       getModuleNameFromLocation('/Users/jason/code/sandworm/tests/node/prod/stack.test.js'),
-    ).toBeUndefined();
+    ).toBe('root');
 
     expect(
       getModuleNameFromLocation('/Users/jason/code/sandworm/node_modules/lodash/lodash.js'),
@@ -207,7 +218,7 @@ describe('module', () => {
       getModuleNameFromLocation('/Users/jason/code/sandworm/node_modules/@apollo/client/index.js'),
     ).toBe('@apollo/client');
 
-    expect(getModuleNameFromLocation('http://localhost:3000/static/js/bundle.js')).toBeUndefined();
+    expect(getModuleNameFromLocation('http://localhost:3000/static/js/bundle.js')).toBe('root');
 
     expect(getModuleNameFromLocation('http://localhost:3000/static/js/bundle.js', true)).toBe(
       'http://localhost:3000/static/js/bundle.js',
@@ -220,20 +231,21 @@ describe('module', () => {
       ),
     ).toBe('chrome-extension://fmkadmapgofadopljbjfkapdkoienihi/build/react_devtools_backend.js');
 
-    expect(getModuleNameFromLocation('node:https')).toBeUndefined();
+    expect(getModuleNameFromLocation('node:https')).toBe('node:https');
+    expect(getModuleNameFromLocation('node:internal/modules/cjs/loader')).toBe('node:internal');
   });
 
-  test('getCurrentModule', () => {
+  test('getCurrentModuleInfo', () => {
     // Basic uses
-    expect(getCurrentModule({stack: []}).name).toBe('root');
-    expect(getCurrentModule({stack: [{file: 'app.js', line: 1, column: 1}]}).name).toBe('root');
+    expect(getCurrentModuleInfo({stack: []}).name).toBe('root');
+    expect(getCurrentModuleInfo({stack: [{file: 'app.js', line: 1, column: 1}]}).name).toBe('root');
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [{file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1}],
       }).name,
     ).toBe('module-name');
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [
           {file: 'app.js', line: 1, column: 1},
           {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
@@ -243,7 +255,7 @@ describe('module', () => {
 
     // Composite chains
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [
           {file: 'project/node_modules/other/root.js', line: 1, column: 1},
           {file: 'app.js', line: 1, column: 1},
@@ -254,7 +266,7 @@ describe('module', () => {
 
     // Ignore URLs by default
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [
           {file: 'project/node_modules/other/root.js', line: 1, column: 1},
           {file: 'app.js', line: 1, column: 1},
@@ -266,7 +278,7 @@ describe('module', () => {
 
     // Ignore extensions by default
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [
           {file: 'project/node_modules/other/root.js', line: 1, column: 1},
           {file: 'app.js', line: 1, column: 1},
@@ -280,7 +292,7 @@ describe('module', () => {
     // Allow extensions
     setIgnoreExtensions(false);
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [
           {file: 'project/node_modules/other/root.js', line: 1, column: 1},
           {file: 'app.js', line: 1, column: 1},
@@ -294,7 +306,7 @@ describe('module', () => {
 
     // Ignore URLs by default
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [
           {file: 'project/node_modules/other/root.js', line: 1, column: 1},
           {file: 'app.js', line: 1, column: 1},
@@ -305,7 +317,7 @@ describe('module', () => {
 
     // Allow URLs
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [
           {file: 'project/node_modules/other/root.js', line: 1, column: 1},
           {file: 'app.js', line: 1, column: 1},
@@ -318,13 +330,43 @@ describe('module', () => {
     // Ignore trusted modules
     addTrustedModules(['other']);
     expect(
-      getCurrentModule({
+      getCurrentModuleInfo({
         stack: [
           {file: 'project/node_modules/other/root.js', line: 1, column: 1},
           {file: 'app.js', line: 1, column: 1},
           {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
         ],
       }).name,
+    ).toBe('module-name');
+
+    expect(
+      getCurrentModuleInfo({
+        stack: [
+          {file: 'project/node_modules/sandworm/root.js', line: 1, column: 1},
+          {file: 'app.js', line: 1, column: 1},
+          {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
+        ],
+      }).directCaller.module,
+    ).toBe('root');
+
+    expect(
+      getCurrentModuleInfo({
+        stack: [
+          {file: 'project/node_modules/sandworm/root.js', line: 1, column: 1},
+          {file: 'node:internal/modules/cjs/loader', line: 1, column: 1},
+          {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
+        ],
+      }).directCaller.module,
+    ).toBe('node:internal');
+
+    expect(
+      getCurrentModuleInfo({
+        stack: [
+          {file: 'project/node_modules/sandworm/root.js', line: 1, column: 1},
+          {file: 'node:internal/modules/cjs/loader', line: 1, column: 1},
+          {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
+        ],
+      }).lastModuleCaller.module,
     ).toBe('module-name');
   });
 });

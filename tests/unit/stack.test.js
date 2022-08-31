@@ -3,53 +3,57 @@ const {parseStackLine, currentStack} = require('../../src/stack');
 describe('stack', () => {
   test('parse V8 stack lines', () => {
     const lines = [
-      ['at i (index.js:2:1)', 'index.js', 2, 1],
+      ['at i (index.js:2:1)', 'index.js', 2, 1, 'i'],
       [
         '    at Object.exports.test (/Users/jason/code/sandworm/tests/node/prod/stack.test.js:10:11)',
         '/Users/jason/code/sandworm/tests/node/prod/stack.test.js',
         10,
         11,
+        'Object.exports.test',
       ],
       [
         '    at eval (eval at <anonymous> (http://localhost:3000/static/js/bundle.js:196037:31), <anonymous>:1:1)',
         'http://localhost:3000/static/js/bundle.js',
         196037,
         31,
+        'eval',
       ],
       [
         '    at Object.<anonymous> (/Users/user/projects/Arbiter/arbiter/test.js:6:1)',
         '/Users/user/projects/Arbiter/arbiter/test.js',
         6,
         1,
+        'Object.<anonymous>',
       ],
       [
         '    at Object.send (chrome-extension://fmkadmapgofadopljbjfkapdkoienihi/build/react_devtools_backend.js:13173:14)',
         'chrome-extension://fmkadmapgofadopljbjfkapdkoienihi/build/react_devtools_backend.js',
         13173,
         14,
+        'Object.send',
       ],
       ['    at App.jsx:29:1', 'App.jsx', 29, 1],
-      ['    at new Promise (<anonymous>)', '', undefined, undefined],
+      ['    at new Promise (<anonymous>)', '', undefined, undefined, 'new Promise'],
       ['    at hook.js:1:131676', 'hook.js', 1, 131676],
       [
         '    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)',
         'node:internal/modules/run_main',
         81,
         12,
-      ],
-      [
-        '    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)',
-        'node:internal/modules/run_main',
-        81,
-        12,
+        'Function.executeUserEntryPoint',
+        'runMain',
       ],
     ];
-    lines.forEach(([line, expectedFile, expectedLine, expectedColumn]) => {
-      const {file, line: lineNumber, column} = parseStackLine(line);
-      expect(file).toBe(expectedFile);
-      expect(lineNumber).toBe(expectedLine);
-      expect(column).toBe(expectedColumn);
-    });
+    lines.forEach(
+      ([line, expectedFile, expectedLine, expectedColumn, expectedName, expectedAlias]) => {
+        const {file, line: lineNumber, column, name, alias} = parseStackLine(line);
+        expect(file).toBe(expectedFile);
+        expect(lineNumber).toBe(expectedLine);
+        expect(column).toBe(expectedColumn);
+        expect(name).toBe(expectedName);
+        expect(alias).toBe(expectedAlias);
+      },
+    );
   });
 
   test('Parse Safari/FF stack lines', () => {
