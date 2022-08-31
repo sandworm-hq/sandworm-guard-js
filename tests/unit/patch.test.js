@@ -1,7 +1,10 @@
 const moduleLib = require('../../src/module');
 const {default: patch, SandwormError} = require('../../src/patch');
 
-const getCurrentModuleInfoMock = jest.fn(() => ({name: 'root', stack: []}));
+const getCurrentModuleInfoMock = jest.fn(() => ({
+  name: 'root',
+  stack: [],
+}));
 const isModuleAllowedToExecuteMock = (allowed = true) => jest.fn(() => allowed);
 
 const testClassSpy = jest.fn();
@@ -11,10 +14,13 @@ class TestClass {
     this.property = 'test';
   }
 }
-const original = jest.fn();
-original.additionalProp = 12;
+const originalTest = jest.fn();
+originalTest.additionalProp = 12;
+originalTest.bind = jest.fn();
+const originalTestArgsLimit = jest.fn();
 let mod = {
-  test: original,
+  test: originalTest,
+  testArgsLimit: originalTestArgsLimit,
   TestClass,
 };
 
@@ -28,7 +34,11 @@ describe('patch', () => {
     patch({
       family: {
         name: 'test',
-        methods: [{name: 'test'}, {name: 'TestClass', isConstructor: true}],
+        methods: [
+          {name: 'test'},
+          {name: 'testArgsLimit', minArgsToTrigger: 2},
+          {name: 'TestClass', isConstructor: true},
+        ],
         originalRoot: () => mod,
         available: true,
       },
@@ -39,7 +49,8 @@ describe('patch', () => {
     [moduleLib.getCurrentModuleInfo] = moduleOriginals;
     [, moduleLib.isModuleAllowedToExecute] = moduleOriginals;
     mod = {
-      test: original,
+      test: originalTest,
+      testArgsLimit: originalTestArgsLimit,
       TestClass,
     };
   });
@@ -51,10 +62,24 @@ describe('patch', () => {
     mod.test();
 
     expect(getCurrentModuleInfoMock).toBeCalledTimes(1);
-    expect(original).toBeCalledTimes(1);
+    expect(moduleLib.isModuleAllowedToExecute).toBeCalledTimes(1);
+    expect(originalTest).toBeCalledTimes(1);
+
+    mod.test.bind(this);
+
+    expect(getCurrentModuleInfoMock).toBeCalledTimes(2);
+    expect(moduleLib.isModuleAllowedToExecute).toBeCalledTimes(1);
+    expect(originalTest.bind).toBeCalledTimes(1);
+
+    mod.test.bind(this, {});
+
+    expect(getCurrentModuleInfoMock).toBeCalledTimes(3);
+    expect(moduleLib.isModuleAllowedToExecute).toBeCalledTimes(2);
+    expect(originalTest.bind).toBeCalledTimes(2);
 
     const testClass = new mod.TestClass();
-    expect(getCurrentModuleInfoMock).toBeCalledTimes(2);
+    expect(getCurrentModuleInfoMock).toBeCalledTimes(4);
+    expect(moduleLib.isModuleAllowedToExecute).toBeCalledTimes(3);
     expect(testClass.property).toBe('test');
     expect(testClassSpy).toBeCalledTimes(1);
     expect(testClass).toBeInstanceOf(TestClass);
@@ -63,5 +88,16 @@ describe('patch', () => {
   test('call disallowed', () => {
     moduleLib.isModuleAllowedToExecute = isModuleAllowedToExecuteMock(false);
     expect(() => mod.test()).toThrowError(SandwormError);
+  });
+
+  test('argument count limit', () => {
+    moduleLib.isModuleAllowedToExecute = isModuleAllowedToExecuteMock(false);
+
+    mod.testArgsLimit(1);
+    expect(getCurrentModuleInfoMock).toBeCalledTimes(1);
+    expect(moduleLib.isModuleAllowedToExecute).not.toBeCalled();
+    expect(originalTestArgsLimit).toBeCalledTimes(1);
+
+    expect(() => mod.testArgsLimit(1, 2)).toThrowError(SandwormError);
   });
 });

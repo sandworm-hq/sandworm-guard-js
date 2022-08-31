@@ -29,16 +29,24 @@ const callExpects = ({call, family, method, firstArg, secondArg}) => {
   }
 };
 
-const expectCallToMatch = ({family, method, firstArg, secondArg, index = 0, fromRoot = false}) => {
-  // console.log(Sandworm.getHistory().map((call) => `${call.module}: ${call.family}.${call.method}`));
-  const call = Sandworm.getHistory().filter(({module}) =>
+const getCall = (index, fromRoot) =>
+  Sandworm.getHistory().filter(({module}) =>
     (fromRoot
       ? ['root']
       : ['jest-cli>@jest/core>jest-runner>jest-circus', 'jest-runner>jest-circus', 'jest-circus']
     ).includes(module),
   )[index];
 
+const expectCallToMatch = ({family, method, firstArg, secondArg, index = 0, fromRoot = false}) => {
+  // console.log(Sandworm.getHistory().map((call) => `${call.module}: ${call.family}.${call.method}`));
+  const call = getCall(index, fromRoot);
+
   callExpects({call, family, method, firstArg, secondArg});
+};
+
+const expectNoCall = (index = 0, fromRoot = false) => {
+  const call = getCall(index, fromRoot);
+  expect(call).toBeUndefined();
 };
 
 const expectCallToThrow = (call) => {
@@ -175,6 +183,7 @@ const webWorkerHasFeature = async (feature, page) => {
 const testif = (condition) => (condition ? test : test.skip);
 
 module.exports = {
+  expectNoCall,
   expectCallToMatch,
   expectWebCallToMatch,
   expectWebWorkerCallToMatch,
