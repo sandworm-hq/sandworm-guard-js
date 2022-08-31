@@ -35,7 +35,7 @@ export const setPermissions = (newPermissions = []) => {
 };
 
 export const setAllowsAll = (library) => {
-  const allExplicitPermissions = library.map(({name}) => name);
+  const allExplicitPermissions = ['bind', ...library.map(({name}) => name)];
   permissions = [
     {module: /.*/, permissions: allExplicitPermissions},
     {module: 'root', permissions: allExplicitPermissions},
