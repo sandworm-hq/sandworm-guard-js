@@ -1,0 +1,13 @@
+.circleci
+.github
+.vscode
+coverage
+scripts
+src
+tests
+.babelrc
+.eslintrc.json
+.prettierrc
+junit*.xml
+test.js
+webpack.config.cjs
