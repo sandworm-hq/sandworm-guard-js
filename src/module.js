@@ -5,7 +5,7 @@ const cachedPermissions = {};
 const defaultPermissions = {module: 'root', permissions: true};
 let permissions = [defaultPermissions];
 let trustedModules = ['sandworm', 'react-dom', 'scheduler'];
-let ignoreExtensions = true;
+
 const sourcemaps = {};
 
 export const addSourceMap = (file, map) => {
@@ -14,10 +14,6 @@ export const addSourceMap = (file, map) => {
 
 export const addTrustedModules = (additionalTrustedModules) => {
   trustedModules = [...trustedModules, ...additionalTrustedModules];
-};
-
-export const setIgnoreExtensions = (ignoreExtensionsOption) => {
-  ignoreExtensions = !!ignoreExtensionsOption;
 };
 
 export const setPermissions = (newPermissions = []) => {
@@ -143,21 +139,21 @@ export const getCurrentModuleInfo = ({stack: stackInput, allowURLs = false} = {}
       )
       .filter((v) => v !== undefined);
     let name = 'root';
+    let isExtension = false;
 
     if (modules.length) {
-      if (
-        ignoreExtensions &&
-        (modules[0].startsWith('chrome-extension://') || modules[0].startsWith('moz-extension://'))
-      ) {
-        name = 'root';
-      } else if (modules[0] === modules[modules.length - 1]) {
+      if (modules[0] === modules[modules.length - 1]) {
         [name] = modules;
       } else {
         name = modules.filter((v, i, a) => a.indexOf(v) === i).join('>');
       }
+
+      isExtension = !!modules.find(
+        (m) => m.startsWith('chrome-extension://') || m.startsWith('moz-extension://'),
+      );
     }
 
-    return {name, stack, directCaller, lastModuleCaller};
+    return {name, stack, directCaller, lastModuleCaller, isExtension};
   } catch (error) {
     logger.error(error);
     return {name: 'root', error: error.message};

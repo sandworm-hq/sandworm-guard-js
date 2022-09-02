@@ -1,5 +1,5 @@
 const moduleLib = require('../../src/module');
-const {default: patch, SandwormError} = require('../../src/patch');
+const {default: patch, SandwormError, setIgnoreExtensions} = require('../../src/patch');
 
 const getCurrentModuleInfoMock = jest.fn(() => ({
   name: 'root',
@@ -99,5 +99,36 @@ describe('patch', () => {
     expect(originalTestArgsLimit).toBeCalledTimes(1);
 
     expect(() => mod.testArgsLimit(1, 2)).toThrowError(SandwormError);
+  });
+
+  test('ignore extensions', () => {
+    moduleLib.getCurrentModuleInfo = jest.fn(() => ({
+      name: 'chrome-extension://aaa/test.js>one>two',
+      stack: [],
+      isExtension: true,
+    }));
+
+    mod.test(1);
+    expect(moduleLib.getCurrentModuleInfo).toBeCalledTimes(1);
+    expect(moduleLib.isModuleAllowedToExecute).not.toBeCalled();
+    expect(originalTest).toBeCalledTimes(1);
+
+    moduleLib.getCurrentModuleInfo = jest.fn(() => ({
+      name: 'module>moz-extension://aaa/test.js>another',
+      stack: [],
+      isExtension: true,
+    }));
+
+    mod.test(1);
+    expect(moduleLib.getCurrentModuleInfo).toBeCalledTimes(1);
+    expect(moduleLib.isModuleAllowedToExecute).not.toBeCalled();
+    expect(originalTest).toBeCalledTimes(2);
+
+    setIgnoreExtensions(false);
+    mod.test(1);
+    expect(moduleLib.getCurrentModuleInfo).toBeCalledTimes(2);
+    expect(moduleLib.isModuleAllowedToExecute).toBeCalledTimes(1);
+    expect(originalTest).toBeCalledTimes(3);
+    setIgnoreExtensions(true);
   });
 });
