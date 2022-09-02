@@ -137,19 +137,19 @@ workflows:
             - build
           filters:
             tags:
-              ignore: /^v.*/
+              ignore: /^sandworm-v.*/
       - test-web:
           requires:
             - build
           filters:
             tags:
-              ignore: /^v.*/
+              ignore: /^sandworm-v.*/
       - test-node:
           requires:
             - build
           filters:
             tags:
-              ignore: /^v.*/
+              ignore: /^sandworm-v.*/
           matrix:
             parameters:
               version:
@@ -181,7 +181,7 @@ workflows:
             branches:
               only: main
             tags:
-              ignore: /^v.*/
+              ignore: /^sandworm-v.*/
       - release-pr:
           requires:
             - github-release
@@ -189,7 +189,7 @@ workflows:
             branches:
               only: main
             tags:
-              ignore: /^v.*/
+              ignore: /^sandworm-v.*/
       - publish-npm:
           requires:
             - build
@@ -197,4 +197,4 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^v.*/
+              only: /^sandworm-v.*/
