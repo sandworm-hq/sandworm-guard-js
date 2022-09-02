@@ -10,10 +10,9 @@ import {
   addTrustedModules,
   getCurrentModuleInfo,
   setAllowsAll,
-  setIgnoreExtensions,
   setPermissions,
 } from './module';
-import patch, {SandwormError} from './patch';
+import patch, {SandwormError, setIgnoreExtensions} from './patch';
 
 let initialized = false;
 let ready = false;

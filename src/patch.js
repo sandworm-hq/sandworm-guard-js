@@ -1,6 +1,12 @@
 import logger from './logger';
 import {getCurrentModuleInfo, isModuleAllowedToExecute} from './module';
 
+let ignoreExtensions = true;
+
+export const setIgnoreExtensions = (ignoreExtensionsOption) => {
+  ignoreExtensions = !!ignoreExtensionsOption;
+};
+
 export class SandwormError extends Error {
   constructor(message) {
     super(message);
@@ -22,14 +28,16 @@ const buildPatch = (family, method, track = () => {}) =>
       stack,
       directCaller,
       lastModuleCaller,
+      isExtension,
       error,
     } = getCurrentModuleInfo({
       allowURLs: true,
     });
 
     if (
-      typeof method.minArgsToTrigger === 'number' &&
-      (args?.length || 0) < method.minArgsToTrigger
+      (typeof method.minArgsToTrigger === 'number' &&
+        (args?.length || 0) < method.minArgsToTrigger) ||
+      (ignoreExtensions && isExtension)
     ) {
       allowed = true;
     } else {
