@@ -75,7 +75,7 @@ const init = ({
       devMode = devModeOption;
     }
 
-    if (devMode && !!verbose) {
+    if (verbose === true) {
       logger.level = 'debug';
     }
 
