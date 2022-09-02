@@ -83,16 +83,47 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - node/install:
-          install-yarn: true
       - run:
           name: Run tests
           command: yarn test-node-unit
       - store_test_results:
           path: ./
+  release-pr:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install release-please
+          command: npm i release-please -g
+      - run:
+          name: Create or update release PR
+          command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm-js
+  github-release:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install release-please
+          command: npm i release-please -g
+      - run:
+          name: Create release
+          command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm-js
+  publish-npm:
+    executor: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run: 
+          name: Auth With NPM
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+      - run:
+          name: Publish to NPM
+          command: npm publish
         
 workflows:
-  test:
+  test-n-publish:
     jobs:
       - setup
       - lint:
@@ -104,12 +135,21 @@ workflows:
       - test-unit:
           requires:
             - build
+          filters:
+            tags:
+              ignore: /^v.*/
       - test-web:
           requires:
             - build
+          filters:
+            tags:
+              ignore: /^v.*/
       - test-node:
           requires:
             - build
+          filters:
+            tags:
+              ignore: /^v.*/
           matrix:
             parameters:
               version:
@@ -132,3 +172,29 @@ workflows:
                 - "17.9"
                 # - "18.0"
                 # - "18.4"
+      - github-release:
+          requires:
+            - test-unit
+            - test-web
+            - test-node
+          filters:
+            branches:
+              only: main
+            tags:
+              ignore: /^v.*/
+      - release-pr:
+          requires:
+            - github-release
+          filters:
+            branches:
+              only: main
+            tags:
+              ignore: /^v.*/
+      - publish-npm:
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
+            tags:
+              only: /^v.*/
