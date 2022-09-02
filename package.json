@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "webpack --watch --progress",
     "build": "webpack",
+    "lint": "yarn eslint ./src/ ./tests/ ./scripts/ ./cli/",
     "test-node-unit": "jest --noStackTrace --config=tests/configs/jest.unit.config.js",
     "test-node-capture": "jest --noStackTrace --config=tests/configs/jest.capture.config.js",
     "test-node-enforce": "jest --noStackTrace --config=tests/configs/jest.enforce.config.js",
@@ -32,6 +33,7 @@
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^26.6.0",
     "eslint-plugin-jsx-a11y": "^6.5.1",

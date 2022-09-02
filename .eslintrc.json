@@ -91,5 +91,10 @@
   ],
   "env": {
     "jest": true
-  }
+  },
+  "ignorePatterns": [
+    "**/node_modules/**/*.js",
+    "**/nosources-cheap-source-map/*.js",
+    "**/inline-nosources-cheap-source-map/*.js"
+  ]
 }
