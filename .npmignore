@@ -16,3 +16,4 @@ release-please-config.json
 dist/node_modules
 cli/frontend/node_modules
 cli/frontend/build/static/js/bundle.js.map
+cli/frontend/yarn.lock
