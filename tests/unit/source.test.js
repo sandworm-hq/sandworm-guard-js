@@ -2,7 +2,7 @@
 global.__non_webpack_require__ = require;
 
 const path = require('path');
-const {SourceMapConsumer} = require('source-map-js');
+const {TraceMap} = require('@jridgewell/trace-mapping');
 const {
   getSourceFromUrl,
   getSourceFromPath,
@@ -49,7 +49,7 @@ describe('source', () => {
     const source = await getSourceMap(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'main.js.map'),
     );
-    expect(source).toBeInstanceOf(SourceMapConsumer);
+    expect(source).toBeInstanceOf(TraceMap);
 
     const nullSource = await getSourceMap(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'bogus.js.map'),
@@ -61,12 +61,12 @@ describe('source', () => {
     const externalSource = await getSourceMapFromSource(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'main.js'),
     );
-    expect(externalSource).toBeInstanceOf(SourceMapConsumer);
+    expect(externalSource).toBeInstanceOf(TraceMap);
 
     const internalSource = await getSourceMapFromSource(
       path.resolve(__dirname, 'inline-nosources-cheap-source-map', 'main.js'),
     );
-    expect(internalSource).toBeInstanceOf(SourceMapConsumer);
+    expect(internalSource).toBeInstanceOf(TraceMap);
 
     const nullSource = await getSourceMapFromSource(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'bogus.js'),

@@ -1,4 +1,4 @@
-import {SourceMapConsumer} from 'source-map-js';
+import {TraceMap} from '@jridgewell/trace-mapping';
 
 let fs;
 try {
@@ -77,7 +77,7 @@ export const getSourceMapFromSource = async (location) => {
       }
 
       if (sourceMap) {
-        const sourceMapConsumer = await new SourceMapConsumer(sourceMap);
+        const sourceMapConsumer = await new TraceMap(sourceMap);
 
         logger.debug('loaded sourcemap');
         return sourceMapConsumer;
@@ -98,7 +98,7 @@ export const getSourceMap = async (location) => {
     const sourceMap = await getSource(location);
 
     if (sourceMap) {
-      const sourceMapConsumer = await new SourceMapConsumer(sourceMap);
+      const sourceMapConsumer = await new TraceMap(sourceMap);
       return sourceMapConsumer;
     }
 

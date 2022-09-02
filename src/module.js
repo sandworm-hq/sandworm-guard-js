@@ -1,3 +1,5 @@
+import {originalPositionFor} from '@jridgewell/trace-mapping';
+
 import logger from './logger';
 import {currentStack} from './stack';
 
@@ -49,7 +51,7 @@ export const mapStackItemToSource = (item) => {
   let mappingLine = item?.line;
   let mappingColumn = item?.column;
   if (originalFile && sourcemaps?.[originalFile]) {
-    const originalItem = sourcemaps[originalFile].originalPositionFor({
+    const originalItem = originalPositionFor(sourcemaps[originalFile], {
       line: item.line,
       column: item.column,
     });

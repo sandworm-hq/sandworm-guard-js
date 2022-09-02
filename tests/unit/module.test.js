@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {SourceMapConsumer} from 'source-map-js';
+import {TraceMap} from '@jridgewell/trace-mapping';
 import {
   addSourceMap,
   addTrustedModules,
@@ -70,7 +70,7 @@ describe('module', () => {
       mappingColumn: undefined,
     });
 
-    const sourcemap = new SourceMapConsumer(
+    const sourcemap = new TraceMap(
       fs.readFileSync(path.join(__dirname, 'nosources-cheap-source-map', 'main.js.map'), 'utf8'),
     );
 
