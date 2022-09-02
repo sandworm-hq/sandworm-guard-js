@@ -24,6 +24,9 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "ignorePatterns": [
+      "**/bundle.js"
     ]
   },
   "browserslist": {

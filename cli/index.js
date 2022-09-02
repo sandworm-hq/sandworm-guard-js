@@ -14,24 +14,18 @@ const server = http.createServer((request, response) => {
   switch (request.url) {
     case '/':
       response.writeHead(200, {'Content-Type': 'text/html'});
-      response.end(
-        fs.readFileSync(path.join(__dirname, 'sandworm-inspector', 'build', 'index.html')),
-      );
+      response.end(fs.readFileSync(path.join(__dirname, 'frontend', 'build', 'index.html')));
       break;
     case '/static/js/bundle.js':
       response.writeHead(200, {'Content-Type': 'text/html'});
       response.end(
-        fs.readFileSync(
-          path.join(__dirname, 'sandworm-inspector', 'build', 'static', 'js', 'bundle.js'),
-        ),
+        fs.readFileSync(path.join(__dirname, 'frontend', 'build', 'static', 'js', 'bundle.js')),
       );
       break;
     case '/static/js/bundle.js.map':
       response.writeHead(200, {'Content-Type': 'text/html'});
       response.end(
-        fs.readFileSync(
-          path.join(__dirname, 'sandworm-inspector', 'build', 'static', 'js', 'bundle.js.map'),
-        ),
+        fs.readFileSync(path.join(__dirname, 'frontend', 'build', 'static', 'js', 'bundle.js.map')),
       );
       break;
     case '/ingest': {
