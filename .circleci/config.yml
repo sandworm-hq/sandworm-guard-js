@@ -21,6 +21,15 @@ jobs:
           root: .
           paths:
             - '*'
+  lint:
+    executor:
+      name: node/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Lint code
+          command: yarn lint
   build:
     executor:
       name: node/default
@@ -86,9 +95,12 @@ workflows:
   test:
     jobs:
       - setup
-      - build:
+      - lint:
           requires:
             - setup
+      - build:
+          requires:
+            - lint
       - test-unit:
           requires:
             - build
