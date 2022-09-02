@@ -60,3 +60,6 @@ jspm_packages/
 
 # Quick dev tests file
 test.js
+
+# Sourcemap for React inspector app
+cli/frontend/build/static/js/bundle.js.map
