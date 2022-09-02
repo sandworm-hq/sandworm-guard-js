@@ -95,7 +95,7 @@ jobs:
           at: .
       - run:
           name: Install release-please
-          command: npm i release-please -g
+          command: yarn global add release-please
       - run:
           name: Create or update release PR
           command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm-js
@@ -106,7 +106,7 @@ jobs:
           at: .
       - run:
           name: Install release-please
-          command: npm i release-please -g
+          command: yarn global add release-please
       - run:
           name: Create release
           command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm-js
@@ -194,7 +194,5 @@ workflows:
           requires:
             - build
           filters:
-            branches:
-              only: main
             tags:
               only: /^v.*/
