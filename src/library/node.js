@@ -9,11 +9,13 @@ const library = () =>
           name: 'exec',
           description: 'Spawn a shell and execute an arbitrary command',
           url: 'https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback',
+          needsExplicitPermission: true,
         },
         {
           name: 'execFile',
           description: 'Spawn a shell and execute an arbitrary file',
           url: 'https://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback',
+          needsExplicitPermission: true,
         },
         {
           name: 'fork',
@@ -29,11 +31,13 @@ const library = () =>
           name: 'execFileSync',
           description: 'Spawn a shell and execute an arbitrary file',
           url: 'https://nodejs.org/api/child_process.html#child_process_child_process_execfilesync_file_args_options',
+          needsExplicitPermission: true,
         },
         {
           name: 'execSync',
           description: 'Spawn a shell and execute an arbitrary command',
           url: 'https://nodejs.org/api/child_process.html#child_processexecsynccommand-options',
+          needsExplicitPermission: true,
         },
         {
           name: 'spawnSync',
@@ -1083,6 +1087,7 @@ const library = () =>
           name: 'dlopen',
           description: 'Load C++ addons',
           url: 'https://nodejs.org/api/process.html#processdlopenmodule-filename-flags',
+          needsExplicitPermission: true,
         },
         {
           name: 'emitWarning',
