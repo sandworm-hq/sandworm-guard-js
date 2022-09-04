@@ -437,3 +437,5 @@
 | `XMLHttpRequest.send` | Send data via a web request | [Docs](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send) |
 | `XMLHttpRequest.setRequestHeader` | Set a request header | [Docs](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader) |
 | `XMLHttpRequest.XMLHttpRequest` | Communicate with a web server | [Docs](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/XMLHttpRequest) |
+## `bind` calls
+For each method listed above, Sandworm also intercepts `bind` calls. To allow `bind` calls with more than one argument, the `bind.args` permission is required. [Read more](README.md#bind-calls).

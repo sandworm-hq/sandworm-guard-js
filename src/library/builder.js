@@ -91,4 +91,7 @@ const node = ({name, methods, globalMethod}) => {
   };
 };
 
-module.exports = {web, node};
+module.exports = {
+  buildNodeLibraryFrom: (lib) => lib.map((family) => node(family)),
+  buildWebLibraryFrom: (lib) => lib.reduce((acc, cur) => [...acc, ...web(cur)], []),
+};

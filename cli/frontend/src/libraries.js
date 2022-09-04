@@ -1,5 +1,6 @@
-import webLibraryGenerator from './library/web';
-import nodeLibraryGenerator from './library/node';
+import webLibraryData from './library/web.json';
+import nodeLibraryData from './library/node.json';
+import { buildNodeLibraryFrom, buildWebLibraryFrom } from './library/builder';
 
 const processLibrary = (library) =>
   library
@@ -16,5 +17,5 @@ const processLibrary = (library) =>
     }, [])
     .sort((a, b) => a.name.localeCompare(b.name));
 
-export const webLibrary = processLibrary(webLibraryGenerator());
-export const nodeLibrary = processLibrary(nodeLibraryGenerator());
+export const webLibrary = processLibrary(buildWebLibraryFrom(webLibraryData));
+export const nodeLibrary = processLibrary(buildNodeLibraryFrom(nodeLibraryData));
