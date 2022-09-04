@@ -1,8 +1,8 @@
 import {currentStack} from './stack';
 import {getSourceMap, getSourceMapFromSource} from './source';
 import platform, {PLATFORMS} from './platform';
-import webLibrary from './library/web';
-import nodeLibrary from './library/node';
+import webLibrary from './library/web.min.json';
+import nodeLibrary from './library/node.min.json';
 import logger from './logger';
 import track, {setSkipTracking, setTrackingServer} from './track';
 import {
@@ -13,6 +13,7 @@ import {
   setPermissions,
 } from './module';
 import patch, {SandwormError, setIgnoreExtensions} from './patch';
+import {buildNodeLibraryFrom, buildWebLibraryFrom} from './library/builder';
 
 let initialized = false;
 let ready = false;
@@ -92,9 +93,9 @@ const init = ({
     let library = [];
 
     if (currentPlatform === PLATFORMS.WEB) {
-      library = webLibrary();
+      library = buildWebLibraryFrom(webLibrary);
     } else if (currentPlatform === PLATFORMS.NODE) {
-      library = nodeLibrary();
+      library = buildNodeLibraryFrom(nodeLibrary);
     } else {
       logger.debug('current platform is not supported');
     }

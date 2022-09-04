@@ -18,7 +18,11 @@
     "test-web": "npx playwright test --config=tests/configs/playwright.config.js",
     "test-node-ce": "yarn test-node-enforce && yarn test-node-capture",
     "test-node-all": "yarn test-node-ce && yarn test-node-unit",
-    "test-all": "yarn test-node-all && yarn test-web"
+    "test-all": "yarn test-node-all && yarn test-web",
+    "build-library-md": "node scripts/build-library-md.js",
+    "build-library-min": "node scripts/build-library-min.js",
+    "build-library": "yarn build-library-md && yarn build-library-min",
+    "prepare": "husky install"
   },
   "bin": "cli/index.js",
   "author": "Sandworm <dev@sandworm.dev>",
@@ -40,6 +44,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "husky": "^8.0.0",
     "jest": "^27.5.1",
     "jest-junit": "^14.0.0",
     "playwright-watch": "^1.3.23",
