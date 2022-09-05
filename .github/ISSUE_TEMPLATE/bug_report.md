@@ -6,6 +6,8 @@ labels: bug
 assignees: gabidobo
 
 ---
+**Sandworm version**
+The library version you're using.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
