@@ -1,6 +1,7 @@
 ![Sandworm.JS](logo.svg)
 
 [![npm](https://img.shields.io/npm/v/sandworm?style=flat-square)](https://www.npmjs.com/package/sandworm) [![NPM](https://img.shields.io/npm/l/sandworm?style=flat-square)](https://github.com/sandworm-hq/sandworm-js/blob/main/LICENSE) [![CircleCI](https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-js?style=flat-square)](https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js) ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/sandworm?style=flat-square) [![Discord](https://img.shields.io/discord/1014951189646934137?style=flat-square)](https://discord.gg/UunGwfxS23)
+[![Maintainability](https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/maintainability)](https://codeclimate.com/github/sandworm-hq/sandworm-js/maintainability) <a href="https://codeclimate.com/github/sandworm-hq/sandworm-js/test_coverage"><img src="https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/test_coverage" /></a>
 
 ## TL;DR
 - Sandworm intercepts all sensitive Node & browser APIs, like `child_process.exec` or `fetch`.
