@@ -8,11 +8,9 @@ Following these guidelines helps to communicate that you respect the time of the
 
 Sandworm is an open source project and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into Sandworm itself.
 
-Feel free to ask for help; everyone is a beginner at first! Join our [Discord channel](https://discord.gg/UunGwfxS23) to chat with the core team and other devs (please, don't use the GitHub issue tracker for support questions).
-
 ## How to report a bug
 
-If you find a security issue or a vulnerability in Sandworm, please do NOT open an issue. Email [security@sandworm.dev](mailto:security@sandworm.dev) instead.
+If you find a security issue or a vulnerability in Sandworm, please do NOT open an issue. See [SECURITY.md](SECURITY.md) instead.
 
 When filing an issue with our GitHub issue tracker, make sure to answer these five questions:
 - What version of Sandworm.JS are you using?
@@ -25,7 +23,7 @@ Please add the `bug` label to all bug-reporting issues.
 
 ## How to suggest a feature or enhancement
 
-If you find yourself wishing for a feature that doesn't exist in Sandworm, you are probably not alone! Please open an issue on our issues list on GitHub (and add the `enhancement` label to it) which describes the feature you would like to see, why you need it, and how it should work.
+If you find yourself wishing for a feature that doesn't exist in Sandworm, you are probably not alone! Please [create a new discussion here](https://github.com/sandworm-hq/sandworm-js/discussions/categories/ideas) which describes the feature you would like to see, why you need it, and how it should work.
 
 ## Ground Rules
 
