@@ -16,6 +16,13 @@
 - Install it as an `npm` module in your existing Node or browser app.
 - Use the Inspector CLI tool to monitor activity and permissions.
 
+### Get involved
+- Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm-js/discussions/categories/q-a).
+- Have a feature request? [Post it here](https://github.com/sandworm-hq/sandworm-js/discussions/categories/ideas).
+- Did you find a security issue? [See SECURITY.md](SECURITY.md).
+- Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-js/issues/new/choose).
+- Want to write some code? See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## ToC
 - [Overview](#overview)
 - [Getting Started](#getting-started)
@@ -35,7 +42,7 @@
   - [Configuring Sourcemaps](#configuring-sourcemaps)
   - [Multiple Source Files](#multiple-source-files)
 - [How Sandworm is Tested](#how-sandworm-is-tested)
-- [Constributing](CONTRIBUTING.md)
+- [Contributing](CONTRIBUTING.md)
 
 ## Overview
 Sandworm.JS is a sandboxing & malware detection tool for npm packages. Rather than relying on CVE advisories, 
@@ -262,10 +269,3 @@ Sandworm has several layers of automated testing:
 - Jest is used to run unit tests on the core Sandworm source files. See the `tests/unit` directory.
 
 Check out our latest test run inside our [CircleCI pipeline](https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js).
-
-## Contributing
-- Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm-js/discussions/categories/q-a).
-- Have a feature request? [Post it here](https://github.com/sandworm-hq/sandworm-js/discussions/categories/ideas).
-- Did you find a security issue? [See SECURITY.md](SECURITY.md).
-- Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-js/issues/new/choose).
-- Want to write some code? See [CONTRIBUTING.md](CONTRIBUTING.md).
