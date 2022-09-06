@@ -24,6 +24,7 @@ export const setSkipTracking = (skipTrackingOption) => {
 };
 
 // Grab the original methods before we monkey patch them
+// so that tracking calls do not get tracked causing an infinite loop
 if (http) {
   originals.http = {
     request: http.request,
@@ -38,6 +39,8 @@ if (hasXMLHTTPRequest) {
   };
 }
 
+// Remove circular references from method invoke arguments getting
+// converted to JSON to be tracked
 export const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (key, value) => {
@@ -105,6 +108,7 @@ export default (event) => {
     return;
   }
 
+  // Add to queue and debounce sending to server
   batch.push({...event});
 
   if (!currentTimer) {
