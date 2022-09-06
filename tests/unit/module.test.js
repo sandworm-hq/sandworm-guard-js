@@ -10,7 +10,6 @@ import {
   isModuleAllowedToExecute,
   mapStackItemToSource,
   setAllowsAll,
-  setIgnoreExtensions,
   setPermissions,
 } from '../../src/module';
 
@@ -294,21 +293,6 @@ describe('module', () => {
       }).name,
     ).toBe('module-name>other');
 
-    // Ignore extensions by default
-    expect(
-      getCurrentModuleInfo({
-        stack: [
-          {file: 'project/node_modules/other/root.js', line: 1, column: 1},
-          {file: 'app.js', line: 1, column: 1},
-          {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
-          {file: 'chrome-extension://214324234523/test.js', line: 1, column: 1},
-        ],
-        allowURLs: true,
-      }).name,
-    ).toBe('root');
-
-    // Allow extensions
-    setIgnoreExtensions(false);
     expect(
       getCurrentModuleInfo({
         stack: [
@@ -320,7 +304,18 @@ describe('module', () => {
         allowURLs: true,
       }).name,
     ).toBe('chrome-extension://214324234523/test.js>module-name>other');
-    setIgnoreExtensions(true);
+
+    expect(
+      getCurrentModuleInfo({
+        stack: [
+          {file: 'project/node_modules/other/root.js', line: 1, column: 1},
+          {file: 'app.js', line: 1, column: 1},
+          {file: 'moz-extension://214324234523/test.js', line: 1, column: 1},
+          {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
+        ],
+        allowURLs: true,
+      }).isExtension,
+    ).toBeTruthy();
 
     // Ignore URLs by default
     expect(
