@@ -23,12 +23,12 @@ stream.write('# Sandworm.JS Library\n');
 stream.write('## Node\n');
 writeLib(buildNodeLibraryFrom(nodeLibrary));
 
-stream.write('## Web\n');
+stream.write('\n## Web\n');
 writeLib(buildWebLibraryFrom(webLibrary));
 
-stream.write('## `bind` calls\n');
+stream.write('\n## `bind` calls\n');
 stream.write(
-  'For each method listed above, Sandworm also intercepts `bind` calls. To allow `bind` calls with more than one argument, the `bind.args` permission is required. [Read more](README.md#bind-calls).',
+  'For each method listed above, Sandworm also intercepts `bind` calls. To allow `bind` calls with more than one argument, the `bind.args` permission is required. [Read more](/README.md#bind-calls).',
 );
 
 stream.end();
