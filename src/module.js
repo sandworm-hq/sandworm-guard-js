@@ -194,7 +194,7 @@ export const isModuleAllowedToExecute = ({
   directCaller,
   lastModuleCaller,
 }) => {
-  if (directCaller?.module?.startsWith?.('node:')) {
+  if (directCaller?.module?.startsWith?.('node:') && !method.needsExplicitPermission) {
     logger.debug(
       '-> call has been allowed',
       lastModuleCaller

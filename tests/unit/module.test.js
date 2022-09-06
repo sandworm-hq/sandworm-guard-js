@@ -118,6 +118,15 @@ describe('module', () => {
         method: {name: 'method', needsExplicitPermission: true},
         directCaller: {module: 'node:internal'},
       }),
+    ).toBeFalsy();
+
+    expect(
+      isModuleAllowedToExecute({
+        module: 'imate>one',
+        family: {name: 'imate'},
+        method: {name: 'method'},
+        directCaller: {module: 'node:internal'},
+      }),
     ).toBeTruthy();
 
     expect(
@@ -127,6 +136,15 @@ describe('module', () => {
         method: {name: 'method'},
       }),
     ).toBeFalsy();
+
+    expect(
+      isModuleAllowedToExecute({
+        module: 'imate>two',
+        family: {name: 'imate'},
+        method: {name: 'method'},
+        directCaller: {module: 'node:internal'},
+      }),
+    ).toBeTruthy();
 
     expect(
       isModuleAllowedToExecute({
