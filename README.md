@@ -208,12 +208,11 @@ Sometimes, you might want to exclude specific module names from the caller path,
 
 ### Third Party Scripts
 Sandworm interprets scripts loaded via the `<script>` tag as individual modules. This is why, for example, you might see `https://googletagmanager.com` invoking `Beacon.sendBeacon` whenever your app sends analytics data. To modify this behavior:
-- set the `allowURLs` config to false, or
 - add the script to the `trustedModules` config array, or
 - if the script is part of the app and built with a bundler, provide the path to a source map via the `loadSourceMaps` config option.
 
 ### Browser Extensions
-When the `allowURLs` config is `true`, Sandworm can also catch activity coming from local, user-installed browser extensions. To enable this, set the `ignoreExtensions` config option to `false`.
+Sandworm can also catch activity coming from local, user-installed browser extensions. To enable this, set the `ignoreExtensions` config option to `false`. By default (`ignoreExtensions: true`), any invoke that has a browser extension anywhere in the call path will be passed through.
 
 ## Configuration Options
 | Option | Default | Description |
