@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v0.1.0...sandworm-v0.2.0) (2022-09-07)
+
+
+### Features
+
+* allow verbose logging in prod mode ([9170b3b](https://github.com/sandworm-hq/sandworm-js/commit/9170b3b843f63e05ed192fa4ebb00e7738a39999))
+* remove unused library data from build ([b73e398](https://github.com/sandworm-hq/sandworm-js/commit/b73e39814cb39178028c692a1a1a23c5b2548522))
+
+
+### Bug Fixes
+
+* always require perms for high-risk modules ([f9e9b21](https://github.com/sandworm-hq/sandworm-js/commit/f9e9b213be5a92958eb26a2117c2406dfdd1f981))
+* ignoring browser extension traffic ([24196bd](https://github.com/sandworm-hq/sandworm-js/commit/24196bd74d6a6b930f164aa2c41eae32751023bb))
+* mark sensitive process/child_process methods ([d15025e](https://github.com/sandworm-hq/sandworm-js/commit/d15025e2b2b348f62e10ccc7b3b2e37d618e670d))
+
 ## [0.1.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v0.0.1...sandworm-v0.1.0) (2022-09-02)
 
 
