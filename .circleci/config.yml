@@ -131,7 +131,7 @@ jobs:
           command: npm publish
         
 workflows:
-  test-n-publish:
+  test:
     jobs:
       - setup
       - lint:
@@ -143,21 +143,12 @@ workflows:
       - test-unit:
           requires:
             - build
-          filters:
-            tags:
-              ignore: /^sandworm-v.*/
       - test-web:
           requires:
             - build
-          filters:
-            tags:
-              ignore: /^sandworm-v.*/
       - test-node:
           requires:
             - build
-          filters:
-            tags:
-              ignore: /^sandworm-v.*/
           matrix:
             parameters:
               version:
@@ -188,16 +179,36 @@ workflows:
           filters:
             branches:
               only: main
-            tags:
-              ignore: /^sandworm-v.*/
       - release-pr:
           requires:
             - github-release
           filters:
             branches:
               only: main
+  publish:
+    jobs:
+      - setup:
+          filters:
+            branches:
+              ignore: /.*/
             tags:
-              ignore: /^sandworm-v.*/
+              only: /^sandworm-v.*/
+      - lint:
+          requires:
+            - setup
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^sandworm-v.*/
+      - build:
+          requires:
+            - lint
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^sandworm-v.*/
       - publish-npm:
           requires:
             - build
