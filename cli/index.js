@@ -1,14 +1,70 @@
 #!/usr/bin/env node
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const logger = console;
 const port = process.env.SANDWORM_INSPECTOR_PORT || 7071;
 const refreshRate = 1000; // in milliseconds
+// Each Inspector run gets a sessionId to help us make sense of telemetry data
+const sessionId = crypto.randomUUID();
 
 let history = [];
 const eventSubscribers = [];
+
+const disableTelemetry = process.argv.includes('--no-telemetry');
+
+const createTelemetryBody = (data) =>
+  JSON.stringify(
+    data
+      .map((event) => {
+        let {module} = event;
+        try {
+          const url = new URL(module);
+          if (url.protocol === 'http:' || url.protocol === 'https:') {
+            // Truncate this URL so we don't collect private data
+            module = url.hostname;
+          }
+          // eslint-disable-next-line no-empty
+        } catch (error) {}
+        return {
+          module,
+          family: event.family,
+          method: event.method,
+          sessionId,
+        };
+      })
+      // We only care about package activity
+      .filter(({module}) => module !== 'root'),
+  );
+
+// This sends anonymous data about module activity to our collection service.
+// We use this to build an open catalogue of package permission requirements.
+// To disable, run the Inspector with `--no-telemetry`
+const sendTelemetry = (data) => {
+  if (disableTelemetry) {
+    return;
+  }
+
+  const body = createTelemetryBody(data);
+  const req = https.request({
+    hostname: 'collect.sandworm.dev',
+    port: 443,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': body.length,
+    },
+  });
+
+  req.on('error', (error) => {
+    logger.error('collection failed:', error);
+  });
+  req.write(body);
+  req.end();
+};
 
 const server = http.createServer((request, response) => {
   switch (request.url) {
@@ -51,6 +107,7 @@ const server = http.createServer((request, response) => {
       request.on('end', () => {
         try {
           const body = JSON.parse(stringBody);
+          sendTelemetry(body);
 
           // Add a UID to every event
           // React can use this as a unique event key when rendering the UI
