@@ -1,5 +1,10 @@
 const moduleLib = require('../../src/module');
-const {default: patch, SandwormError, setIgnoreExtensions} = require('../../src/patch');
+const {
+  default: patch,
+  SandwormError,
+  setIgnoreExtensions,
+  setAccessDeniedCallback,
+} = require('../../src/patch');
 
 const getCurrentModuleInfoMock = jest.fn(() => ({
   name: 'root',
@@ -87,6 +92,26 @@ describe('patch', () => {
 
   test('call disallowed', () => {
     moduleLib.isModuleAllowedToExecute = isModuleAllowedToExecuteMock(false);
+    expect(() => mod.test()).toThrowError(SandwormError);
+    try {
+      mod.test();
+    } catch (error) {
+      expect(error.module).toBe('root');
+      expect(error.method).toBe('test.test');
+    }
+  });
+
+  test('access denied callback', () => {
+    moduleLib.isModuleAllowedToExecute = isModuleAllowedToExecuteMock(false);
+    const callback = jest.fn();
+    setAccessDeniedCallback(callback);
+    expect(() => mod.test()).toThrowError(SandwormError);
+    expect(callback).toBeCalledTimes(1);
+
+    // Test throwing SandwormError even when the callback throws
+    setAccessDeniedCallback(() => {
+      throw new Error();
+    });
     expect(() => mod.test()).toThrowError(SandwormError);
   });
 

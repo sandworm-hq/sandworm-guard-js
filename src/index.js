@@ -12,7 +12,7 @@ import {
   setAllowsAll,
   setPermissions,
 } from './module';
-import patch, {SandwormError, setIgnoreExtensions} from './patch';
+import patch, {SandwormError, setAccessDeniedCallback, setIgnoreExtensions} from './patch';
 import {buildNodeLibraryFrom, buildWebLibraryFrom} from './library/builder';
 
 let initialized = false;
@@ -49,6 +49,7 @@ const init = ({
   trustedModules: additionalTrustedModules = [],
   permissions: permissionsOption = [],
   allowInitFrom = 'root',
+  onAccessDenied,
 } = {}) => {
   try {
     if (isInitialized()) {
@@ -89,6 +90,7 @@ const init = ({
     }
 
     setIgnoreExtensions(ignoreExtensionsOption);
+    setAccessDeniedCallback(onAccessDenied);
 
     let library = [];
 
