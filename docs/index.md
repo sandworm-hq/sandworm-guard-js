@@ -18,7 +18,7 @@ description: Easy sandboxing for your JavaScript dependencies 🪱
   * audit your dependencies and see what your code is doing under the hood;
   * secure your app against supply chain attacks by enforcing per-module permissions.
 * Install it as an `npm` module in your existing Node or browser app.
-* Use the Inspector CLI tool to monitor activity and permissions.
+* Use the Inspector tool to monitor activity and permissions.
 
 #### Get involved
 
@@ -88,6 +88,8 @@ The inspector interface is now available in your browser at http://localhost:707
 If your automated test process has good coverage, this is an excellent time to run it, have it walk through all code paths and functionality in your app, and collect all activity within the inspector.
 
 ![Sandworm Inspector](../cli/screenshot.png)
+
+\| **Note**: We're building a public database of per-package permissions based on anonymous info about requirements sent by the inspector. This will allow us to make Sandworm easier to set up for future users and also enable us to create a public catalog of package requirements, making it easier to perform a security audit for an application's dependencies. To opt out of sharing data with the community, run the inspector with the `--no-telemetry` option. You can also audit [what's getting sent](https://github.com/sandworm-hq/sandworm-js/blob/main/cli/index.js#L19) and the [server code](https://github.com/sandworm-hq/sandworm-collect).
 
 ### Enforcing Permissions in Production Mode
 
