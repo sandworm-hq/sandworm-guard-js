@@ -2,9 +2,16 @@ import logger from './logger';
 import {getCurrentModuleInfo, isModuleAllowedToExecute} from './module';
 
 let ignoreExtensions = true;
+let accessDeniedCallback = () => {};
 
 export const setIgnoreExtensions = (ignoreExtensionsOption) => {
   ignoreExtensions = !!ignoreExtensionsOption;
+};
+
+export const setAccessDeniedCallback = (callback) => {
+  if (typeof callback === 'function') {
+    accessDeniedCallback = callback;
+  }
 };
 
 export class SandwormError extends Error {
@@ -72,11 +79,20 @@ const buildPatch = (family, method, track = () => {}) =>
       return method.original.apply(this, args);
     }
 
-    logger.error(`${module} was blocked from calling ${family.name}.${method.name} with`, args);
-
-    throw new SandwormError(
-      `Sandworm: access denied (${module} called ${family.name}.${method.name})`,
+    const methodSlug = `${family.name}.${method.name}`;
+    logger.error(`${module} was blocked from calling ${methodSlug} with`, args);
+    const accessError = new SandwormError(
+      `Sandworm: access denied (${module} called ${methodSlug})`,
     );
+    accessError.module = module;
+    accessError.method = `${methodSlug}`;
+    try {
+      accessDeniedCallback(accessError);
+      // Swallow any errors thrown by the callback
+      // eslint-disable-next-line no-empty
+    } catch (err) {}
+
+    throw accessError;
   };
 
 export default ({family, track = () => {}}) => {

@@ -105,6 +105,23 @@ Sandworm.init({
 * Provide an array of permission descriptors in the form of objects with a `module` name and a `permissions` array of strings corresponding to the allowed methods.
 * The inspector can generate a baseline permissions array for you based on the activity captured in dev mode.
 
+If an unauthorized execution attempt is detected, Sandworm will throw a `SandwormError`. Besides the `message` attribute, this error object also includes more details about the event:
+* `module`: the invoking module name or path
+* `method`: the invoked method (e.g. `fs.readFile`)
+
+Note that errors might be swallowed by 3rd party code and not reach root level, so catching a `SandwormError`, while recommended, will not always work. To make sure your app code gets notified about every unauthorized execution, use the `onAccessDenied` configuration option to register a callback method that will always be triggered right before Sandworm throws, and passed the `SandwormError` object as an argument.
+
+```javascript
+const Sandworm = require('sandworm');
+Sandworm.init({
+    devMode: process.env.NODE_ENV === 'development',
+    permissions: [...],
+    onAccessDenied: (error) => {
+      trackOrLogError(error.module, error.method);
+    },
+});
+```
+
 ### Supported Methods
 
 See [LIBRARY.md](LIBRARY.md).
@@ -239,18 +256,19 @@ Sandworm can also catch activity coming from local, user-installed browser exten
 
 ### Configuration Options
 
-| Option             | Default                            | Description                                                                                                                                                                                                                                     |
-| ------------------ | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `loadSourceMaps`   | `true` in browsers `false` in Node | Set this to true to automatically load the sourcemap declared in the caller js file. Alternatively, to load multiple sources and sourcemaps, set this to an object with source file paths/URLs as keys and sourcemap file paths/URLs as values. |
-| `devMode`          | `false`                            | In dev mode, all calls are captured, allowed, and tracked to the inspector. When dev mode is false, Sandworm will enforce user-provided permissions and will not track calls.                                                                   |
-| `verbose`          | `false`                            | The default logger level is `warn`; setting this to `true` lowers the level to `debug`.                                                                                                                                                         |
-| `skipTracking`     | `false`                            | Set this to true to stop event tracking to the inspector in dev mode.                                                                                                                                                                           |
-| `trackingIP`       | `127.0.0.1`                        | The IP address for the inspector.                                                                                                                                                                                                               |
-| `trackingPort`     | `7071`                             | The port number for the inspector.                                                                                                                                                                                                              |
-| `ignoreExtensions` | `true`                             | Ignore activity from browser extensions.                                                                                                                                                                                                        |
-| `trustedModules`   | `[]`                               | Utility or platform modules that Sandworm should remove from a caller path.                                                                                                                                                                     |
-| `permissions`      | `[]`                               | Module permissions to enforce if dev mode is false.                                                                                                                                                                                             |
-| `allowInitFrom`    | `root`                             | Specify a custom module that should be permitted to call `Sandworm.init`.                                                                                                                                                                       |
+| Option | Default | Description |
+| --- | --- | --- |
+| `loadSourceMaps` | `true` in browsers `false` in Node | Set this to true to automatically load the sourcemap declared in the caller js file. Alternatively, to load multiple sources and sourcemaps, set this to an object with source file paths/URLs as keys and sourcemap file paths/URLs as values. |
+| `devMode` | `false` | In dev mode, all calls are captured, allowed, and tracked to the inspector. When dev mode is false, Sandworm will enforce user-provided permissions and will not track calls. |
+| `verbose` | `false` | The default logger level is `warn`; setting this to `true` lowers the level to `debug`. |
+| `skipTracking` | `false` | Set this to true to stop event tracking to the inspector in dev mode. |
+| `trackingIP` | `127.0.0.1` | The IP address for the inspector. |
+| `trackingPort` | `7071` | The port number for the inspector. |
+| `ignoreExtensions` | `true` | Ignore activity from browser extensions. |
+| `trustedModules` | `[]` | Utility or platform modules that Sandworm should remove from a caller path. |
+| `permissions` | `[]` | Module permissions to enforce if dev mode is false. |
+| `allowInitFrom` | `root` | Specify a custom module that should be permitted to call `Sandworm.init`. |
+| `onAccessDenied` | `undefined` | A function that will be invoked right before throwing on access denied. The error itself will be passed as the first arg. |
 
 ### Using With Bundlers & SourceMaps
 
