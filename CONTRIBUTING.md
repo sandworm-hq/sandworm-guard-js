@@ -90,7 +90,7 @@ Sandworm has several types of test automation you need to consider:
 * Run with [Playwright](https://playwright.dev/)
 * Update these if you've added or modified any supported web functions (under `src/library/web.js`)
 * Notes above on Node tests also apply here
-* Run the suites with `yarn test-web`
+* Run the suites with `yarn test-web-capture`
 
 ### Unit tests
 
@@ -99,9 +99,10 @@ Sandworm has several types of test automation you need to consider:
 * Update these if you've made changes to the Sandworm core (under `src`)
 * When fixing a bug, please provide at least one test that would fail without the proposed fix, but passes with it applied
 * When adding a feature, please provide at least one test for each significant new functionality introduced
-* Run with `yarn test-node-unit`
+* Can run under the default node env, or under `jsdom` to emulate a browser
+* Run with `yarn test-node-unit`, `yarn test-jsdom-unit`, or both with `yarn test-unit`
 
-To run all tests in a single go, use `yarn test-all`.
+To run all tests in a single go, use `yarn test-all`. To run everything for a specific platform, use `yarn test-node-all` or `test-web-all`.
 
 ## Running the inspector
 

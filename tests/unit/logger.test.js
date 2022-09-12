@@ -1,7 +1,7 @@
 const {default: logger} = require('../../src/logger');
 
 describe('logger', () => {
-  test('log', () => {
+  test('should properly log', () => {
     expect(logger.level).toBe('warn');
 
     const debugSpy = jest.spyOn(console, 'debug');
