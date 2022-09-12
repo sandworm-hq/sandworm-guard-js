@@ -5,7 +5,12 @@ const http = require('http');
 
 const spy = jest.spyOn(http, 'request');
 
-const {default: track, getCircularReplacer, sendBatch} = require('../../src/track');
+const {
+  default: track,
+  getCircularReplacer,
+  sendBatch,
+  setSkipTracking,
+} = require('../../src/track');
 
 describe('track', () => {
   test('getCircularReplacer', async () => {
@@ -19,20 +24,41 @@ describe('track', () => {
     expect(replacer(undefined, dummy)).toBeUndefined();
   });
 
-  test('track', async () => {
+  test('should skip empty batch', () => {
     // No events to send, should not call request
     sendBatch();
     expect(spy).not.toBeCalled();
+  });
 
+  test('should skip invalid events', () => {
+    track();
+    track(2);
+    sendBatch();
+    expect(spy).not.toBeCalled();
+  });
+
+  test('should honor `skipTracking`', () => {
+    setSkipTracking(true);
+    track({});
+    sendBatch();
+    setSkipTracking(false);
+    expect(spy).not.toBeCalled();
+  });
+
+  test('should track and send batch', () => {
     track({});
     sendBatch();
     expect(spy).toBeCalledTimes(1);
+  });
 
+  test('should batch', async () => {
     track({});
-    expect(spy).toBeCalledTimes(1);
+    // Request should not be sent immediately
+    expect(spy).toBeCalledTimes(0);
+    // Batch should go out one second later
     await new Promise((r) => {
-      setTimeout(r, 1500);
+      setTimeout(r, 1200);
     });
-    expect(spy).toBeCalledTimes(2);
+    expect(spy).toBeCalledTimes(1);
   });
 });

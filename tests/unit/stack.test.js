@@ -1,7 +1,7 @@
 const {parseStackLine, currentStack} = require('../../src/stack');
 
 describe('stack', () => {
-  test('parse V8 stack lines', () => {
+  test('should parse V8 stack lines', () => {
     const lines = [
       ['at i (index.js:2:1)', 'index.js', 2, 1, 'i'],
       [
@@ -56,7 +56,7 @@ describe('stack', () => {
     );
   });
 
-  test('Parse Safari/FF stack lines', () => {
+  test('should parse Safari/FF stack lines', () => {
     [
       [
         'init@http://localhost:3000/static/js/bundle.js:24496:21',
@@ -108,7 +108,7 @@ describe('stack', () => {
     });
   });
 
-  test('ignore Safari native code lines', () => {
+  test('should ignore Safari native code lines', () => {
     ['asyncFunctionResume@[native code]', '@[native code]', 'Promise@[native code]'].forEach(
       (line) => {
         const {file, line: lineNumber, column} = parseStackLine(line);
@@ -119,12 +119,12 @@ describe('stack', () => {
     );
   });
 
-  test('parse void stack line', () => {
+  test('should parse void stack line', () => {
     const data = parseStackLine();
     expect(data).toBeUndefined();
   });
 
-  test('use cache', () => {
+  test('should use cache', () => {
     const spy = jest.spyOn(String.prototype, 'match');
     const line = 'at http://localhost:3000/static/js/unique.js:14143:106';
     parseStackLine(line);
@@ -133,7 +133,7 @@ describe('stack', () => {
     expect(spy).toBeCalledTimes(3);
   });
 
-  test('get current stack', () => {
+  test('should get current stack', () => {
     const stack = currentStack();
     expect(stack).toBeDefined();
     expect(stack.length).toBeGreaterThan(0);

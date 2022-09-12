@@ -12,7 +12,7 @@ const {
 } = require('../../src/source');
 
 describe('source', () => {
-  test('getSourceFromUrl', async () => {
+  test('should get source from a url', async () => {
     global.fetch = jest.fn((url) => ({text: () => url}));
 
     const data = await getSourceFromUrl('https://google.com');
@@ -20,19 +20,21 @@ describe('source', () => {
     expect(data).toBe('https://google.com');
   });
 
-  test('getSourceFromPath', async () => {
+  test('should get source from a valid path', async () => {
     const data = await getSourceFromPath(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'main.js'),
     );
     expect(data.length).toBe(548767);
+  });
 
+  test('should fail to get source from an invalid path', async () => {
     const nullData = await getSourceFromPath(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'bogus.js'),
     );
     expect(nullData).toBeNull();
   });
 
-  test('getSource', async () => {
+  test('should accept both urls and paths with `getSource`', async () => {
     global.fetch = jest.fn((url) => ({text: () => url.toString()}));
 
     const urlData = await getSource('https://google.com');
@@ -45,29 +47,35 @@ describe('source', () => {
     expect(pathData.length).toBe(548767);
   });
 
-  test('getSourceMap', async () => {
+  test('should load a valid sourcemap', async () => {
     const source = await getSourceMap(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'main.js.map'),
     );
     expect(source).toBeInstanceOf(SourceMapConsumer);
+  });
 
+  test('should fail to load an invalid sourcemap', async () => {
     const nullSource = await getSourceMap(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'bogus.js.map'),
     );
     expect(nullSource).toBeNull();
   });
 
-  test('getSourceMapFromSource', async () => {
+  test('should load an external sourcemap from a source file', async () => {
     const externalSource = await getSourceMapFromSource(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'main.js'),
     );
     expect(externalSource).toBeInstanceOf(SourceMapConsumer);
+  });
 
+  test('should load an inline sourcemap from a source file', async () => {
     const internalSource = await getSourceMapFromSource(
       path.resolve(__dirname, 'inline-nosources-cheap-source-map', 'main.js'),
     );
     expect(internalSource).toBeInstanceOf(SourceMapConsumer);
+  });
 
+  test('should fail to load a sourcemap from an invalid source file', async () => {
     const nullSource = await getSourceMapFromSource(
       path.resolve(__dirname, 'nosources-cheap-source-map', 'bogus.js'),
     );
