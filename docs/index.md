@@ -2,11 +2,11 @@
 description: Easy sandboxing for your JavaScript dependencies 🪱
 ---
 
-# Sandworm.JS
+# Sandworm JS
 
+Easy sandboxing for your JavaScript dependencies 🪱
 
-
-![Sandworm.JS](../logo.svg)
+![Sandworm JS](../logo.svg)
 
 [![npm](https://img.shields.io/npm/v/sandworm?style=flat-square)](https://www.npmjs.com/package/sandworm) [![License](https://img.shields.io/npm/l/sandworm?style=flat-square)](https://github.com/sandworm-hq/sandworm-js/blob/main/LICENSE) [![CircleCI](https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-js?style=flat-square)](https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js) ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/sandworm?style=flat-square) [![Maintainability](https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/maintainability)](https://codeclimate.com/github/sandworm-hq/sandworm-js/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/test\_coverage)](https://codeclimate.com/github/sandworm-hq/sandworm-js/test\_coverage)
 
@@ -71,11 +71,14 @@ const Sandworm = require('sandworm');
 Sandworm.init({devMode: true});
 ```
 
-\| **Note**: The code above needs to be the first thing your app runs when it boots so that Sandworm can adequately set up API interception and enforcement can begin if needed. If you load other modules or execute other code before this, you're no longer safe, as others will have had the opportunity to bypass Sandworm's process at that point.
+> **Warning**
+> The code above needs to be the first thing your app runs when it boots so that Sandworm can adequately set up API interception and enforcement can begin if needed. If you load other modules or execute other code before this, you're no longer safe, as others will have had the opportunity to bypass Sandworm's process at that point.
 
-\| **Note**: You can only call `init` once per your app's lifecycle.
+> **Note**
+> You can only call `init` once per your app's lifecycle.
 
-\| **Note**: Only your app's code (at the `root` module level) will be allowed to call `init`.
+> **Note**
+> Only your app's code (at the `root` module level) will be allowed to call `init`.
 
 Next, start the inspector tool by running:
 
@@ -89,7 +92,8 @@ If your automated test process has good coverage, this is an excellent time to r
 
 ![Sandworm Inspector](../cli/screenshot.png)
 
-\| **Note**: We're building a public database of per-package permissions based on anonymous info about requirements sent by the inspector. This will allow us to make Sandworm easier to set up for future users and also enable us to create a public catalog of package requirements, making it easier to perform a security audit for an application's dependencies. To opt out of sharing data with the community, run the inspector with the `--no-telemetry` option. You can also audit [what's getting sent](https://github.com/sandworm-hq/sandworm-js/blob/main/cli/index.js#L19) and the [server code](https://github.com/sandworm-hq/sandworm-collect).
+> **Note**
+> We're building a public database of per-package permissions based on anonymous info about requirements sent by the inspector. This will allow us to make Sandworm easier to set up for future users and also enable us to create a public catalog of package requirements, making it easier to perform a security audit for an application's dependencies. To opt out of sharing data with the community, run the inspector with the `--no-telemetry` option. You can also audit [what's getting sent](https://github.com/sandworm-hq/sandworm-js/blob/main/cli/index.js#L19) and the [server code](https://github.com/sandworm-hq/sandworm-collect).
 
 ### Enforcing Permissions in Production Mode
 
@@ -135,13 +139,16 @@ The `permissions` config option should be an array of permission descriptor obje
 * a `module` property that can be either a string (matching a caller path exactly) or a RegExp (not recommended - see "Matching caller paths with RegEx" below).
 * a `permissions` property that can either be a boolean value (representing access to the entire library of supported methods) or an array of granular string permissions, representing individual supported methods (like `Storage.setItem` or `Fetch.fetch`).
 
-\| **Note**: If the `permissions` passed to Sandworm do not contain an explicit descriptor for the `root` module (your app code), it will be given all permissions by default (by appending `{module: 'root', permissions: true}` to the passed list). You can override this behavior and grant only specific, explicit permissions for the root module, just like for any other modules in your app, by passing a descriptor with `module: 'root'`.
+> **Note**
+> If the `permissions` passed to Sandworm do not contain an explicit descriptor for the `root` module (your app code), it will be given all permissions by default (by appending `{module: 'root', permissions: true}` to the passed list). You can override this behavior and grant only specific, explicit permissions for the root module, just like for any other modules in your app, by passing a descriptor with `module: 'root'`.
 
-\| **Note**: In dev mode, all modules are granted all permissions, and any passed `permissions` config is ignored.
+> **Note**
+> In dev mode, all modules are granted all permissions, and any passed `permissions` config is ignored.
 
 #### Explicit Permissions for Arbitrary Code Execution
 
-\| **Note**: This mainly applies to setting up permissions for the root module. For most use cases, you should avoid granting global permissions to a module call path to comply with [PoLP](https://en.wikipedia.org/wiki/Principle\_of\_least\_privilege). The default root permission descriptor is `{ module: 'root', permissions: true }`.
+> **Note**
+> This mainly applies to setting up permissions for the root module. For most use cases, you should avoid granting global permissions to a module call path to comply with [PoLP](https://en.wikipedia.org/wiki/Principle\_of\_least\_privilege). The default root permission descriptor is `{ module: 'root', permissions: true }`.
 
 Setting `permissions: true` within a module descriptor will give that module (or call path) permissions to invoke any Sandworm-supported method **except** for a set of particularly unsafe ones that allow for arbitrary code execution - like `eval` or `vm.runInContext`. Using these methods carries a considerable security risk and should generally be avoided. Rigorously audit the code of a module that uses these before using it in your app.
 
@@ -224,7 +231,8 @@ Sandworm.init({
 
 Sometimes, you might want to exclude specific module names from the caller path, as they are part of the trusted platform you're using to run your app. For example, when running React, the `react-dom` module usually sits at the bottom of the module hierarchy and is responsible for triggering most method calls. To specify trusted modules, use the `trustedModules` configuration option.
 
-\| **Note**: when specifying a trusted module, you effectively permit it to do anything. Use this configuration carefully.
+> **Note**
+> When specifying a trusted module, you effectively permit it to impersonate root. Use this configuration carefully.
 
 #### Third Party Scripts
 
@@ -256,11 +264,13 @@ Sandworm can also catch activity coming from local, user-installed browser exten
 
 Sandworm relies on source file paths to determine caller modules for each method invocation. Unfortunately, when bundling your code with Webpack, Parcel, Rollup, or other similar tools, that information is lost, as everything gets bundled together in a single file. To re-enable Sandworm in this scenario, you'll also need to provide a [sourcemap](https://developer.chrome.com/blog/sourcemaps/).
 
-\| **Note**: when loading sourcemaps, `Sandworm.init` becomes an async method you need to `await`. It is best to wait for it to finish before importing other modules or further initializing your app. Until then, Sandworm will not be able to correctly infer module names, potentially leading to legitimate calls being blocked.
+> **Note**
+> When loading sourcemaps, `Sandworm.init` becomes an async method you need to `await`. It is best to wait for it to finish before importing other modules or further initializing your app. Until then, Sandworm will not be able to correctly infer module names, potentially leading to legitimate calls being blocked.
 
 The simplest way to instruct Sandworm to load sourcemaps is to pass `loadSourceMaps=true` to `Sandworm.init`. Setting this option to `true` will load the sourcemap defined within the currently executing js file (containing the `init`-invoking code).
 
-\| **Note**: `loadSourceMaps` is true by default when running Sandworm in a browser.
+> **Note**
+> `loadSourceMaps` is true by default when running Sandworm in a browser.
 
 ```javascript
 await Sandworm.init({ loadSourceMaps: true });
@@ -293,7 +303,7 @@ await Sandworm.init({
 
 Sandworm has several layers of automated testing:
 
-* Jest is used to run Node.js capture & enforce tests for all supported Node APIs (tests run on Node 10.14 and above). See the `tests/node` directory.
+* Jest is used to run Node.js capture & enforce tests for all supported Node APIs (tests run on Node 16.10 and above). See the `tests/node` directory.
 * Playwright is used to run browser capture & enforce tests for all supported browser APIs (tests run on WebKit, Chromium, and Firefox). See the `tests/web` directory.
 * Jest is used to run unit tests on the core Sandworm source files. See the `tests/unit` directory.
 

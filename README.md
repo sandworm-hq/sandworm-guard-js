@@ -26,6 +26,8 @@ require('sandworm').init({devMode: true, // add `permissions: [...]` when moving
 
 Then launch the inspector tool with `npm run sandworm` or `yarn sandworm` to monitor activity and permissions.
 
+### Documentation
+
 [Read the full docs here](https://docs.sandworm.dev).
 
 ### Get Involved
