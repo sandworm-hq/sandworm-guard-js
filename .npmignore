@@ -1,3 +1,6 @@
+.husky/commit-msg
+.husky/pre-commit
+.gitbook.yaml
 .circleci
 .github
 .vscode
@@ -11,9 +14,11 @@ tests
 junit*.xml
 test.js
 webpack.config.cjs
+commitlint.config.js
 .release-please-manifest.json
 release-please-config.json
 dist/node_modules
 cli/frontend/node_modules
 cli/frontend/build/static/js/bundle.js.map
 cli/frontend/yarn.lock
+docs
