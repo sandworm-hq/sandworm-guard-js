@@ -5,8 +5,9 @@ const nixSlashes = (x) => x.replace(/\\/g, '/');
 export const parseStackLine = (l) => {
   const line = (l || '').trim();
 
-  if (Object.keys(lineParseCache).includes(line)) {
-    return lineParseCache[line];
+  const cached = lineParseCache[line];
+  if (cached) {
+    return cached;
   }
 
   let fileLineColumn = [];
