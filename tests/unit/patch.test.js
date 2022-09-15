@@ -23,9 +23,11 @@ const originalTest = jest.fn();
 originalTest.additionalProp = 12;
 originalTest.bind = jest.fn();
 const originalTestArgsLimit = jest.fn();
+const originalRisky = jest.fn();
 let mod = {
   test: originalTest,
   testArgsLimit: originalTestArgsLimit,
+  testRisky: originalRisky,
   TestClass,
 };
 
@@ -42,6 +44,7 @@ describe('patch', () => {
         methods: [
           {name: 'test'},
           {name: 'testArgsLimit', minArgsToTrigger: 2},
+          {name: 'testRisky', needsExplicitPermission: true},
           {name: 'TestClass', isConstructor: true},
         ],
         originalRoot: () => mod,
@@ -56,6 +59,7 @@ describe('patch', () => {
     mod = {
       test: originalTest,
       testArgsLimit: originalTestArgsLimit,
+      testRisky: originalRisky,
       TestClass,
     };
   });
@@ -79,6 +83,34 @@ describe('patch', () => {
     expect(getCurrentModuleInfoMock).toBeCalledTimes(1);
     expect(moduleLib.isModuleAllowedToExecute).not.toBeCalled();
     expect(originalTest.bind).toBeCalledTimes(1);
+  });
+
+  test('should pass-through calls coming from node internals', () => {
+    moduleLib.getCurrentModuleInfo = jest.fn(() => ({
+      name: 'test-mod',
+      stack: [],
+      directCaller: {module: 'node:internal'},
+    }));
+
+    mod.test();
+
+    expect(moduleLib.getCurrentModuleInfo).toBeCalledTimes(1);
+    expect(moduleLib.isModuleAllowedToExecute).not.toBeCalled();
+    expect(originalTest).toBeCalledTimes(1);
+  });
+
+  test('should check permissions for high-risk methods even when coming from node internals', () => {
+    moduleLib.getCurrentModuleInfo = jest.fn(() => ({
+      name: 'test-mod',
+      stack: [],
+      directCaller: {module: 'node:internal'},
+    }));
+
+    mod.testRisky();
+
+    expect(moduleLib.getCurrentModuleInfo).toBeCalledTimes(1);
+    expect(moduleLib.isModuleAllowedToExecute).toBeCalledTimes(1);
+    expect(originalRisky).toBeCalledTimes(1);
   });
 
   test('should capture `bind` with two arguments', () => {

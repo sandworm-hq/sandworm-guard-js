@@ -60,25 +60,25 @@ module.exports = () =>
 
     testif(fs.copyFileSync)('copyFileSync', () => {
       fs.copyFileSync(testFilePath, newTestFilePath);
-      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs',
         method: 'copyFileSync',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
       });
+      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
       fs.unlinkSync(newTestFilePath);
     });
 
     testif(fs.cpSync)('cpSync', () => {
       fs.cpSync(testFilePath, newTestFilePath);
-      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs',
         method: 'cpSync',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
       });
+      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
       fs.unlinkSync(newTestFilePath);
     });
 
@@ -175,35 +175,35 @@ module.exports = () =>
 
     test('linkSync', () => {
       fs.linkSync(testFilePath, newTestFilePath);
-      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs',
         method: 'linkSync',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
       });
+      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
       fs.unlinkSync(newTestFilePath);
     });
 
     test('mkdirSync', () => {
       fs.mkdirSync(newTestDirPath);
-      expect(fs.existsSync(newTestDirPath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs',
         method: 'mkdirSync',
         firstArg: newTestDirPath,
       });
+      expect(fs.existsSync(newTestDirPath)).toBeTruthy();
       fs.rmdirSync(newTestDirPath);
     });
 
     test('mkdtempSync', () => {
       const dirPath = fs.mkdtempSync(__dirname);
-      expect(fs.existsSync(dirPath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs',
         method: 'mkdtempSync',
         firstArg: __dirname,
       });
+      expect(fs.existsSync(dirPath)).toBeTruthy();
       fs.rmdirSync(dirPath);
     });
 
@@ -269,13 +269,13 @@ module.exports = () =>
 
     test('renameSync', () => {
       fs.renameSync(testFilePath, newTestFilePath);
-      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs',
         method: 'renameSync',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
       });
+      expect(fs.existsSync(newTestFilePath)).toBeTruthy();
       fs.renameSync(newTestFilePath, testFilePath);
     });
 

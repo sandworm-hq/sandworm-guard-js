@@ -32,6 +32,7 @@ module.exports = () =>
             family: 'fs',
             method: 'appendFile',
             firstArg: newTestFilePath,
+            offset: 1,
           });
           done();
         });
@@ -94,13 +95,13 @@ module.exports = () =>
           done(err);
           return;
         }
-        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
         expectCallToMatch({
           family: 'fs',
           method: 'copyFile',
           firstArg: testFilePath,
           secondArg: newTestFilePath,
         });
+        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
         fs.unlink(newTestFilePath, done);
       });
     });
@@ -112,13 +113,13 @@ module.exports = () =>
             done(err);
             return;
           }
-          expect(fs.existsSync(newTestFilePath)).toBeTruthy();
           expectCallToMatch({
             family: 'fs',
             method: 'cp',
             firstArg: testFilePath,
             secondArg: newTestFilePath,
           });
+          expect(fs.existsSync(newTestFilePath)).toBeTruthy();
           fs.unlink(newTestFilePath, done);
         });
       } else {
@@ -267,13 +268,13 @@ module.exports = () =>
           done(err);
           return;
         }
-        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
         expectCallToMatch({
           family: 'fs',
           method: 'link',
           firstArg: testFilePath,
           secondArg: newTestFilePath,
         });
+        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
         fs.unlink(newTestFilePath, done);
       });
     });
@@ -284,12 +285,12 @@ module.exports = () =>
           done(err);
           return;
         }
-        expect(fs.existsSync(newTestDirPath)).toBeTruthy();
         expectCallToMatch({
           family: 'fs',
           method: 'mkdir',
           firstArg: newTestDirPath,
         });
+        expect(fs.existsSync(newTestDirPath)).toBeTruthy();
         fs.rmdir(newTestDirPath, done);
       });
     });
@@ -300,12 +301,12 @@ module.exports = () =>
           done(err);
           return;
         }
-        expect(fs.existsSync(dirPath)).toBeTruthy();
         expectCallToMatch({
           family: 'fs',
           method: 'mkdtemp',
           firstArg: __dirname,
         });
+        expect(fs.existsSync(dirPath)).toBeTruthy();
         fs.rmdir(dirPath, done);
       });
     });
@@ -402,13 +403,13 @@ module.exports = () =>
           done(err);
           return;
         }
-        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
         expectCallToMatch({
           family: 'fs',
           method: 'rename',
           firstArg: testFilePath,
           secondArg: newTestFilePath,
         });
+        expect(fs.existsSync(newTestFilePath)).toBeTruthy();
         fs.rename(newTestFilePath, testFilePath, done);
       });
     });

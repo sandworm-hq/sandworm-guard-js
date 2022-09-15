@@ -34,19 +34,19 @@ describe('timers', () => {
     test('clearImmediate', () => {
       const immediate = timers.setImmediate(() => {});
       timers.clearImmediate(immediate);
-      expectCallToMatch({family: 'timers', method: 'clearImmediate', index: 1});
+      expectCallToMatch({family: 'timers', method: 'clearImmediate'});
     });
 
     test('clearInterval', () => {
       const interval = timers.setInterval(() => {}, 100);
       timers.clearInterval(interval);
-      expectCallToMatch({family: 'timers', method: 'clearInterval', index: 1});
+      expectCallToMatch({family: 'timers', method: 'clearInterval'});
     });
 
     test('clearTimeout', () => {
       const timeout = timers.setTimeout(() => {}, 100);
       timers.clearTimeout(timeout);
-      expectCallToMatch({family: 'timers', method: 'clearTimeout', index: 1});
+      expectCallToMatch({family: 'timers', method: 'clearTimeout'});
     });
   });
 

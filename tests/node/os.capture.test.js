@@ -63,7 +63,7 @@ describe('os', () => {
 
   test('setPriority', () => {
     os.setPriority(os.getPriority());
-    expectCallToMatch({family: 'os', method: 'setPriority', index: 1});
+    expectCallToMatch({family: 'os', method: 'setPriority'});
   });
 
   test('tmpdir', () => {

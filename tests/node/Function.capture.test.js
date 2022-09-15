@@ -13,8 +13,8 @@ describe('Function', () => {
     expectCallToMatch({family: 'Function', method: 'Function', firstArg: script});
 
     // eslint-disable-next-line no-new-func
-    const func2 = Function(script);
+    const func2 = Function(`${script};`);
     func2();
-    expectCallToMatch({family: 'Function', method: 'Function', firstArg: script, index: 1});
+    expectCallToMatch({family: 'Function', method: 'Function', firstArg: `${script};`});
   });
 });

@@ -1,5 +1,5 @@
 const path = require('path');
-const Sandworm = require('../dist');
+const Sandworm = require('../dist/node_modules/sandworm');
 
 let expect;
 if (process.env.JEST_WORKER_ID) {
@@ -29,23 +29,20 @@ const callExpects = ({call, family, method, firstArg, secondArg}) => {
   }
 };
 
-const getCall = (index, fromRoot) =>
-  Sandworm.getHistory().filter(({module}) =>
-    (fromRoot
-      ? ['root']
-      : ['jest-cli>@jest/core>jest-runner>jest-circus', 'jest-runner>jest-circus', 'jest-circus']
-    ).includes(module),
-  )[index];
+const getLastCall = (offset = 0) =>
+  Sandworm.getHistory()
+    .filter(({module}) => module === 'root')
+    .slice(-1 - offset)[0];
 
-const expectCallToMatch = ({family, method, firstArg, secondArg, index = 0, fromRoot = false}) => {
+const expectCallToMatch = ({family, method, firstArg, secondArg, offset}) => {
   // console.log(Sandworm.getHistory().map((call) => `${call.module}: ${call.family}.${call.method}`));
-  const call = getCall(index, fromRoot);
+  const call = getLastCall(offset);
 
   callExpects({call, family, method, firstArg, secondArg});
 };
 
-const expectNoCall = (index = 0, fromRoot = false) => {
-  const call = getCall(index, fromRoot);
+const expectNoCall = () => {
+  const call = getLastCall();
   expect(call).toBeUndefined();
 };
 
@@ -73,37 +70,17 @@ const expectWebWorkerCallToMatch = async ({
   callExpects({call, family, method, firstArg, secondArg});
 };
 
-const loadSandworm = async () =>
-  Sandworm.init({devMode: true, skipTracking: true, allowInitFrom: /jest-circus/});
+const loadSandworm = async () => Sandworm.init({devMode: true, skipTracking: true});
 
 const loadSandwormInProductionMode = async () =>
   Sandworm.init({
     devMode: false,
     skipTracking: true,
-    allowInitFrom: /jest-circus/,
     permissions: [
-      // These are the Jest runner modules on node v12.0.0+
-      {module: 'jest-runner>jest-circus>expect', permissions: false},
-      {module: 'jest-runner>jest-circus', permissions: false},
-      // These are the Jest runner modules on node v12.0.0 and below
-      {module: 'jest-circus>expect', permissions: false},
-      {module: 'jest-circus', permissions: false},
-      // These are required by Jest
-      // Jest runner needs vm.runInContext, we explicitly allow vm below
-      {module: /jest/, permissions: ['vm', '*']},
-      {module: /istanbul/, permissions: true},
-      {module: /babel/, permissions: true},
-      {module: 'react-is', permissions: true},
-      {module: 'write-file-atomic', permissions: true},
-      {module: 'stack-utils', permissions: true},
-      {module: 'terminal-link', permissions: true},
-      {module: 'pretty-format', permissions: true},
-      {module: '@bcoe/v8-coverage', permissions: true},
-      {module: 'source-map-support', permissions: true},
-      {module: 'mkdirp', permissions: true},
-      {module: 'make-dir', permissions: true},
-      {module: 'convert-source-map', permissions: true},
-      {module: 'glob', permissions: true},
+      // Jest runner needs vm.runInContext and bind.args, we explicitly allow them below
+      {module: /jest/, permissions: ['vm', 'bind', '*']},
+      {module: 'root', permissions: false},
+      {module: 'source-map-support', permissions: ['fs']},
     ],
   });
 

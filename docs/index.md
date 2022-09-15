@@ -75,7 +75,7 @@ Sandworm.init({devMode: true});
 
 \| **Note**: You can only call `init` once per your app's lifecycle.
 
-\| **Note**: By default, only your app's code (at the `root` module level) will be allowed to call `init`. If you need another module to run Sandworm initialization (to support, for example, automated test setups), use the `allowInitFrom` config.
+\| **Note**: Only your app's code (at the `root` module level) will be allowed to call `init`.
 
 Next, start the inspector tool by running:
 
@@ -211,30 +211,11 @@ In some scenarios, it is helpful to be able to grant permissions in bulk - like 
 Sandworm.init({
     devMode: false,
     skipTracking: true,
-    allowInitFrom: /jest-circus/,
     permissions: [
-      // These are the Jest runner modules on node v12.0.0+
-      {module: 'jest-runner>jest-circus>expect', permissions: false},
-      {module: 'jest-runner>jest-circus', permissions: false},
-      // These are the Jest runner modules on node v12.0.0 and below
-      {module: 'jest-circus>expect', permissions: false},
-      {module: 'jest-circus', permissions: false},
-      // These are required by Jest
-      // Jest runner needs vm.runInContext, we explicitly allow vm below
-      {module: /jest/, permissions: ['vm', '*']},
-      {module: /istanbul/, permissions: true},
-      {module: /babel/, permissions: true},
-      {module: 'react-is', permissions: true},
-      {module: 'write-file-atomic', permissions: true},
-      {module: 'stack-utils', permissions: true},
-      {module: 'terminal-link', permissions: true},
-      {module: 'pretty-format', permissions: true},
-      {module: '@bcoe/v8-coverage', permissions: true},
-      {module: 'source-map-support', permissions: true},
-      {module: 'mkdirp', permissions: true},
-      {module: 'make-dir', permissions: true},
-      {module: 'convert-source-map', permissions: true},
-      {module: 'glob', permissions: true},
+      // Jest runner needs vm.runInContext and bind.args, we explicitly allow them below
+      {module: /jest/, permissions: ['vm', 'bind', '*']},
+      {module: 'root', permissions: false},
+      {module: 'source-map-support', permissions: ['fs']},
     ],
   });
 ```
@@ -269,7 +250,6 @@ Sandworm can also catch activity coming from local, user-installed browser exten
 | `ignoreExtensions` | `true` | Ignore activity from browser extensions. |
 | `trustedModules` | `[]` | Utility or platform modules that Sandworm should remove from a caller path. |
 | `permissions` | `[]` | Module permissions to enforce if dev mode is false. |
-| `allowInitFrom` | `root` | Specify a custom module that should be permitted to call `Sandworm.init`. |
 | `onAccessDenied` | `undefined` | A function that will be invoked right before throwing on access denied. The error itself will be passed as the first arg. |
 
 ### Using With Bundlers & SourceMaps

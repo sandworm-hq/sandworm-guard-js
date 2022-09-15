@@ -145,20 +145,32 @@ export const getCurrentModuleInfo = ({stack: stackInput, allowURLs = false} = {}
       // We want to remove module names marked as trusted from the call path
       // We also want to remove Node internals
       .map(({module}) =>
-        module === 'root' || trustedModules.includes(module) || module?.startsWith('node:')
-          ? undefined
-          : module,
+        trustedModules.includes(module) || module?.startsWith('node:') ? undefined : module,
       )
       .filter((v) => v !== undefined);
     let name = 'root';
     let isExtension = false;
 
     if (modules.length) {
-      if (modules[0] === modules[modules.length - 1]) {
-        [name] = modules;
-      } else {
-        name = modules.filter((v, i, a) => a.indexOf(v) === i).join('>');
+      let currentComponent;
+      let compactModules = [];
+
+      // Reduce mod1>mod1>mod2>mod2>mod2 to mod1>mod2
+      modules.forEach((module) => {
+        if (currentComponent !== module) {
+          currentComponent = module;
+          compactModules.push(module);
+        }
+      });
+
+      // Truncate to the last segment that was started from root
+      // For ex: mod1>mod2>root>mod3 should translate to mod3
+      const lastRootOccurrence = compactModules.lastIndexOf('root');
+      if (lastRootOccurrence !== -1) {
+        compactModules = compactModules.slice(lastRootOccurrence + 1);
       }
+
+      name = compactModules.join('>') || 'root';
 
       // Detect if any items in the stack are browser extensions
       isExtension = !!modules.find(
@@ -202,30 +214,7 @@ export const getModulePermissions = (module) => {
   return false;
 };
 
-export const isModuleAllowedToExecute = ({
-  module,
-  family,
-  method,
-  directCaller,
-  lastModuleCaller,
-}) => {
-  // If the intercepted method was called directly from Node internals
-  // allow it to execute, since it was triggered by another Node API call
-  // that was previously allowed by Sandworm.
-  // Don't allow this for any high-risk methods, since `process.dlopen` could be triggered by
-  // a require to a `.node` file.
-  if (directCaller?.module?.startsWith?.('node:') && !method.needsExplicitPermission) {
-    logger.debug(
-      '-> call has been allowed',
-      lastModuleCaller
-        ? `as a consequence of \`${lastModuleCaller.module}\` calling \`${
-            lastModuleCaller.alias || lastModuleCaller.name
-          }.${lastModuleCaller.called}\``
-        : '',
-    );
-    return true;
-  }
-
+export const isModuleAllowedToExecute = ({module, family, method}) => {
   const modulePermissions = getModulePermissions(module, permissions);
 
   // Some methods are labeled as particularly dangerous and are not included by the

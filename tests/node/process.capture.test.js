@@ -130,17 +130,17 @@ describe('process', () => {
 
   test('setegid', () => {
     process.setegid(process.getegid());
-    expectCallToMatch({family: 'process', method: 'setegid', index: 1});
+    expectCallToMatch({family: 'process', method: 'setegid'});
   });
 
   test('seteuid', () => {
     process.seteuid(process.geteuid());
-    expectCallToMatch({family: 'process', method: 'seteuid', index: 1});
+    expectCallToMatch({family: 'process', method: 'seteuid'});
   });
 
   test('setgid', () => {
     process.setgid(process.getgid());
-    expectCallToMatch({family: 'process', method: 'setgid', index: 1});
+    expectCallToMatch({family: 'process', method: 'setgid'});
   });
 
   test('setgroups', () => {
@@ -148,13 +148,13 @@ describe('process', () => {
       process.setgroups(process.getgroups());
     } catch (err) {
     } finally {
-      expectCallToMatch({family: 'process', method: 'setgroups', index: 1});
+      expectCallToMatch({family: 'process', method: 'setgroups'});
     }
   });
 
   test('setuid', () => {
     process.setuid(process.getuid());
-    expectCallToMatch({family: 'process', method: 'setuid', index: 1});
+    expectCallToMatch({family: 'process', method: 'setuid'});
   });
 
   testif(process.setSourceMapsEnabled)('setSourceMapsEnabled', () => {

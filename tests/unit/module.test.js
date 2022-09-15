@@ -136,17 +136,6 @@ describe('module', () => {
       ).toBeFalsy();
     });
 
-    test('should not allow high-risk methods on boolean true permissions even when coming from node internals', () => {
-      expect(
-        isModuleAllowedToExecute({
-          module: 'imate>one',
-          family: {name: 'imate'},
-          method: {name: 'method', needsExplicitPermission: true},
-          directCaller: {module: 'node:internal'},
-        }),
-      ).toBeFalsy();
-    });
-
     test('should deny method not in permissions', () => {
       expect(
         isModuleAllowedToExecute({
@@ -155,17 +144,6 @@ describe('module', () => {
           method: {name: 'method'},
         }),
       ).toBeFalsy();
-    });
-
-    test('should allow calls coming from node internals', () => {
-      expect(
-        isModuleAllowedToExecute({
-          module: 'imate>two',
-          family: {name: 'imate'},
-          method: {name: 'method'},
-          directCaller: {module: 'node:internal'},
-        }),
-      ).toBeTruthy();
     });
 
     test('should allow method in permissions', () => {
@@ -332,7 +310,7 @@ describe('module', () => {
       ).toBe('module-name');
     });
 
-    test('should ignore root items from the output', () => {
+    test('should identify root as the top module', () => {
       expect(
         getCurrentModuleInfo({
           stack: [
@@ -340,10 +318,10 @@ describe('module', () => {
             {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
           ],
         }).name,
-      ).toBe('module-name');
+      ).toBe('root');
     });
 
-    test('should compose multiple modules in a caller path output', () => {
+    test('should identify the most recent path through root', () => {
       expect(
         getCurrentModuleInfo({
           stack: [
@@ -352,7 +330,24 @@ describe('module', () => {
             {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
           ],
         }).name,
-      ).toBe('module-name>other');
+      ).toBe('other');
+    });
+
+    test('should compose multiple modules in a caller path output', () => {
+      expect(
+        getCurrentModuleInfo({
+          stack: [
+            {file: 'project/node_modules/module/one.js', line: 1, column: 1},
+            {file: 'project/node_modules/module/two.js', line: 1, column: 1},
+            {file: 'project/node_modules/module/root.js', line: 1, column: 1},
+            {file: 'project/node_modules/other/file.js', line: 1, column: 1},
+            {file: 'project/node_modules/other/root.js', line: 1, column: 1},
+            {file: 'source.js', line: 10, column: 100},
+            {file: 'app.js', line: 1, column: 1},
+            {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
+          ],
+        }).name,
+      ).toBe('other>module');
     });
 
     test('should ignore browser extensions by default', () => {
@@ -360,7 +355,6 @@ describe('module', () => {
         getCurrentModuleInfo({
           stack: [
             {file: 'project/node_modules/other/root.js', line: 1, column: 1},
-            {file: 'app.js', line: 1, column: 1},
             {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
             {file: 'chrome-extension://214324234523/test.js', line: 1, column: 1},
           ],
@@ -373,7 +367,6 @@ describe('module', () => {
         getCurrentModuleInfo({
           stack: [
             {file: 'project/node_modules/other/root.js', line: 1, column: 1},
-            {file: 'app.js', line: 1, column: 1},
             {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
             {file: 'chrome-extension://214324234523/test.js', line: 1, column: 1},
           ],
@@ -401,7 +394,6 @@ describe('module', () => {
         getCurrentModuleInfo({
           stack: [
             {file: 'project/node_modules/other/root.js', line: 1, column: 1},
-            {file: 'app.js', line: 1, column: 1},
             {file: 'https://googletagmanager.com/tag/2reiwfgr', line: 1, column: 1},
           ],
         }).name,
@@ -413,7 +405,6 @@ describe('module', () => {
         getCurrentModuleInfo({
           stack: [
             {file: 'project/node_modules/other/root.js', line: 1, column: 1},
-            {file: 'app.js', line: 1, column: 1},
             {file: 'https://googletagmanager.com/tag/2reiwfgr', line: 1, column: 1},
           ],
           allowURLs: true,
@@ -431,7 +422,7 @@ describe('module', () => {
             {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
           ],
         }).name,
-      ).toBe('module-name');
+      ).toBe('root');
     });
 
     test('should identify a root level direct caller', () => {

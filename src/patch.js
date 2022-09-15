@@ -52,14 +52,27 @@ const buildPatch = (family, method, track = () => {}) =>
       (ignoreExtensions && isExtension)
     ) {
       allowed = true;
+    } else if (directCaller?.module?.startsWith?.('node:') && !method.needsExplicitPermission) {
+      // If the intercepted method was called directly from Node internals
+      // allow it to execute, since it was triggered by another Node API call
+      // that was previously allowed by Sandworm.
+      // Don't allow this for any high-risk methods, since `process.dlopen` could be triggered by
+      // a require to a `.node` file.
+      logger.debug(
+        `-> ${module}>${family.name}.${method.name} has been allowed`,
+        lastModuleCaller
+          ? `as a consequence of \`${lastModuleCaller.module}\` calling \`${
+              lastModuleCaller.alias || lastModuleCaller.name
+            }.${lastModuleCaller.called}\``
+          : '',
+      );
+      allowed = true;
     } else {
       logger.debug(`${module} called ${family.name}.${method.name}`);
       allowed = isModuleAllowedToExecute({
         module,
         family,
         method,
-        directCaller,
-        lastModuleCaller,
       });
       track({
         module,

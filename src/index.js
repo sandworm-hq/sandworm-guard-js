@@ -48,7 +48,6 @@ const init = ({
   ignoreExtensions: ignoreExtensionsOption = true,
   trustedModules: additionalTrustedModules = [],
   permissions: permissionsOption = [],
-  allowInitFrom = 'root',
   onAccessDenied,
 } = {}) => {
   try {
@@ -60,15 +59,10 @@ const init = ({
     const {name: callerModule} = getCurrentModuleInfo({
       allowURLs: false,
     });
-    if (
-      (allowInitFrom instanceof RegExp && !callerModule.match(allowInitFrom)) ||
-      (typeof allowInitFrom === 'string' && callerModule !== allowInitFrom) ||
-      (!(allowInitFrom instanceof RegExp) && typeof allowInitFrom !== 'string')
-    ) {
-      logger.warn(`only root or specified module may call init (called from ${callerModule})`);
+    if (callerModule !== 'root') {
+      logger.warn(`only root may call init (called from ${callerModule})`);
       return Promise.resolve();
     }
-
     if (typeof devModeOption !== 'boolean') {
       logger.warn('devMode option must be a boolean, defaulting to false');
       devMode = false;

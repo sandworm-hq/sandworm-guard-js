@@ -17,7 +17,6 @@ declare function init({
   ignoreExtensions: ignoreExtensionsOption,
   trustedModules: additionalTrustedModules,
   permissions: permissionsOption,
-  allowInitFrom,
 }?: {
   /**
    * Set this to true to automatically load the sourcemap declared in the caller js file.
@@ -45,8 +44,6 @@ declare function init({
   trustedModules?: any[] = [];
   /** Module permissions to enforce if dev mode is false. */
   permissions?: Permission[] = [];
-  /** Specify a custom module that should be able to call `Sandworm.init`. Defaults to `root`. */
-  allowInitFrom?: string = 'root';
 }): Promise<void>;
 /** Specifies a set of permissions to grant a module or a class of modules. */
 declare interface Permission {

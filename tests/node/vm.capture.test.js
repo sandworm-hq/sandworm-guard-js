@@ -42,7 +42,7 @@ describe('vm', () => {
   test('isContext', () => {
     const context = vm.createContext();
     expect(vm.isContext(context)).toBeTruthy();
-    expectCallToMatch({family: 'vm', method: 'isContext', index: 1});
+    expectCallToMatch({family: 'vm', method: 'isContext'});
   });
 
   testif(vm.measureMemory)('measureMemory', () => {
@@ -53,7 +53,7 @@ describe('vm', () => {
   test('runInContext', () => {
     const context = vm.createContext();
     vm.runInContext('', context);
-    expectCallToMatch({family: 'vm', method: 'runInContext', index: 1});
+    expectCallToMatch({family: 'vm', method: 'runInContext'});
   });
 
   test('runInNewContext', () => {

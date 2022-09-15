@@ -10,7 +10,12 @@ describe('child_process', () => {
   test('exec', () => {
     const cp = childProcess.exec('echo "test"');
     expect(cp).toBeInstanceOf(childProcess.ChildProcess);
-    expectCallToMatch({family: 'child_process', method: 'exec', firstArg: 'echo "test"'});
+    expectCallToMatch({
+      family: 'child_process',
+      method: 'exec',
+      firstArg: 'echo "test"',
+      offset: 1,
+    });
   });
 
   test('execFile', () => {

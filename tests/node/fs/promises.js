@@ -60,25 +60,25 @@ module.exports = () =>
 
     test('copyFile', async () => {
       await fs.copyFile(testFilePath, newTestFilePath);
-      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs/promises',
         method: 'copyFile',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
       });
+      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
       standardFs.unlinkSync(newTestFilePath);
     });
 
     testif(fs.cp)('cp', async () => {
       await fs.cp(testFilePath, newTestFilePath);
-      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs/promises',
         method: 'cp',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
       });
+      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
       standardFs.unlinkSync(newTestFilePath);
     });
 
@@ -113,35 +113,35 @@ module.exports = () =>
 
     test('link', async () => {
       await fs.link(testFilePath, newTestFilePath);
-      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs/promises',
         method: 'link',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
       });
+      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
       standardFs.unlinkSync(newTestFilePath);
     });
 
     test('mkdir', async () => {
       await fs.mkdir(newTestDirPath);
-      expect(standardFs.existsSync(newTestDirPath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs/promises',
         method: 'mkdir',
         firstArg: newTestDirPath,
       });
+      expect(standardFs.existsSync(newTestDirPath)).toBeTruthy();
       standardFs.rmdirSync(newTestDirPath);
     });
 
     test('mkdtemp', async () => {
       const dirPath = await fs.mkdtemp(__dirname);
-      expect(standardFs.existsSync(dirPath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs/promises',
         method: 'mkdtemp',
         firstArg: __dirname,
       });
+      expect(standardFs.existsSync(dirPath)).toBeTruthy();
       await fs.rmdir(dirPath);
     });
 
@@ -197,13 +197,13 @@ module.exports = () =>
 
     test('rename', async () => {
       await fs.rename(testFilePath, newTestFilePath);
-      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
       expectCallToMatch({
         family: 'fs/promises',
         method: 'rename',
         firstArg: testFilePath,
         secondArg: newTestFilePath,
       });
+      expect(standardFs.existsSync(newTestFilePath)).toBeTruthy();
       await fs.rename(newTestFilePath, testFilePath);
     });
 

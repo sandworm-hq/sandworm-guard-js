@@ -15,8 +15,8 @@
     "test-node-unit": "jest --noStackTrace --config=tests/configs/jest.unit.node.config.js",
     "test-jsdom-unit": "jest --noStackTrace --config=tests/configs/jest.unit.jsdom.config.js",
     "test-unit": "yarn test-node-unit && yarn test-jsdom-unit",
-    "test-node-capture": "jest --noStackTrace --config=tests/configs/jest.capture.config.js",
-    "test-node-enforce": "jest --noStackTrace --config=tests/configs/jest.enforce.config.js",
+    "test-node-capture": "yarn prepare-build-for-testing && jest --noStackTrace --config=tests/configs/jest.capture.config.js",
+    "test-node-enforce": "yarn prepare-build-for-testing && jest --noStackTrace --config=tests/configs/jest.enforce.config.js",
     "test-web-capture": "npx playwright test --config=tests/configs/playwright.config.js",
     "test-web-all": "yarn test-web-capture && yarn test-jsdom-unit",
     "test-node-ce": "yarn test-node-enforce && yarn test-node-capture",
@@ -25,6 +25,7 @@
     "build-library-md": "node scripts/build-library-md.js",
     "build-library-min": "node scripts/build-library-min.js",
     "build-library": "yarn build-library-md && yarn build-library-min",
+    "prepare-build-for-testing": "if [ ! -d \"dist/node_modules/sandworm\" ]; then mkdir -p dist/node_modules/sandworm && cd dist/node_modules/sandworm && ln ../../index.js index.js && cd ../../../; fi",
     "prepare": "husky install"
   },
   "bin": "cli/index.js",
