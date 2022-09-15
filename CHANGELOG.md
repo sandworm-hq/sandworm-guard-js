@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v0.2.0...sandworm-v1.0.0) (2022-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* issue affecting detected caller paths
+* anonymous event data collection
+
+### Features
+
+* access denied callback ([45ea81a](https://github.com/sandworm-hq/sandworm-js/commit/45ea81ab652fe2bc28d2905cf575e8e993505bc0))
+* anonymous event data collection ([4ad3988](https://github.com/sandworm-hq/sandworm-js/commit/4ad3988e64890c87131fdb811e53838e507425d0))
+
+
+### Bug Fixes
+
+* cache access performance issue ([16ffc24](https://github.com/sandworm-hq/sandworm-js/commit/16ffc242f5aa860c158ea800eeb6c3cd7da3471a))
+* issue affecting detected caller paths ([d8e6199](https://github.com/sandworm-hq/sandworm-js/commit/d8e61997928e3cd52a6c0207eb8ea73b9e675ebe))
+* url detect performance issue ([ae6b829](https://github.com/sandworm-hq/sandworm-js/commit/ae6b829842b852645e389efac3647763c59fbfd3))
+
 ## [0.2.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v0.1.0...sandworm-v0.2.0) (2022-09-07)
 
 
