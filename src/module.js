@@ -98,15 +98,8 @@ export const getModuleNameFromLocation = (location, allowURLs) => {
 
   // Treat URLs as separate modules
   // These are usually scripts loaded from external sources, like directly from a CDN
-  if (allowURLs) {
-    let url;
-    try {
-      url = new URL(location);
-      // eslint-disable-next-line no-empty
-    } catch (error) {}
-    if (url) {
-      return location;
-    }
+  if (allowURLs && location.includes('://')) {
+    return location;
   }
 
   return 'root';
