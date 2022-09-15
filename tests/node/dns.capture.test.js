@@ -23,7 +23,8 @@ describe('dns', () => {
       if (err) {
         done(err);
       }
-      expect(address).toEqual('127.0.0.1');
+      // Node v18+ returns IPv6 loopback
+      expect(['127.0.0.1', '::1'].includes(address)).toBeTruthy();
       done();
     });
     expectCallToMatch({family: 'dns', method: 'lookup', firstArg: 'localhost'});

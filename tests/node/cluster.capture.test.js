@@ -1,6 +1,6 @@
 const cluster = require('cluster');
 const Sandworm = require('../../dist/index');
-const {expectCallToMatch, loadSandworm} = require('../utils');
+const {expectCallToMatch, loadSandworm, testif} = require('../utils');
 
 describe('cluster', () => {
   beforeAll(loadSandworm);
@@ -14,7 +14,8 @@ describe('cluster', () => {
     }
   });
 
-  test('disconnect', () => {
+  // Calling disconnect like this throws on Node v18+
+  testif(!process.versions.node.startsWith('18'))('disconnect', () => {
     cluster.disconnect();
     expectCallToMatch({family: 'cluster', method: 'disconnect'});
   });
