@@ -4,8 +4,6 @@ description: Easy sandboxing for your JavaScript dependencies 🪱
 
 # Sandworm JS
 
-Easy sandboxing for your JavaScript dependencies 🪱
-
 ![Sandworm JS](../logo.svg)
 
 [![npm](https://img.shields.io/npm/v/sandworm?style=flat-square)](https://www.npmjs.com/package/sandworm) [![License](https://img.shields.io/npm/l/sandworm?style=flat-square)](https://github.com/sandworm-hq/sandworm-js/blob/main/LICENSE) [![CircleCI](https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-js?style=flat-square)](https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js) ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/sandworm?style=flat-square) [![Maintainability](https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/maintainability)](https://codeclimate.com/github/sandworm-hq/sandworm-js/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/test\_coverage)](https://codeclimate.com/github/sandworm-hq/sandworm-js/test\_coverage)
