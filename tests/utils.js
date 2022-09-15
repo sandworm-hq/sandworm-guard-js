@@ -1,4 +1,7 @@
 const path = require('path');
+// The path below might be missing initially
+// It is created by running tests via the package.json scripts
+// eslint-disable-next-line import/no-unresolved, import/extensions
 const Sandworm = require('../dist/node_modules/sandworm');
 
 let expect;
