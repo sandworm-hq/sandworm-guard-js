@@ -15,13 +15,15 @@
   - secure your app against supply chain attacks by enforcing per-module permissions.
 - Install it as an `npm` module in your existing Node or browser app.
 - Use the Inspector CLI tool to monitor activity and permissions.
+- Works in Node v15+ and [modern browsers](https://browsersl.ist/#q=defaults).
+- Beta support for browsers and sourcemaps.
 
 ### Getting Started
 
 Add the Sandworm init call as the very first line of your app:
 
 ```js
-require('sandworm').init({devMode: true, // add `permissions: [...]` when moving to prod});
+require('sandworm').init({devMode: true}); // add `permissions: [...]` when moving to prod
 ```
 
 Then launch the inspector tool with `npm run sandworm` or `yarn sandworm` to monitor activity and permissions.

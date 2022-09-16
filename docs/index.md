@@ -17,6 +17,8 @@ description: Easy sandboxing for your JavaScript dependencies 🪱
   * secure your app against supply chain attacks by enforcing per-module permissions.
 * Install it as an `npm` module in your existing Node or browser app.
 * Use the Inspector tool to monitor activity and permissions.
+* Works in Node v15+ and [modern browsers](https://browsersl.ist/#q=defaults).
+* Beta support for browsers and sourcemaps.
 
 #### Get involved
 
@@ -65,8 +67,7 @@ Sandworm does dynamic analysis in the runtime - it knows about what happens when
 Add the following lines to **the very start of your app's entry point** to load Sandworm in dev mode. In dev mode, all calls will be intercepted and tracked to the inspector tool, but no enforcement will happen (all calls will be allowed).
 
 ```javascript
-const Sandworm = require('sandworm');
-Sandworm.init({devMode: true});
+require('sandworm').init({devMode: true});
 ```
 
 > **Warning**
