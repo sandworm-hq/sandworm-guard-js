@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.0.0...sandworm-v1.0.1) (2022-09-17)
+
+
+### Bug Fixes
+
+* include inspector tool browser app sourcemaps ([88a09ec](https://github.com/sandworm-hq/sandworm-js/commit/88a09ec3fa9b3d959a4185e5d01bb9f248d6e184))
+* module names now account for callbacks ([fc02b67](https://github.com/sandworm-hq/sandworm-js/commit/fc02b67dadb7915869de2c9994fbd84689cf0b8e))
+
 ## [1.0.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v0.2.0...sandworm-v1.0.0) (2022-09-15)
 
 
