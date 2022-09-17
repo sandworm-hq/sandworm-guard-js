@@ -4,6 +4,8 @@ import {SourceMapConsumer} from 'source-map-js';
 import {
   addSourceMap,
   addTrustedModules,
+  compactifyModules,
+  foldModules,
   getCurrentModuleInfo,
   getModuleNameFromLocation,
   getModulePermissions,
@@ -459,6 +461,35 @@ describe('module', () => {
           ],
         }).lastModuleCaller.module,
       ).toBe('module-name');
+    });
+  });
+
+  describe('compactifyModules', () => {
+    test('should leave simple chain unchanged', () => {
+      const chain = ['modA', 'modB', 'modC'];
+      expect(compactifyModules(chain)).toStrictEqual(chain);
+    });
+
+    test('should make chain compact', () => {
+      const chain = ['modA', 'modB', 'modB', 'modB', 'modC', 'modC', 'modA', 'modA'];
+      expect(compactifyModules(chain)).toStrictEqual(['modA', 'modB', 'modC', 'modA']);
+    });
+  });
+
+  describe('foldModules', () => {
+    test('should only consider the latest root-based segment', () => {
+      const chain = ['root', 'modA', 'root', 'modB', 'modC', 'root', 'modD', 'modE'];
+      expect(foldModules(chain)).toStrictEqual(['modD', 'modE']);
+    });
+
+    test('should fold a chain', () => {
+      const chain = ['root', 'modA', 'root', 'modB', 'modC', 'modB', 'modD', 'modE', 'modD'];
+      expect(foldModules(chain)).toStrictEqual(['modB', 'modD']);
+    });
+
+    test('should fold a chain that starts and ends on same module', () => {
+      const chain = ['modA', 'modB', 'modC', 'modD', 'modA'];
+      expect(foldModules(chain)).toStrictEqual(['modA']);
     });
   });
 });

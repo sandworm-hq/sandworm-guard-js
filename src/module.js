@@ -105,6 +105,49 @@ export const getModuleNameFromLocation = (location, allowURLs) => {
   return 'root';
 };
 
+/** Reduce mod1>mod1>mod2>mod2>mod2 to mod1>mod2 */
+export const compactifyModules = (modules) => {
+  let currentComponent;
+  const compactModules = [];
+
+  modules.forEach((module) => {
+    if (currentComponent !== module) {
+      currentComponent = module;
+      compactModules.push(module);
+    }
+  });
+
+  return compactModules;
+};
+
+/** Truncate to the last segment that was started from root */
+/** For ex: root>mod1>mod2>root>mod3 should translate to mod3 */
+/** Also fold resulting modules to account for callback-type calls */
+/** For ex: root>mod1>mod2>mod1>mod3>mod4>mod3 should translate to mod1>mod3 */
+export const foldModules = (modules) => {
+  let foldedModules = [...modules];
+
+  const lastRootOccurrence = foldedModules.lastIndexOf('root');
+  if (lastRootOccurrence !== -1) {
+    foldedModules = foldedModules.slice(lastRootOccurrence + 1);
+  }
+
+  let currentIndex = 0;
+
+  while (currentIndex < foldedModules.length) {
+    const lastOccurrence = foldedModules.lastIndexOf(foldedModules[currentIndex]);
+    if (lastOccurrence !== -1) {
+      foldedModules = [
+        ...foldedModules.slice(0, currentIndex),
+        ...foldedModules.slice(lastOccurrence),
+      ];
+    }
+    currentIndex += 1;
+  }
+
+  return foldedModules;
+};
+
 export const getCurrentModuleInfo = ({stack: stackInput, allowURLs = false} = {}) => {
   try {
     const stack = (stackInput || currentStack())
@@ -152,25 +195,10 @@ export const getCurrentModuleInfo = ({stack: stackInput, allowURLs = false} = {}
     let isExtension = false;
 
     if (modules.length) {
-      let currentComponent;
-      let compactModules = [];
+      const compactModules = compactifyModules(modules);
+      const foldedModules = foldModules(compactModules);
 
-      // Reduce mod1>mod1>mod2>mod2>mod2 to mod1>mod2
-      modules.forEach((module) => {
-        if (currentComponent !== module) {
-          currentComponent = module;
-          compactModules.push(module);
-        }
-      });
-
-      // Truncate to the last segment that was started from root
-      // For ex: mod1>mod2>root>mod3 should translate to mod3
-      const lastRootOccurrence = compactModules.lastIndexOf('root');
-      if (lastRootOccurrence !== -1) {
-        compactModules = compactModules.slice(lastRootOccurrence + 1);
-      }
-
-      name = compactModules.join('>') || 'root';
+      name = foldedModules.join('>') || 'root';
 
       // Detect if any items in the stack are browser extensions
       isExtension = !!modules.find(
