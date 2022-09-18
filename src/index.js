@@ -9,6 +9,7 @@ import {
   addSourceMap,
   addTrustedModules,
   getCurrentModuleInfo,
+  setAliases,
   setAllowsAll,
   setPermissions,
 } from './module';
@@ -49,6 +50,7 @@ const init = ({
   trustedModules: additionalTrustedModules = [],
   permissions: permissionsOption = [],
   onAccessDenied,
+  aliases = [],
 } = {}) => {
   try {
     if (isInitialized()) {
@@ -85,6 +87,7 @@ const init = ({
 
     setIgnoreExtensions(ignoreExtensionsOption);
     setAccessDeniedCallback(onAccessDenied);
+    setAliases(aliases);
 
     let library = [];
 

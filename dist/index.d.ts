@@ -9,14 +9,16 @@ export default _default;
 /** Initialize Sandworm. */
 declare function init({
   loadSourceMaps,
-  devMode: devModeOption,
+  devMode,
   verbose,
-  skipTracking: skipTrackingOption,
+  skipTracking,
   trackingIP,
   trackingPort,
-  ignoreExtensions: ignoreExtensionsOption,
-  trustedModules: additionalTrustedModules,
-  permissions: permissionsOption,
+  ignoreExtensions,
+  trustedModules,
+  permissions,
+  aliases,
+  onAccessDenied,
 }?: {
   /**
    * Set this to true to automatically load the sourcemap declared in the caller js file.
@@ -44,6 +46,10 @@ declare function init({
   trustedModules?: any[] = [];
   /** Module permissions to enforce if dev mode is false. */
   permissions?: Permission[] = [];
+  /** An array describing the optional aliases to apply to root-level sources based on their path. */
+  aliases: Alias[] = [];
+  /** An optional callback to be triggered on access errors, before throwing  */
+  onAccessDenied: function;
 }): Promise<void>;
 /** Specifies a set of permissions to grant a module or a class of modules. */
 declare interface Permission {
@@ -51,6 +57,12 @@ declare interface Permission {
   module: string | RegExp;
   /** An array of string permissions to grant the specified module(s), formatted as `family.method`. */
   permissions: string[];
+}
+declare interface Alias {
+  /** A path component shared between all source code files that should be matched by the alias. */
+  path: string;
+  /** The alias name to apply. */
+  name: string;
 }
 /** In dev mode, returns the current call history. In production mode, returns an empty array. */
 declare function getHistory(): any[];
