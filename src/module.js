@@ -5,6 +5,7 @@ const cachedPermissions = {};
 const defaultPermissions = {module: 'root', permissions: true};
 let permissions = [defaultPermissions];
 let trustedModules = ['sandworm', 'react-dom', 'scheduler'];
+let aliases = [];
 
 const sourcemaps = {};
 
@@ -14,6 +15,14 @@ export const addSourceMap = (file, map) => {
 
 export const addTrustedModules = (additionalTrustedModules) => {
   trustedModules = [...trustedModules, ...additionalTrustedModules];
+};
+
+export const setAliases = (newAliases = []) => {
+  if (!Array.isArray(newAliases)) {
+    return;
+  }
+
+  aliases = [...newAliases.filter((item) => item && item.path && item.name)];
 };
 
 export const setPermissions = (newPermissions = []) => {
@@ -67,42 +76,57 @@ export const mapStackItemToSource = (item) => {
   };
 };
 
+export const getNodeModuleName = (location) => {
+  const components = location.split('/');
+  const nodeModulesIndex = components.findIndex((v) => v === 'node_modules');
+  let moduleName = components[nodeModulesIndex + 1];
+  // Names starting with `@` are organizations, so it's good to get
+  // a bit more context by also grabbing the next path component
+  if (moduleName.startsWith('@')) {
+    const submodule = components[nodeModulesIndex + 2];
+    if (submodule) {
+      moduleName = `${moduleName}/${submodule}`;
+    }
+  }
+
+  return moduleName;
+};
+
 export const getModuleNameFromLocation = (location, allowURLs) => {
   // Infer the module name
+  let moduleName = 'root';
+
   if (!location || typeof location !== 'string') {
-    return undefined;
+    moduleName = undefined;
   }
 
   // Label locations coming from inside Node
-  if (location.startsWith('node:')) {
+  else if (location.startsWith('node:')) {
     // locations like node:internal/modules/cjs/loader should map to node:internal
     // node:fs should map to node:fs
-    return location.split('/')[0];
+    [moduleName] = location.split('/');
   }
 
   // Label packages
-  if (location.includes('node_modules')) {
-    const components = location.split('/');
-    const nodeModulesIndex = components.findIndex((v) => v === 'node_modules');
-    let moduleName = components[nodeModulesIndex + 1];
-    // Names starting with `@` are organizations, so it's good to get
-    // a bit more context by also grabbing the next path component
-    if (moduleName.startsWith('@')) {
-      const submodule = components[nodeModulesIndex + 2];
-      if (submodule) {
-        moduleName = `${moduleName}/${submodule}`;
-      }
-    }
-    return moduleName;
+  else if (location.includes('node_modules')) {
+    moduleName = getNodeModuleName(location);
   }
 
   // Treat URLs as separate modules
   // These are usually scripts loaded from external sources, like directly from a CDN
-  if (allowURLs && location.includes('://')) {
-    return location;
+  else if (allowURLs && location.includes('://')) {
+    moduleName = location;
   }
 
-  return 'root';
+  // Alias sources with paths containing specific search strings
+  else {
+    const alias = aliases.find(({path}) => location.includes(path));
+    if (alias) {
+      moduleName = alias.name;
+    }
+  }
+
+  return moduleName;
 };
 
 /** Reduce mod1>mod1>mod2>mod2>mod2 to mod1>mod2 */

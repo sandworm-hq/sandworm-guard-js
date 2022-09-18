@@ -11,6 +11,7 @@ import {
   getModulePermissions,
   isModuleAllowedToExecute,
   mapStackItemToSource,
+  setAliases,
   setAllowsAll,
   setPermissions,
 } from '../../src/module';
@@ -290,6 +291,21 @@ describe('module', () => {
     test('should return node internal module names', () => {
       expect(getModuleNameFromLocation('node:https')).toBe('node:https');
       expect(getModuleNameFromLocation('node:internal/modules/cjs/loader')).toBe('node:internal');
+    });
+
+    test('should apply alias', () => {
+      setAliases([{path: 'tests/node', name: 'test'}]);
+      expect(
+        getModuleNameFromLocation('/Users/jason/code/sandworm/tests/node/prod/stack.test.js'),
+      ).toBe('test');
+      setAliases([]);
+    });
+
+    test('should ignore invalid alias config', () => {
+      setAliases(5);
+      expect(
+        getModuleNameFromLocation('/Users/jason/code/sandworm/tests/node/prod/stack.test.js'),
+      ).toBe('root');
     });
   });
 

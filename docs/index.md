@@ -244,6 +244,25 @@ Sandworm interprets scripts loaded via the `<script>` tag as individual modules.
 
 Sandworm can also catch activity coming from local, user-installed browser extensions. To enable this, set the `ignoreExtensions` config option to `false`. By default (`ignoreExtensions: true`), any invoke that has a browser extension anywhere in the call path will be passed through.
 
+#### Aliases
+
+Root code can be segmented into multiple "virtual" modules based on the file path by defining aliases. This can be useful, for example, when running tests, to separate core code from testing infrastructure code:
+
+```javascript
+// Say we want to run unit tests for https://github.com/expressjs/express
+require("sandworm").init({
+  devMode: true,
+  trustedModules: ['mocha'],
+  // This will make the express core source code register as `express` instead of `root`
+  // Unit test code will still be labeled `root`
+  aliases: [{path: 'express/lib', name: 'express'}],
+});
+```
+
+To configure aliases, set the `aliases` config option to an array of objects having:
+* a string `path` attribute, representing a path component shared between all source code files that should be matched by the alias;
+* a string `name` attribute, representing the alias name to apply.
+
 ### Configuration Options
 
 | Option | Default | Description |
@@ -258,6 +277,7 @@ Sandworm can also catch activity coming from local, user-installed browser exten
 | `trustedModules` | `[]` | Utility or platform modules that Sandworm should remove from a caller path. |
 | `permissions` | `[]` | Module permissions to enforce if dev mode is false. |
 | `onAccessDenied` | `undefined` | A function that will be invoked right before throwing on access denied. The error itself will be passed as the first arg. |
+| `aliases` | `[]` | An array of alias definitions - see [aliases](#aliases). |
 
 ### Using With Bundlers & SourceMaps
 
