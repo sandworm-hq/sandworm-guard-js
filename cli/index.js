@@ -195,6 +195,16 @@ server.on('error', (err) => {
 });
 
 server.on('listening', () => {
-  logger.log(`🐛 Sandworm Inspector`);
+  logger.log(`🪱 Sandworm Inspector`);
+  if (!disableTelemetry) {
+    logger.log(
+      '\x1b[36m%s\x1b[0m',
+      'This inspector instance is contributing to the community permission database  - see https://tinyurl.com/52r4u5sy',
+    );
+    logger.log(
+      '\x1b[36m%s\x1b[0m',
+      'To disable, run the inspector with the "--no-telemetry" option.',
+    );
+  }
   logger.log(`Running at http://localhost:${port}/`);
 });
