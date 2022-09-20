@@ -50,6 +50,7 @@ description: Easy auditing & sandboxing for your JavaScript dependencies 🪱
   * [Configuring Sourcemaps](index.md#configuring-sourcemaps)
   * [Multiple Source Files](index.md#multiple-source-files)
 * [How Sandworm is Tested](index.md#how-sandworm-is-tested)
+* [The Permission Database Project](index.md#the-permission-database-project)
 * [Contributing](contributing/)
 
 ### Overview
@@ -92,9 +93,6 @@ The inspector interface is now available in your browser at http://localhost:707
 If your automated test process has good coverage, this is an excellent time to run it, have it walk through all code paths and functionality in your app, and collect all activity within the inspector.
 
 ![Sandworm Inspector](../cli/screenshot.png)
-
-> **Note**
-> We're building a public database of per-package permissions based on anonymous info about requirements sent by the inspector. This will allow us to make Sandworm easier to set up for future users and also enable us to create a public catalog of package requirements, making it easier to perform a security audit for an application's dependencies. To opt out of sharing data with the community, run the inspector with the `--no-telemetry` option. You can also audit [what's getting sent](https://github.com/sandworm-hq/sandworm-js/blob/main/cli/index.js#L19) and the [server code](https://github.com/sandworm-hq/sandworm-collect).
 
 ### Enforcing Permissions in Production Mode
 
@@ -299,6 +297,25 @@ await Sandworm.init({
         },
 });
 ```
+
+### The Permission Database Project
+
+A longer-term goal for Sandworm is to provide an open, public database of per-package permission requirements, based on:
+* running automated tests with Sandworm enabled for public packages;
+* anonymous info about requirements collected from real-world apps by the inspector.
+
+For every method call that Sandworm intercepts, the inspector will share the following info:
+
+```json
+{
+  "module": "CALLER_MODULE_NAME",
+  "family": "INVOKED_METHOD_FAMILY",
+  "method": "INVOKED_METHOD_NAME",
+  "sessionId": "INSPECTOR_SESSION_ID"
+}
+```
+
+This will make it easier for everyone to audit packages and set up Sandworm. To opt out of sharing data with the community, run the inspector with the `--no-telemetry` option. You can also audit [what's getting sent](https://github.com/sandworm-hq/sandworm-js/blob/main/cli/index.js#L19) and the [server code](https://github.com/sandworm-hq/sandworm-collect).
 
 ### How Sandworm is Tested
 
