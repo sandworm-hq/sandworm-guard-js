@@ -1,4 +1,8 @@
-![Sandworm.JS](logo.svg)
+![Sandworm.JS](logo.png)
+
+Easy auditing & sandboxing for your JavaScript dependencies 🪱
+
+---
 
 [![npm](https://img.shields.io/npm/v/sandworm?style=flat-square)](https://www.npmjs.com/package/sandworm)
 [![License](https://img.shields.io/npm/l/sandworm?style=flat-square)](https://github.com/sandworm-hq/sandworm-js/blob/main/LICENSE)

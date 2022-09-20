@@ -66,24 +66,25 @@ const sendTelemetry = (data) => {
   req.end();
 };
 
+const serve = (response, filename, mime = 'text/html') => {
+  response.writeHead(200, {'Content-Type': mime});
+  response.end(fs.readFileSync(path.join(__dirname, 'frontend', 'build', ...filename)));
+};
+
 const server = http.createServer((request, response) => {
   switch (request.url) {
     // Serve the frontend React app
     case '/':
-      response.writeHead(200, {'Content-Type': 'text/html'});
-      response.end(fs.readFileSync(path.join(__dirname, 'frontend', 'build', 'index.html')));
+      serve(response, ['index.html']);
       break;
     case '/static/js/bundle.js':
-      response.writeHead(200, {'Content-Type': 'text/html'});
-      response.end(
-        fs.readFileSync(path.join(__dirname, 'frontend', 'build', 'static', 'js', 'bundle.js')),
-      );
+      serve(response, ['static', 'js', 'bundle.js']);
       break;
     case '/static/js/bundle.js.map':
-      response.writeHead(200, {'Content-Type': 'text/html'});
-      response.end(
-        fs.readFileSync(path.join(__dirname, 'frontend', 'build', 'static', 'js', 'bundle.js.map')),
-      );
+      serve(response, ['static', 'js', 'bundle.js.map']);
+      break;
+    case '/logo.png':
+      serve(response, ['logo.png'], 'image/png');
       break;
 
     // Ingest events tracked by the Sandworm lib

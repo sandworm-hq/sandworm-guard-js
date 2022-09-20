@@ -28,7 +28,7 @@ const Modules = ({history, currentTab}) => {
                 className={classNames(
                   'w-full py-3 px-5 bg-zinc-700 rounded shadow flex items-center mb-4 cursor-pointer border-2',
                   {
-                    'border-lime-600': selectedModule === module,
+                    'border-sandworm-yellow': selectedModule === module,
                     'border-zinc-900': selectedModule !== module,
                   },
                 )}
@@ -64,7 +64,7 @@ const Modules = ({history, currentTab}) => {
       </div>
       <button
         onClick={() => setConfigModalVisible(true)}
-        className="mt-8 bg-lime-800 hover:bg-lime-700 text-white font-bold p-4 rounded"
+        className="mt-8 bg-sandworm-yellow text-black font-bold p-4 rounded"
       >
         Get Permissions JSON
       </button>

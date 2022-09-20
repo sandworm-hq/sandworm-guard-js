@@ -36,14 +36,14 @@ const ConfigModal = ({onHide, permissions}) => {
                 setCopyButtonText('Copied!');
                 setTimeout(() => setCopyButtonText('Copy'), 2000);
               }}
-              className="bg-lime-800 hover:bg-lime-700 text-white font-bold p-4 rounded"
+              className="bg-sandworm-yellow text-black font-bold p-4 rounded"
             >
               {copyButtonText}
             </button>
           </div>
         </div>
         <pre
-          className="flex-grow overflow-scroll select-all mt-5 bg-zinc-900 p-5 shadow-inner selection:bg-lime-900"
+          className="flex-grow overflow-scroll select-all mt-5 bg-zinc-900 p-5 shadow-inner selection:bg-sandworm-yellow selection:text-black"
           ref={modalContent}
         >
           {JSON.stringify(

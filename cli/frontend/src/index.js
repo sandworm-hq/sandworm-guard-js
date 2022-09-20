@@ -25,8 +25,13 @@ function App() {
 
   return (
     <div className="w-full h-full max-h-full flex flex-col text-neutral-200 relative">
-      <div className="px-10 py-6 bg-lime-900 flex">
-        <h1 className="text-2xl font-bold flex-grow">🐛 Sandworm Inspector</h1>
+      <div className="px-10 py-3 bg-[#434245] flex items-center">
+        <div className="flex-grow flex gap-6 items-center">
+          <img width={177} src="/logo.png" alt="Sandworm" />
+          <div className="bg-custom-light-gray py-2 px-3 text-sandworm-yellow-light uppercase text-xs rounded font-bold">
+            Inspector
+          </div>
+        </div>
         <div>
           <ul className="flex gap-10 text-neutral-300 text-xl">
             <li

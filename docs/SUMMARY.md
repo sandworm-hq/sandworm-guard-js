@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Sandworm.JS](index.md)
+* [Sandworm](index.md)
 * [Supported Methods](LIBRARY.md)
 * [Changelog](CHANGELOG.md)
 * [Contributing](contributing/README.md)
