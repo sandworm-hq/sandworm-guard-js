@@ -4,9 +4,23 @@ description: Easy auditing & sandboxing for your JavaScript dependencies 🪱
 
 # Sandworm
 
-![Sandworm](../logo.png)
+<!-- Sandworm Logo -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../logo-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="../logo-light.png">
+  <img alt="Sandworm" src="../logo-dark.png" width="478">
+</picture>
 
-[![npm](https://img.shields.io/npm/v/sandworm?style=flat-square)](https://www.npmjs.com/package/sandworm) [![License](https://img.shields.io/npm/l/sandworm?style=flat-square)](https://github.com/sandworm-hq/sandworm-js/blob/main/LICENSE) [![CircleCI](https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-js?style=flat-square)](https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js) ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/sandworm?style=flat-square) [![Maintainability](https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/maintainability)](https://codeclimate.com/github/sandworm-hq/sandworm-js/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/test\_coverage)](https://codeclimate.com/github/sandworm-hq/sandworm-js/test\_coverage)
+<!-- A spacer -->
+<p>&nbsp;</p>
+
+---
+
+[![NPM][npm-version-image]][npm-version-url]
+[![License][license-image]][license-url]
+[![CircleCI][ci-image]][ci-url]
+[![Maintainability][cc-image]][cc-url]
+[![Test Coverage][coverage-image]][coverage-url]
 
 ### TL;DR
 
@@ -307,3 +321,14 @@ Sandworm has several layers of automated testing:
 * Jest is used to run unit tests on the core Sandworm source files. See the `tests/unit` directory.
 
 Check out our latest test run inside our [CircleCI pipeline](https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js).
+
+[npm-version-image]: https://img.shields.io/npm/v/sandworm?style=flat-square
+[npm-version-url]: https://www.npmjs.com/package/sandworm
+[license-image]: https://img.shields.io/npm/l/sandworm?style=flat-square
+[license-url]: https://github.com/sandworm-hq/sandworm-js/blob/main/LICENSE
+[ci-image]: https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-js?style=flat-square
+[ci-url]: https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js
+[cc-image]: https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/maintainability
+[cc-url]: https://codeclimate.com/github/sandworm-hq/sandworm-js/maintainability
+[coverage-image]: https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/test_coverage
+[coverage-url]: https://codeclimate.com/github/sandworm-hq/sandworm-js/test_coverage
