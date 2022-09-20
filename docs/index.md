@@ -4,18 +4,6 @@ description: Easy auditing & sandboxing for your JavaScript dependencies 🪱
 
 # Sandworm
 
-<!-- Sandworm Logo -->
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="../logo-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="../logo-light.png">
-  <img alt="Sandworm" src="../logo-dark.png" width="478">
-</picture>
-
-<!-- A spacer -->
-<p>&nbsp;</p>
-
----
-
 [![NPM][npm-version-image]][npm-version-url]
 [![License][license-image]][license-url]
 [![CircleCI][ci-image]][ci-url]

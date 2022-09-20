@@ -5,9 +5,6 @@
   <img alt="Sandworm" src="logo-dark.png" width="478">
 </picture>
 
-<!-- A spacer -->
-<p>&nbsp;</p>
-
 Easy auditing & sandboxing for your JavaScript dependencies 🪱
 
 ---
