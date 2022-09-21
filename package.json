@@ -61,5 +61,16 @@
   },
   "dependencies": {
     "source-map-js": "^1.0.2"
-  }
+  },
+  "keywords": [
+    "security",
+    "audit",
+    "dependencies",
+    "supply-chain",
+    "sandbox",
+    "harden",
+    "ses",
+    "compartments"
+  ],
+  "homepage": "https://sandworm.dev"
 }
