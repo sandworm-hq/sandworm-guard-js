@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.0.1...sandworm-v1.1.0) (2022-09-21)
+
+
+### Features
+
+* add telemetry notice to inspector log output ([ef24258](https://github.com/sandworm-hq/sandworm-js/commit/ef24258639649aef084db179d140cc228d30ab70))
+* alias root-level code by path ([fbf4405](https://github.com/sandworm-hq/sandworm-js/commit/fbf4405004481a9d643fb6d1389493948d421011))
+
 ## [1.0.1](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.0.0...sandworm-v1.0.1) (2022-09-17)
 
 
