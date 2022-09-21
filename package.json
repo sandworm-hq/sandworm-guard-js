@@ -1,7 +1,7 @@
 {
   "name": "sandworm",
   "version": "1.0.1",
-  "description": "",
+  "description": "Easy auditing & sandboxing for your JavaScript dependencies 🪱",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
