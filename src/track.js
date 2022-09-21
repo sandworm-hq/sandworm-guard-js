@@ -71,7 +71,7 @@ export const sendBatch = () => {
         },
         () => {},
       );
-      req.on('error', (error) => logger.error('error tracking call to inspector:', error.message));
+      req.on('error', (error) => logger.debug('error tracking call to inspector:', error.message));
       req.end(JSON.stringify(batch, getCircularReplacer()));
       batch = [];
     } else if (hasXMLHTTPRequest) {
@@ -86,8 +86,8 @@ export const sendBatch = () => {
       batch = [];
     }
   } catch (error) {
-    logger.error('error tracking call to inspector:', error.message);
-    logger.error('attempted to track:', batch);
+    logger.debug('error tracking call to inspector:', error.message);
+    logger.debug('attempted to track:', batch);
   } finally {
     currentTimer = null;
   }
