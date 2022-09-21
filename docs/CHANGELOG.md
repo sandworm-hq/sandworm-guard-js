@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.1.0...sandworm-v1.1.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* tracking errors now log at debug level ([98562a3](https://github.com/sandworm-hq/sandworm-js/commit/98562a35c8e0ff69df18fa1503333711fec42d00))
+
 ## [1.1.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.0.1...sandworm-v1.1.0) (2022-09-21)
 
 
