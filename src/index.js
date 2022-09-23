@@ -61,7 +61,7 @@ const init = ({
     const {name: callerModule} = getCurrentModuleInfo({
       allowURLs: false,
     });
-    if (callerModule !== 'root') {
+    if (!['root', 'mocha>sandworm-mocha'].includes(callerModule)) {
       logger.warn(`only root may call init (called from ${callerModule})`);
       return Promise.resolve();
     }
