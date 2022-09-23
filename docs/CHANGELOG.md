@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.1.1...sandworm-v1.2.0) (2022-09-23)
+
+
+### Features
+
+* allow init call from `sandworm-mocha` module ([a63bcd1](https://github.com/sandworm-hq/sandworm-js/commit/a63bcd1f43078e51ffe76d9d4ae555d13c924237))
+* retry sending events to inspector ([584eb69](https://github.com/sandworm-hq/sandworm-js/commit/584eb697bd113f40bf7433eca1ab21e79083ebe3))
+
 ## [1.1.1](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.1.0...sandworm-v1.1.1) (2022-09-21)
 
 
