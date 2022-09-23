@@ -44,21 +44,4 @@ describe('track', () => {
     setSkipTracking(false);
     expect(spy).not.toBeCalled();
   });
-
-  test('should track and send batch', () => {
-    track({});
-    sendBatch();
-    expect(spy).toBeCalledTimes(1);
-  });
-
-  test('should batch', async () => {
-    track({});
-    // Request should not be sent immediately
-    expect(spy).toBeCalledTimes(0);
-    // Batch should go out one second later
-    await new Promise((r) => {
-      setTimeout(r, 1200);
-    });
-    expect(spy).toBeCalledTimes(1);
-  });
 });

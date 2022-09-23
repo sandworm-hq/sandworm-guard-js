@@ -59,6 +59,10 @@ export const sendBatch = () => {
     if (skipTracking || batch.length === 0) {
       return;
     }
+    const currentBatch = [...batch];
+    const resetBatch = () => {
+      batch = [...currentBatch, ...batch];
+    };
     logger.debug('sending tracking...');
     if (platform() === PLATFORMS.NODE && http) {
       const req = originals.http.request(
@@ -69,20 +73,43 @@ export const sendBatch = () => {
           method: 'POST',
           headers: {'content-type': 'application/json'},
         },
-        () => {},
+        (res) => {
+          if (res.statusCode !== 200) {
+            logger.debug('error tracking call to inspector: got status', res.statusCode);
+            resetBatch();
+          }
+        },
       );
-      req.on('error', (error) => logger.debug('error tracking call to inspector:', error.message));
-      req.end(JSON.stringify(batch, getCircularReplacer()));
+      req.on('error', (error) => {
+        logger.debug('error tracking call to inspector:', error.message);
+        resetBatch();
+      });
+      req.end(JSON.stringify(currentBatch, getCircularReplacer()));
       batch = [];
     } else if (hasXMLHTTPRequest) {
       const request = new originals.xmlhttprequest.XMLHttpRequest();
+      request.onreadystatechange = () => {
+        if (request.readyState === 4) {
+          if (request.status !== 200) {
+            logger.debug('error tracking call to inspector:', request.statusText);
+            resetBatch();
+          }
+        }
+      };
+      request.addEventListener('error', () => {
+        logger.debug('error tracking call to inspector');
+        resetBatch();
+      });
       originals.xmlhttprequest.open.call(request, 'POST', `http://${host}:${port}/ingest`, true);
       originals.xmlhttprequest.setRequestHeader.call(
         request,
         'content-type',
         'application/json;charset=UTF-8',
       );
-      originals.xmlhttprequest.send.call(request, JSON.stringify(batch, getCircularReplacer()));
+      originals.xmlhttprequest.send.call(
+        request,
+        JSON.stringify(currentBatch, getCircularReplacer()),
+      );
       batch = [];
     }
   } catch (error) {
