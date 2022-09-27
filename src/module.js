@@ -78,7 +78,7 @@ export const mapStackItemToSource = (item) => {
 
 export const getNodeModuleName = (location) => {
   const components = location.split('/');
-  const nodeModulesIndex = components.findIndex((v) => v === 'node_modules');
+  const nodeModulesIndex = components.lastIndexOf('node_modules');
   let moduleName = components[nodeModulesIndex + 1];
   // Names starting with `@` are organizations, so it's good to get
   // a bit more context by also grabbing the next path component

@@ -261,6 +261,14 @@ describe('module', () => {
       ).toBe('lodash');
     });
 
+    test('should indicate module name for a nested node-modules path', () => {
+      expect(
+        getModuleNameFromLocation(
+          '/Users/jason/code/sandworm/node_modules/lodash/node_modules/react/index.js',
+        ),
+      ).toBe('react');
+    });
+
     test('should grab full name for org paths', () => {
       expect(
         getModuleNameFromLocation(
