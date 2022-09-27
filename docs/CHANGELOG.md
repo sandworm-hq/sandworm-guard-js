@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.2.0...sandworm-v1.2.1) (2022-09-27)
+
+
+### Bug Fixes
+
+* support nested node_modules ([4a4c0e7](https://github.com/sandworm-hq/sandworm-js/commit/4a4c0e7ef6cdf24ed21464a58f7b876133e68110))
+
 ## [1.2.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.1.1...sandworm-v1.2.0) (2022-09-23)
 
 
