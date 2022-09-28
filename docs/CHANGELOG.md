@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.2.1...sandworm-v1.3.0) (2022-09-28)
+
+
+### Features
+
+* allow calling init from test plugins ([e4b196b](https://github.com/sandworm-hq/sandworm-js/commit/e4b196b1bea4a43410e1b49f46bb0f344d479422))
+
 ## [1.2.1](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.2.0...sandworm-v1.2.1) (2022-09-27)
 
 
