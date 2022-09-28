@@ -58,11 +58,19 @@ const init = ({
       return Promise.resolve();
     }
 
-    const {name: callerModule} = getCurrentModuleInfo({
+    const {name: initCaller} = getCurrentModuleInfo({
       allowURLs: false,
     });
-    if (!['root', 'mocha>sandworm-mocha'].includes(callerModule)) {
-      logger.warn(`only root may call init (called from ${callerModule})`);
+    const initCallerModules = initCaller.split('>');
+    const rootCallerModule = initCallerModules[0];
+    const directCallerModule = initCallerModules.slice(-1)[0];
+
+    if (
+      initCaller !== 'root' &&
+      (rootCallerModule !== 'mocha' || directCallerModule !== 'sandworm-mocha') &&
+      (rootCallerModule !== 'jest-runner' || directCallerModule !== 'sandworm-jest')
+    ) {
+      logger.warn(`only root may call init (called from ${initCaller})`);
       return Promise.resolve();
     }
     if (typeof devModeOption !== 'boolean') {
