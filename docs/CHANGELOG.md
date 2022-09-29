@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.3.1...sandworm-v1.3.2) (2022-09-29)
+
+
+### Bug Fixes
+
+* include inspector logo png in npm pack ([e17f479](https://github.com/sandworm-hq/sandworm-js/commit/e17f479a0b796839ca61ed9fdd5588224d4eafee))
+
 ## [1.3.1](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.3.0...sandworm-v1.3.1) (2022-09-29)
 
 
