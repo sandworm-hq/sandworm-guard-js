@@ -67,8 +67,8 @@ const init = ({
 
     if (
       initCaller !== 'root' &&
-      (rootCallerModule !== 'mocha' || directCallerModule !== 'sandworm-mocha') &&
-      (rootCallerModule !== 'jest-runner' || directCallerModule !== 'sandworm-jest')
+      (rootCallerModule !== 'mocha' || directCallerModule !== 'sandworm-utils') &&
+      (rootCallerModule !== 'jest-runner' || directCallerModule !== 'sandworm-utils')
     ) {
       logger.warn(`only root may call init (called from ${initCaller})`);
       return Promise.resolve();
