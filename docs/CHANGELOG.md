@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.3.0...sandworm-v1.3.1) (2022-09-29)
+
+
+### Bug Fixes
+
+* allow init from `sandworm-utils` ([5df5065](https://github.com/sandworm-hq/sandworm-js/commit/5df5065cc5466e36d48d57cb6b16dc83e2751197))
+
 ## [1.3.0](https://github.com/sandworm-hq/sandworm-js/compare/sandworm-v1.2.1...sandworm-v1.3.0) (2022-09-28)
 
 
