@@ -22,4 +22,5 @@ cli/frontend/node_modules
 cli/frontend/yarn.lock
 docs
 *.md
-*.png
+/*.png
+/cli/screenshot.png
