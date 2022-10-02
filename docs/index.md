@@ -94,6 +94,8 @@ If your automated test process has good coverage, this is an excellent time to r
 
 ![Sandworm Inspector](../cli/screenshot.png)
 
+In the left, you'll see a list of all caller paths that have been intercepted. The Permissions tab displays an aggregated list of all required permissions, while the Activity tab hosts a list of all intercepted calls. For each method call, you can see the associated arguments as well as a stack trace that can help you figure out exactly who called what.
+
 ### Enforcing Permissions in Production Mode
 
 To use in production mode and start enforcing module API access restrictions, provide a `permissions` array to `Sandworm.init`:
