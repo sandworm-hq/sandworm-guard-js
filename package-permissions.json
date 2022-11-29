@@ -1,0 +1,15 @@
+[
+  {
+    "module": "root",
+    "permissions": [
+      "Function.Function",
+      "fs.readFile"
+    ]
+  },
+  {
+    "module": "source-map-js",
+    "permissions": [
+      "Function.Function"
+    ]
+  }
+]

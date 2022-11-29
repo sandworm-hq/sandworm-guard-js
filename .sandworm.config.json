@@ -1,0 +1,6 @@
+{
+  "aliases": [
+    {"path": "tests", "name": "test"}
+  ],
+  "ignoredModules": ["test"]
+}

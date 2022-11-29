@@ -9,4 +9,7 @@ module.exports = {
   rootDir: '../../',
   testEnvironment: 'node',
   testMatch: ['**/tests/unit/*.test.js', '**/tests/unit/*.test.node.js'],
+  globalSetup: require.resolve('sandworm-jest/setup'),
+  globalTeardown: require.resolve('sandworm-jest/teardown'),
+  setupFilesAfterEnv: [require.resolve('sandworm-jest/setupFiles')],
 };
