@@ -19,9 +19,9 @@ Easy auditing & sandboxing for your JavaScript dependencies 🪱
 [![Test Coverage][coverage-image]][coverage-url]
 
 ## TL;DR
-* Sandworm intercepts all potentially harmful Node & browser APIs, like arbitrary code execution (`child_process.exec`) or network calls (`fetch`). It knows what packages are responsible for each call.
+* Sandworm Guard intercepts all potentially harmful Node & browser APIs, like arbitrary code execution (`child_process.exec`) or network calls (`fetch`). It knows what packages are responsible for each call.
 * Simple obfuscation techniques can confuse static analysis tools, but Sandworm's dynamic analysis will always intercept risky calls at run time.
-* You can use Sandworm to:
+* You can use Sandworm Guard to:
   * [audit your dependencies](https://docs.sandworm.dev/#getting-started), monitor activity and permissions, and see what your code is doing under the hood using the Inspector;
   * [generate a security profile](https://docs.sandworm.dev/test-framework-plugins) automatically from your test suite and do snapshot testing against it;
   * [secure your app against supply chain attacks](https://docs.sandworm.dev/#enforcing-permissions) by enforcing per-module permissions.
@@ -33,7 +33,7 @@ Easy auditing & sandboxing for your JavaScript dependencies 🪱
 Add the Sandworm init call as the very first line of your app:
 
 ```js
-require('sandworm').init({devMode: true}); // add `permissions: [...]` to enforce
+require('@sandworm/guard').init({devMode: true}); // add `permissions: [...]` to enforce
 ```
 
 Then launch the inspector tool with `npm run sandworm` or `yarn sandworm` to monitor activity and permissions.
@@ -44,25 +44,25 @@ Then launch the inspector tool with `npm run sandworm` or `yarn sandworm` to mon
 
 ### Get Involved
 
-* Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm-js/discussions/categories/q-a).
-* Have a feature request? [Post it here](https://github.com/sandworm-hq/sandworm-js/discussions/categories/ideas).
+* Have a support question? [Post it here](https://github.com/sandworm-hq/sandworm-guard-js/discussions/categories/q-a).
+* Have a feature request? [Post it here](https://github.com/sandworm-hq/sandworm-guard-js/discussions/categories/ideas).
 * Did you find a security issue? [See SECURITY.md](contributing/security.md).
-* Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-js/issues/new/choose).
+* Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-guard-js/issues/new/choose).
 * Want to write some code? See [CONTRIBUTING.md](contributing/).
 
 ### Repos
 
-* [The JavaScript Core](https://github.com/sandworm-hq/sandworm-js)
+* [The JavaScript Core](https://github.com/sandworm-hq/sandworm-guard-js)
 * [Mocha Tests Plugin](https://github.com/sandworm-hq/sandworm-mocha)
 * [Jest Tests Plugin](https://github.com/sandworm-hq/sandworm-jest)
 
 [npm-version-image]: https://img.shields.io/npm/v/sandworm?style=flat-square
 [npm-version-url]: https://www.npmjs.com/package/sandworm
 [license-image]: https://img.shields.io/npm/l/sandworm?style=flat-square
-[license-url]: https://github.com/sandworm-hq/sandworm-js/blob/main/LICENSE
-[ci-image]: https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-js?style=flat-square
-[ci-url]: https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-js
+[license-url]: https://github.com/sandworm-hq/sandworm-guard-js/blob/main/LICENSE
+[ci-image]: https://img.shields.io/circleci/build/github/sandworm-hq/sandworm-guard-js?style=flat-square
+[ci-url]: https://app.circleci.com/pipelines/github/sandworm-hq/sandworm-guard-js
 [cc-image]: https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/maintainability
-[cc-url]: https://codeclimate.com/github/sandworm-hq/sandworm-js/maintainability
+[cc-url]: https://codeclimate.com/github/sandworm-hq/sandworm-guard-js/maintainability
 [coverage-image]: https://api.codeclimate.com/v1/badges/edff60f7f06bb0c589aa/test_coverage
-[coverage-url]: https://codeclimate.com/github/sandworm-hq/sandworm-js/test_coverage
+[coverage-url]: https://codeclimate.com/github/sandworm-hq/sandworm-guard-js/test_coverage

@@ -455,7 +455,7 @@ describe('module', () => {
       expect(
         getCurrentModuleInfo({
           stack: [
-            {file: 'project/node_modules/sandworm/root.js', line: 1, column: 1},
+            {file: 'project/node_modules/@sandworm/audit/root.js', line: 1, column: 1},
             {file: 'app.js', line: 1, column: 1},
             {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
           ],
@@ -467,7 +467,7 @@ describe('module', () => {
       expect(
         getCurrentModuleInfo({
           stack: [
-            {file: 'project/node_modules/sandworm/root.js', line: 1, column: 1},
+            {file: 'project/node_modules/@sandworm/audit/root.js', line: 1, column: 1},
             {file: 'node:internal/modules/cjs/loader', line: 1, column: 1},
             {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
           ],
@@ -479,7 +479,7 @@ describe('module', () => {
       expect(
         getCurrentModuleInfo({
           stack: [
-            {file: 'project/node_modules/sandworm/root.js', line: 1, column: 1},
+            {file: 'project/node_modules/@sandworm/audit/root.js', line: 1, column: 1},
             {file: 'node:internal/modules/cjs/loader', line: 1, column: 1},
             {file: 'project/node_modules/module-name/dist/index.js', line: 1, column: 1},
           ],

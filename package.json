@@ -1,12 +1,12 @@
 {
-  "name": "sandworm",
+  "name": "@sandworm/guard",
   "version": "1.3.2",
   "description": "Easy auditing & sandboxing for your JavaScript dependencies 🪱",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sandworm-hq/sandworm-js.git"
+    "url": "https://github.com/sandworm-hq/sandworm-guard-js.git"
   },
   "scripts": {
     "dev": "webpack --watch --progress",
@@ -25,7 +25,7 @@
     "build-library-md": "node scripts/build-library-md.js",
     "build-library-min": "node scripts/build-library-min.js",
     "build-library": "yarn build-library-md && yarn build-library-min",
-    "prepare-build-for-testing": "if [ ! -d \"dist/node_modules/sandworm\" ]; then mkdir -p dist/node_modules/sandworm && cd dist/node_modules/sandworm && ln ../../index.js index.js && cd ../../../; fi",
+    "prepare-build-for-testing": "if [ ! -d \"dist/node_modules/@sandworm/audit\" ]; then mkdir -p dist/node_modules/@sandworm/audit && cd dist/node_modules/@sandworm/audit && ln ../../../index.js index.js && cd ../../../../; fi",
     "prepare": "husky install"
   },
   "bin": "cli/index.js",

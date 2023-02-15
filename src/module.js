@@ -4,7 +4,7 @@ import {currentStack} from './stack';
 const cachedPermissions = {};
 const defaultPermissions = {module: 'root', permissions: true};
 let permissions = [defaultPermissions];
-let trustedModules = ['sandworm', 'react-dom', 'scheduler'];
+let trustedModules = ['@sandworm/audit', 'react-dom', 'scheduler'];
 let aliases = [];
 
 const sourcemaps = {};
@@ -198,12 +198,13 @@ export const getCurrentModuleInfo = ({stack: stackInput, allowURLs = false} = {}
 
     // Get the name of the module that was responsible for directly invoking the method
     // that was intercepted by Sandworm.
-    const directCaller = stack.find(({module}) => module !== 'sandworm');
+    const directCaller = stack.find(({module}) => module !== '@sandworm/audit');
     // Get the name of the user-space module that was responsible for triggering the call chain
     // that led to the Sandworm-intercepted method being invoked.
     // If `directCaller` was something from Node internals, this should point to the OG caller.
     const lastModuleCaller = stack.find(
-      ({module}) => module !== 'sandworm' && module !== undefined && !module.startsWith('node:'),
+      ({module}) =>
+        module !== '@sandworm/audit' && module !== undefined && !module.startsWith('node:'),
     );
 
     const modules = stack

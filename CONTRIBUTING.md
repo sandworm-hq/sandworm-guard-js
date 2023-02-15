@@ -24,7 +24,7 @@ Please add the `bug` label to all bug-reporting issues.
 
 ## How to suggest a feature or enhancement
 
-If you find yourself wishing for a feature that doesn't exist in Sandworm, you are probably not alone! Please [create a new discussion here](https://github.com/sandworm-hq/sandworm-js/discussions/categories/ideas) which describes the feature you would like to see, why you need it, and how it should work.
+If you find yourself wishing for a feature that doesn't exist in Sandworm, you are probably not alone! Please [create a new discussion here](https://github.com/sandworm-hq/sandworm-guard-js/discussions/categories/ideas) which describes the feature you would like to see, why you need it, and how it should work.
 
 ## Ground Rules
 

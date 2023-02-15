@@ -109,7 +109,7 @@ jobs:
           command: yarn global add release-please
       - run:
           name: Create or update release PR
-          command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm-js
+          command: release-please release-pr --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm-guard-js
   github-release:
     executor: node/default
     steps:
@@ -120,7 +120,7 @@ jobs:
           command: yarn global add release-please
       - run:
           name: Create release
-          command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm-js
+          command: release-please github-release --token=${GH_TOKEN} --repo-url=sandworm-hq/sandworm-guard-js
   publish-npm:
     executor: node/default
     steps:
@@ -131,7 +131,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
       - run:
           name: Publish to NPM
-          command: npm publish
+          command: npm publish --access=public
         
 workflows:
   test:
@@ -182,7 +182,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^sandworm-v.*/
+              only: /^guard-v.*/
       - lint:
           requires:
             - setup
@@ -190,7 +190,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^sandworm-v.*/
+              only: /^guard-v.*/
       - build:
           requires:
             - lint
@@ -198,7 +198,7 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^sandworm-v.*/
+              only: /^guard-v.*/
       - publish-npm:
           requires:
             - build
@@ -206,4 +206,4 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^sandworm-v.*/
+              only: /^guard-v.*/
