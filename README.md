@@ -40,7 +40,7 @@ Then launch the inspector tool with `npm run sandworm` or `yarn sandworm` to mon
 
 ### Documentation
 
-> [Read the full docs here](https://docs.sandworm.dev).
+> [Read the full docs here](https://docs.sandworm.dev/guard).
 
 ### Get Involved
 
@@ -49,12 +49,6 @@ Then launch the inspector tool with `npm run sandworm` or `yarn sandworm` to mon
 * Did you find a security issue? [See SECURITY.md](contributing/security.md).
 * Did you find a bug? [Post an issue](https://github.com/sandworm-hq/sandworm-guard-js/issues/new/choose).
 * Want to write some code? See [CONTRIBUTING.md](contributing/).
-
-### Repos
-
-* [The JavaScript Core](https://github.com/sandworm-hq/sandworm-guard-js)
-* [Mocha Tests Plugin](https://github.com/sandworm-hq/sandworm-mocha)
-* [Jest Tests Plugin](https://github.com/sandworm-hq/sandworm-jest)
 
 [npm-version-image]: https://img.shields.io/npm/v/sandworm?style=flat-square
 [npm-version-url]: https://www.npmjs.com/package/sandworm
